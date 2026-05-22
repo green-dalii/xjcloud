@@ -1,5 +1,5 @@
 import { db } from './client'
-import { users, posts, activities } from './schema'
+import { users } from './schema'
 import bcrypt from 'bcryptjs'
 
 async function seed() {
