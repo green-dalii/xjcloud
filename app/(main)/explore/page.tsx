@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import GuideScreen from '@/components/explore/GuideScreen'
 import CardStack from '@/components/explore/CardStack'
 import ResultList from '@/components/explore/ResultList'
@@ -8,6 +9,7 @@ import { filterActivities, ALL_ACTIVITIES } from '@/lib/data/mock-activities'
 import type { Filters } from '@/lib/data/mock-activities'
 
 export default function ExplorePage() {
+  const router = useRouter()
   const [phase, setPhase] = useState<'guide' | 'cards' | 'list'>('guide')
   const [guideStep, setGuideStep] = useState(1)
   const [filters, setFilters] = useState<Filters>({})
@@ -23,7 +25,6 @@ export default function ExplorePage() {
     } else if (guideStep === 2) {
       const f = { ...filters, travelMode: filters.travelMode }
       if (f.travelMode === 'solo') {
-        // Solo: skip step 3, go directly to cards
         const filtered = filterActivities(f)
         setCards(filtered)
         setPhase('cards')
@@ -39,11 +40,17 @@ export default function ExplorePage() {
 
   const handleSkip = useCallback(() => {
     setCards(ALL_ACTIVITIES)
-    setPhase('cards')
+    setPhase('list')
   }, [])
 
   const handleShowAll = useCallback(() => {
     setCards(ALL_ACTIVITIES)
+    setPhase('list')
+  }, [])
+
+  const handleShowSaved = useCallback((savedIds: string[]) => {
+    const savedCards = ALL_ACTIVITIES.filter((c) => savedIds.includes(c.id))
+    setCards(savedCards)
     setPhase('list')
   }, [])
 
@@ -60,10 +67,16 @@ export default function ExplorePage() {
           onSelect={handleSelect}
           onNext={handleNext}
           onSkip={handleSkip}
+          onAuth={() => router.push('/login')}
         />
       )}
       {phase === 'cards' && (
-        <CardStack cards={cards} onShowAll={handleShowAll} />
+        <CardStack
+          cards={cards}
+          onShowAll={handleShowAll}
+          onShowSaved={handleShowSaved}
+          onNavigateToHost={() => router.push('/host')}
+        />
       )}
       {phase === 'list' && (
         <ResultList cards={cards} onBack={handleBackToCards} />

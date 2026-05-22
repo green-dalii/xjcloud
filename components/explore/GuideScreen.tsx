@@ -9,6 +9,7 @@ interface GuideScreenProps {
   onSelect: (key: keyof Filters, value: string) => void
   onNext: () => void
   onSkip: () => void
+  onAuth?: () => void
 }
 
 const QUESTIONS = [
@@ -29,9 +30,11 @@ const QUESTIONS = [
   ]},
 ]
 
-export default function GuideScreen({ step, filters, onSelect, onNext, onSkip }: GuideScreenProps) {
+export default function GuideScreen({ step, filters, onSelect, onNext, onSkip, onAuth }: GuideScreenProps) {
   const currentQ = QUESTIONS[step - 1]
   if (!currentQ) return null
+
+  const isFirstStep = step === 1
 
   return (
     <div className="relative w-full min-h-screen flex flex-col items-center justify-center px-6" style={{ background: 'linear-gradient(135deg, #2d2a26 0%, #3a3630 50%, #2d2a26 100%)' }}>
@@ -81,10 +84,8 @@ export default function GuideScreen({ step, filters, onSelect, onNext, onSkip }:
                 onClick={() => {
                   onSelect(currentQ.key, opt.value)
                   if (step < 3) {
-                    // Step 2 + group → go to step 3
-                    // Step 2 + solo → skip to cards
                     if (currentQ.key === 'travelMode' && opt.value === 'solo') {
-                      onNext() // will trigger skip since no companionType needed
+                      onNext()
                     } else {
                       onNext()
                     }
@@ -107,6 +108,30 @@ export default function GuideScreen({ step, filters, onSelect, onNext, onSkip }:
               </motion.button>
             ))}
           </div>
+
+          {/* Auth prompt on first step */}
+          {isFirstStep && onAuth && (
+            <motion.button
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.4 }}
+              whileHover={{ scale: 1.03, borderColor: 'rgba(201,169,110,0.5)' }}
+              whileTap={{ scale: 0.97 }}
+              onClick={onAuth}
+              className="w-full py-3.5 px-8 rounded-full text-center mt-6 transition-colors duration-300"
+              style={{
+                border: '1.5px dashed rgba(201,169,110,0.35)',
+                backgroundColor: 'transparent',
+                color: '#c9a96e',
+                fontSize: 'clamp(14px, 2vw, 18px)',
+                fontFamily: "'Noto Serif SC', serif",
+                letterSpacing: '0.05em',
+                cursor: 'pointer',
+              }}
+            >
+              注册 / 登录进行更个性化的精准匹配
+            </motion.button>
+          )}
         </motion.div>
       </AnimatePresence>
 
