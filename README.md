@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 乡建协作平台 (xjcloud)
 
-## Getting Started
+> 让乡建人协作起来 —— AI 驱动的乡建活动协作 SaaS + UGC 平台
 
-First, run the development server:
+## 快速开始
 
 ```bash
+# 安装依赖
+npm install
+
+# 数据库迁移
+npm run db:push
+
+# 启动开发服务器
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# 访问 http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 技术栈
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **框架**: Next.js 14 (App Router) + TypeScript
+- **样式**: Tailwind CSS
+- **ORM**: Drizzle ORM + better-sqlite3
+- **认证**: NextAuth.js v5 (Auth.js)
+- **数据库**: SQLite（本地开发）→ Cloudflare D1（生产）
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 项目结构
 
-## Learn More
+```
+app/
+  (auth)/          # 认证页面（登录/注册）
+  (main)/          # 主应用页面（发现/动态/Profile）
+  api/             # API 路由
+components/        # UI 组件
+lib/
+  db/              # Drizzle schema + client
+  auth.ts          # NextAuth 配置
+public/            # 静态资源
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 文档
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [SPEC](docs/SPEC.md) — 技术规格说明书
+- [ROADMAP](ROADMAP.md) — 开发路线图
+- [CHANGELOG](CHANGELOG.md) — 变更日志
+- [Implementation Plan](docs/superpowers/plans/2026-05-22-xjcloud-mvp.md) — 实施计划
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Git 工作流
 
-## Deploy on Vercel
+每次提交前更新：README、CHANGELOG、ROADMAP、版本号、CLAUDE.md
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+*基于屏南数智乡建黑客松实地验证 | 2026-05-22*
