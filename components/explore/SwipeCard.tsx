@@ -102,7 +102,7 @@ export default function SwipeCard({
         <motion.div
           animate={{
             rotateY: isFlipped ? 180 : 0,
-            scale: isPressed ? 0.92 : isFlipped ? 1.12 : 1,
+            scale: isPressed ? 0.92 : 1,
           }}
           transition={{
             rotateY: { type: 'spring', stiffness: 180, damping: 20 },

@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import GuideScreen from '@/components/explore/GuideScreen'
+import LoadingScreen from '@/components/explore/LoadingScreen'
 import CardStack from '@/components/explore/CardStack'
 import ResultList from '@/components/explore/ResultList'
 import { filterActivities, ALL_ACTIVITIES } from '@/lib/data/mock-activities'
@@ -10,10 +11,20 @@ import type { Filters } from '@/lib/data/mock-activities'
 
 export default function ExplorePage() {
   const router = useRouter()
-  const [phase, setPhase] = useState<'guide' | 'cards' | 'list'>('guide')
+  const [phase, setPhase] = useState<'guide' | 'loading' | 'cards' | 'list'>('guide')
   const [guideStep, setGuideStep] = useState(1)
   const [filters, setFilters] = useState<Filters>({})
   const [cards, setCards] = useState(ALL_ACTIVITIES)
+
+  // Auto-transition from loading to cards after delay
+  useEffect(() => {
+    if (phase === 'loading') {
+      const t = setTimeout(() => {
+        setPhase('cards')
+      }, 2500)
+      return () => clearTimeout(t)
+    }
+  }, [phase])
 
   const handleSelect = useCallback((key: keyof Filters, value: string) => {
     setFilters((prev) => ({ ...prev, [key]: value }))
@@ -27,14 +38,14 @@ export default function ExplorePage() {
       if (f.travelMode === 'solo') {
         const filtered = filterActivities(f)
         setCards(filtered)
-        setPhase('cards')
+        setPhase('loading')
       } else {
         setGuideStep(3)
       }
     } else if (guideStep === 3) {
       const filtered = filterActivities(filters)
       setCards(filtered)
-      setPhase('cards')
+      setPhase('loading')
     }
   }, [guideStep, filters])
 
@@ -70,6 +81,7 @@ export default function ExplorePage() {
           onAuth={() => router.push('/login')}
         />
       )}
+      {phase === 'loading' && <LoadingScreen />}
       {phase === 'cards' && (
         <CardStack
           cards={cards}

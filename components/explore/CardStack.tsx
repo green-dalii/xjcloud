@@ -21,14 +21,16 @@ export default function CardStack({ cards, onShowAll, onShowSaved, onNavigateToH
   const [showSaved, setShowSaved] = useState(false)
   const [showAdopted, setShowAdopted] = useState(false)
   const [isFlipped, setIsFlipped] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false)
 
   const currentCard = cards[currentIndex]
   const nextCard = cards[currentIndex + 1]
   const thirdCard = cards[currentIndex + 2]
 
-  // Reset flip when card changes
+  // Reset flip + expand when card changes
   useEffect(() => {
     setIsFlipped(false)
+    setIsExpanded(false)
   }, [currentIndex])
 
   const recordAction = useCallback((direction: 'left' | 'right' | 'down') => {
@@ -71,16 +73,23 @@ export default function CardStack({ cards, onShowAll, onShowSaved, onNavigateToH
     setTimeout(() => {
       setShowAdopted(false)
       setIsFlipped(true)
+      // 翻转动画约 600-800ms，延迟 500ms 后开始整体放大
+      setTimeout(() => {
+        setIsExpanded(true)
+      }, 500)
     }, 600)
   }
 
   const handleFlipBack = () => {
-    setIsFlipped(false)
+    setIsExpanded(false)
     setTimeout(() => {
-      setExitingDirection('right')
-      recordAction('right')
-      advanceCard()
-    }, 500)
+      setIsFlipped(false)
+      setTimeout(() => {
+        setExitingDirection('right')
+        recordAction('right')
+        advanceCard()
+      }, 400)
+    }, 300)
   }
 
   const buttonsDisabled = isFlipped || showSaved || showAdopted
@@ -157,13 +166,13 @@ export default function CardStack({ cards, onShowAll, onShowSaved, onNavigateToH
 
   return (
     <div className="relative w-full min-h-screen flex flex-col items-center bg-gradient-to-br from-[#2d2a26] to-[#3a3630] pt-20 md:pt-24 pb-24 md:pb-28">
-      {/* Card container */}
+      {/* Card container — 整体放大在这里控制 */}
       <div
-        className="relative w-[90%] sm:w-[85%] md:w-full mx-auto transition-all duration-500 ease-out"
+        className={`relative w-[90%] sm:w-[85%] md:w-full mx-auto transition-transform duration-700 ease-out ${isExpanded ? 'scale-[1.03] md:scale-[1.07]' : 'scale-100'}`}
         style={{
           height: 'calc(100vh - 210px)',
-          maxHeight: isFlipped ? 560 : 520,
-          maxWidth: isFlipped ? 460 : 400,
+          maxHeight: 540,
+          maxWidth: 420,
         }}
       >
         {/* Third layer */}
