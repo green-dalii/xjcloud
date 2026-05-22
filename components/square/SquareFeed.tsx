@@ -46,24 +46,7 @@ function PostActions({ post, onRice }: { post: Post; onRice: (postId: string, am
           onClick={() => setShowRice(true)}
           title="打赏稻米"
         >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-            {/* 茎 */}
-            <path d="M12 22V12" />
-            {/* 稻穗主轴 */}
-            <path d="M12 12c0-3-.5-5-1-6" />
-            <path d="M12 12c0-3 .5-5 1-6" />
-            {/* 左侧谷粒 — 下垂椭圆 */}
-            <ellipse cx="10" cy="10" rx="1.5" ry="2.5" transform="rotate(-25 10 10)" />
-            <ellipse cx="9.5" cy="7.5" rx="1.3" ry="2.2" transform="rotate(-25 9.5 7.5)" />
-            <ellipse cx="9" cy="5" rx="1" ry="1.8" transform="rotate(-25 9 5)" />
-            {/* 右侧谷粒 — 下垂椭圆 */}
-            <ellipse cx="14" cy="10" rx="1.5" ry="2.5" transform="rotate(25 14 10)" />
-            <ellipse cx="14.5" cy="7.5" rx="1.3" ry="2.2" transform="rotate(25 14.5 7.5)" />
-            <ellipse cx="15" cy="5" rx="1" ry="1.8" transform="rotate(25 15 5)" />
-            {/* 叶子 */}
-            <path d="M12 16c-4 1-6-.5-6-2" />
-            <path d="M12 16c4 1 6-.5 6-2" />
-          </svg>
+          <span style={{ fontSize: 15, lineHeight: 1 }}>🌾</span>
           <span>{post.stats.rice || ''}</span>
         </button>
       </div>
