@@ -165,10 +165,10 @@ export default function CardStack({ cards, onShowAll, onShowSaved, onNavigateToH
   }
 
   return (
-    <div className="relative w-full min-h-screen flex flex-col items-center bg-gradient-to-br from-[#2d2a26] to-[#3a3630] pt-20 md:pt-24 pb-24 md:pb-28">
+    <div className="relative w-full min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#2d2a26] to-[#3a3630]">
       {/* Card container — 整体放大在这里控制 */}
       <div
-        className={`relative w-[90%] sm:w-[85%] md:w-full mx-auto transition-transform duration-700 ease-out ${isExpanded ? 'scale-[1.03] md:scale-[1.07]' : 'scale-100'}`}
+        className={`relative w-[90%] sm:w-[85%] md:w-full mx-auto transition-transform duration-700 ease-out ${isExpanded ? 'scale-100 md:scale-[1.12]' : 'scale-100'}`}
         style={{
           height: 'calc(100vh - 210px)',
           maxHeight: 540,

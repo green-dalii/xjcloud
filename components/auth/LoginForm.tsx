@@ -34,36 +34,36 @@ export function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <h2 className="text-2xl font-bold text-center text-gray-900">登录</h2>
+      <h2 className="auth-heading">登录</h2>
 
-      {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+      {error && <p className="auth-error">{error}</p>}
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-xj-amber"
+          placeholder="邮箱"
+          className="auth-input"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">密码</label>
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-xj-amber"
+          placeholder="密码"
+          className="auth-input"
         />
       </div>
 
       <button
         type="submit"
         disabled={loading}
-        className="w-full py-2.5 bg-xj-amber text-white rounded-md font-medium hover:bg-xj-amber-dark disabled:opacity-50"
+        className="auth-submit"
       >
         {loading ? '登录中...' : '登录'}
       </button>

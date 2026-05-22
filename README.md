@@ -17,21 +17,39 @@ PORT=3001 npm run dev
 ## 技术栈
 
 - **框架**: Next.js 14 (App Router) + TypeScript
-- **样式**: Tailwind CSS 3.4 + CSS custom properties
-- **动画**: GSAP (ScrollTrigger) + CSS transitions
+- **样式**: Tailwind CSS 3.4 + CSS custom properties（全局主题系统，无页面私有 CSS）
+- **动画**: Framer Motion + GSAP (ScrollTrigger) + CSS transitions
 - **ORM**: Drizzle ORM + better-sqlite3
 - **认证**: NextAuth.js v5 (Auth.js)
 - **数据库**: SQLite（本地）→ Cloudflare D1（生产）
 
 ## 设计系统 — Warm Earth Palette
 
+所有颜色、字体、间距均通过 `globals.css` 的 CSS 变量定义，**禁止任何页面写私有内嵌 CSS**。
+
 | Token | 值 | 用途 |
 |-------|------|------|
-| `--bg-ink` | `#2d2a26` | 首页背景、深色区块 |
-| `--bg-paper` | `#f5f1ea` | 页面背景、浅色区块 |
-| `--color-moss` | `#3d5a3f` | 正文色 |
-| `--color-wheat` | `#c9a96e` | 强调色、品牌色 |
-| `--color-stone` | `#7a7468` | 副文本色 |
+| `--bg-ink` | `#2d2a26` | 深色背景 |
+| `--bg-ink-light` | `#3a3630` | 次深色背景 |
+| `--bg-paper` | `#f5f1ea` | 浅色背景 |
+| `--color-moss` | `#3d5a3f` | 苔藓绿（次要强调） |
+| `--color-forest` | `#4a6741` | 森林绿 |
+| `--color-wheat` | `#c9a96e` | 麦金（主强调色） |
+| `--color-wheat-light` | `#d4b87a` | 麦金浅（hover） |
+| `--color-earth` | `#8b6f47` | 大地色 |
+| `--color-clay` | `#b85c48` | 赤陶色 |
+| `--color-danger` | `#ff6b6b` | 危险/删除 |
+| `--color-success` | `#34d399` | 成功/采纳 |
+| `--color-warning` | `#fbbf24` | 收藏/提示 |
+| `--text-heading` | `#f5f1ea` | 标题文字 |
+| `--text-primary` | `rgba(245,241,234,0.85)` | 主要文字 |
+| `--text-body` | `rgba(245,241,234,0.75)` | 正文文字 |
+| `--text-secondary` | `rgba(245,241,234,0.55)` | 次要文字 |
+| `--text-muted` | `rgba(245,241,234,0.35)` | 弱化文字 |
+| `--text-dim` | `rgba(245,241,234,0.25)` | 极弱文字 |
+| `--border-subtle` | `rgba(245,241,234,0.08)` | 极浅边框 |
+| `--border-default` | `rgba(245,241,234,0.15)` | 默认边框 |
+| `--border-strong` | `rgba(245,241,234,0.25)` | 强调边框 |
 | `--font-serif` | Noto Serif SC | 标题 |
 | `--font-display` | Cormorant Garamond | 装饰英文 |
 | `--font-ui` | PingFang SC | 正文 |
@@ -40,31 +58,58 @@ PORT=3001 npm run dev
 
 ```
 app/
-  (auth)/             # 认证页面（登录/注册）
+  (auth)/               # 认证页面（登录/注册）— Warm Earth 深色主题
   (main)/
-    page.tsx          # 首页 LandingPage（全屏沉浸，双面板+视频背景）
+    page.tsx            # 首页 LandingPage（全屏沉浸，双面板+视频背景）
     explore/
-      page.tsx        # 探索页（Hero视频+精选地+气氛视频+GSAP动画）
+      page.tsx          # 探索页（引导问卷 → Loading → 堆叠卡片 → 列表）
     host/
-      page.tsx        # 共建者页（Hero视频+案例+三步流程+CTA）
-    layout.tsx        # 主布局（非首页：Navbar + 内容 + Footer）
-  api/                # API 路由
+      page.tsx          # 共建者页
+    square/
+      page.tsx          # UGC 广场（帖子流 + 打赏稻米）
+    layout.tsx          # 主布局（Navbar + 内容 + Footer）
+  api/                  # API 路由
 components/
   layout/
-    NavbarFooter.tsx  # Navbar（滚动透明→毛玻璃） + Footer
+    NavbarFooter.tsx    # Navbar（滚动透明→毛玻璃） + Footer
+  explore/
+    GuideScreen.tsx     # 3步引导问卷
+    LoadingScreen.tsx   # 匹配加载动画
+    CardStack.tsx       # 堆叠卡片管理器
+    SwipeCard.tsx       # 可拖拽单卡片
+    ResultList.tsx      # 结果列表
+  square/
+    SquareFeed.tsx      # UGC 帖子流（Tab + 帖子卡片 + 操作栏）
+    RiceModal.tsx       # 打赏稻米弹窗
 lib/
-  db/                 # Drizzle schema + client
-  auth.ts             # NextAuth 配置
+  data/
+    mock-activities.ts  # 20 条乡建活动 mock 数据
+    mock-posts.ts       # UGC 帖子 mock 数据
+  db/                   # Drizzle schema + client
+  auth.ts               # NextAuth 配置
 public/
-  images/             # 站点图片（沙溪、桐庐、景德镇等）
-  videos/             # 站点视频（田园生活、慢生活）
+  images/               # 站点图片
+  videos/               # 站点视频
 ```
+
+## 页面路由
+
+| 路由 | 描述 | 状态 |
+|------|------|------|
+| `/` | 首页 — 全屏双面板视频沉浸 | ✅ |
+| `/explore` | 探索 — 引导问卷 + 卡片堆叠 + 列表 | ✅ |
+| `/host` | 共建者 — 视频 Hero + 案例展示 | ✅ |
+| `/square` | 广场 — UGC 帖子流 + 打赏稻米 | ✅ |
+| `/login` | 登录 — 深色主题认证 | ✅ |
+| `/register` | 注册 — 深色主题认证 | ✅ |
+| `/profile` | 个人中心 | ✅ |
 
 ## 文档
 
 - [SPEC](docs/SPEC.md) — 技术规格说明书
 - [ROADMAP](ROADMAP.md) — 开发路线图
 - [CHANGELOG](CHANGELOG.md) — 变更日志
+- [CLAUDE.md](CLAUDE.md) — 开发指引
 
 ## Git 工作流
 
@@ -72,4 +117,4 @@ public/
 
 ---
 
-*基于屏南数智乡建黑客松实地验证 | 2026-05-22*
+*基于屏南数智乡建黑客松实地验证 | 2026-05-23*

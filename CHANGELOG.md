@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-05-23
+
+### Added
+- **UGC 广场页面 (`/square`)** — 复刻 Twitter 式帖子流，深色 Warm Earth 主题
+  - 顶部 Tab 导航：全部 / 任务 / 商品 / 活动
+  - 帖子卡片：头像 + 用户名/@id + 时间 + 正文 + 图片 + 操作栏
+  - 操作栏：评论 / 转发 / 点赞（红心可切换）/ 打赏稻米
+  - 打赏稻米弹窗：输入数量 + 确认，前端累加计数（暂无后台 API）
+  - Framer Motion tab 切换动画
+- **Navbar 增加「广场」入口** — 导航栏统一为 探索 / 指南 / 共建 / 广场，点击可跳转
+
+### Changed
+- **全局主题系统重构**
+  - 首页内嵌 `<style>` 标签全部提取到 `globals.css` 的 `@layer components`
+  - 新增完整 CSS 变量体系：文字透明度层级、边框层级、wheat/ success/ danger/ warning 变体、间距、圆角、动画曲线
+  - 所有组件改用 CSS 变量，杜绝硬编码颜色
+  - 新增可复用组件类：`.glass-surface`、`.page-bg`、`.btn-primary`、`.btn-outline`、`.btn-ghost`、`.auth-*`、`.feed-*`、`.modal-*`
+- **Auth 页面风格统一** — 登录/注册页改用深色 Warm Earth 主题（毛玻璃卡片 + 麦金按钮），与首页视觉一致
+- **Footer / Navbar 硬编码颜色 → CSS 变量** — 统一使用全局主题 token
+- **卡片放大调整** — 桌面端 scale 1.12（移动端不放大），卡片堆垂直居中
+
 ## [0.3.1] - 2026-05-22
 
 ### Added
