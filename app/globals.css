@@ -23,3 +23,43 @@
     50% { opacity: 0.4; }
   }
 }
+
+/* ── Split-screen hover expand/collapse ─────────────────────────────── */
+/* 完全接管 flex 布局，避免与 Tailwind flex-1/min-h 等工具类纠缠 */
+
+.split-hover-effect {
+  display: flex;
+  flex-direction: column;
+}
+
+.split-hover-effect > [data-panel] {
+  flex: 1;
+  transition: flex 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 桌面端：左右排列 + hover 伸缩 */
+@media (min-width: 768px) {
+  .split-hover-effect {
+    flex-direction: row;
+  }
+
+  .split-hover-effect > [data-panel] {
+    min-height: 0;
+  }
+
+  .split-hover-effect > [data-panel]:hover {
+    flex: 1.4;
+  }
+
+  /* 左面板 hover → 右面板收缩 */
+  .split-hover-effect > [data-panel="left"]:hover ~ [data-panel="right"] {
+    flex: 0.7;
+  }
+
+  /* 右面板 hover → 左面板收缩 */
+  .split-hover-effect:has(> [data-panel="right"]:hover) > [data-panel="left"] {
+    flex: 0.7;
+  }
+}

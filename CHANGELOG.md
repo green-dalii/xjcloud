@@ -20,6 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Profile page with user info API
 - **Homepage redesign v2**: hand-drawn map background, dual entrance ("我要探索" + "我要造趣"), mood tags, new earth-tone color palette
 - Updated brand colors: earth brown, rice field green, sunset orange, paper white
+- **Homepage v4**: real photography backgrounds (桐庐茶园 + 景德镇陶艺), emerald/amber semi-transparent overlays
+- Desktop split-panel hover expand/collapse effect (flex 1→1.4 / 1→0.7) matching reference prototype
+- Mobile responsive layout: stacked panels with bottom-aligned content, no overlap
 
 ## [0.1.0] - 2026-05-22
 
