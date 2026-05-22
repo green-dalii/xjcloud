@@ -47,7 +47,22 @@ function PostActions({ post, onRice }: { post: Post; onRice: (postId: string, am
           title="打赏稻米"
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-            <ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.5 3.6 3 8 3s8-1.5 8-3V6"/><path d="M4 12v6c0 1.5 3.6 3 8 3s8-1.5 8-3v-6"/>
+            {/* 茎 */}
+            <path d="M12 22V12" />
+            {/* 稻穗主轴 */}
+            <path d="M12 12c0-3-.5-5-1-6" />
+            <path d="M12 12c0-3 .5-5 1-6" />
+            {/* 左侧谷粒 — 下垂椭圆 */}
+            <ellipse cx="10" cy="10" rx="1.5" ry="2.5" transform="rotate(-25 10 10)" />
+            <ellipse cx="9.5" cy="7.5" rx="1.3" ry="2.2" transform="rotate(-25 9.5 7.5)" />
+            <ellipse cx="9" cy="5" rx="1" ry="1.8" transform="rotate(-25 9 5)" />
+            {/* 右侧谷粒 — 下垂椭圆 */}
+            <ellipse cx="14" cy="10" rx="1.5" ry="2.5" transform="rotate(25 14 10)" />
+            <ellipse cx="14.5" cy="7.5" rx="1.3" ry="2.2" transform="rotate(25 14.5 7.5)" />
+            <ellipse cx="15" cy="5" rx="1" ry="1.8" transform="rotate(25 15 5)" />
+            {/* 叶子 */}
+            <path d="M12 16c-4 1-6-.5-6-2" />
+            <path d="M12 16c4 1 6-.5 6-2" />
           </svg>
           <span>{post.stats.rice || ''}</span>
         </button>
@@ -134,7 +149,7 @@ export default function SquareFeed() {
       </div>
 
       {/* Posts */}
-      <div className="feed-container" style={{ paddingTop: 12 }}>
+      <div className="feed-container">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}

@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - 打赏稻米弹窗：输入数量 + 确认，前端累加计数（暂无后台 API）
   - Framer Motion tab 切换动画
 - **Navbar 增加「广场」入口** — 导航栏统一为 探索 / 指南 / 共建 / 广场，点击可跳转
+- **水稻图标** — 打赏按钮改用稻穗线条图标（茎 + 下垂谷粒椭圆 + 叶子），更直观可辨识
+- **打赏稻米步进器** — 数值输入改为 − / + 按钮控件，最小值约束为 1，禁用态视觉反馈
 
 ### Changed
 - **全局主题系统重构**
@@ -24,6 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - 新增完整 CSS 变量体系：文字透明度层级、边框层级、wheat/ success/ danger/ warning 变体、间距、圆角、动画曲线
   - 所有组件改用 CSS 变量，杜绝硬编码颜色
   - 新增可复用组件类：`.glass-surface`、`.page-bg`、`.btn-primary`、`.btn-outline`、`.btn-ghost`、`.auth-*`、`.feed-*`、`.modal-*`
+- **UGC 广场修复**
+  - Feed Tab header 改为 `top: 56px` 避开 Navbar，帖子容器 `padding-top: 120px` 同步下移
+  - Mock 帖子数据全部使用项目真实图片（桐庐、沙溪、景德镇、航拍村落）
+  - 新增 2 条带图文的长篇乡建攻略帖子
 - **Auth 页面风格统一** — 登录/注册页改用深色 Warm Earth 主题（毛玻璃卡片 + 麦金按钮），与首页视觉一致
 - **Footer / Navbar 硬编码颜色 → CSS 变量** — 统一使用全局主题 token
 - **卡片放大调整** — 桌面端 scale 1.12（移动端不放大），卡片堆垂直居中

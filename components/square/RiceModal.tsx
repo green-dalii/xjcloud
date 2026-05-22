@@ -15,6 +15,9 @@ export default function RiceModal({
 }) {
   const [amount, setAmount] = useState(10)
 
+  const decrement = () => setAmount((v) => Math.max(1, v - 1))
+  const increment = () => setAmount((v) => v + 1)
+
   return (
     <motion.div
       className="modal-overlay"
@@ -31,19 +34,40 @@ export default function RiceModal({
         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="modal-title">打赏稻米 🌾</div>
+        <div className="modal-title">打赏稻米</div>
         <div className="modal-desc">
           喜欢 @{post.author.handle} 的帖子？<br />
-          说明很有价值啊~ 打赏作者稻米吧~ 🌾
+          说明很有价值啊~ 打赏作者稻米吧~
         </div>
 
-        <input
-          type="number"
-          min={1}
-          value={amount}
-          onChange={(e) => setAmount(Math.max(1, parseInt(e.target.value) || 1))}
-          className="modal-input"
-        />
+        {/* Amount stepper */}
+        <div className="amount-stepper">
+          <button
+            className="amount-stepper-btn"
+            onClick={decrement}
+            disabled={amount <= 1}
+            aria-label="减少"
+          >
+            −
+          </button>
+          <input
+            type="number"
+            min={1}
+            value={amount}
+            onChange={(e) => {
+              const v = parseInt(e.target.value)
+              if (!isNaN(v) && v >= 1) setAmount(v)
+            }}
+            className="amount-stepper-value"
+          />
+          <button
+            className="amount-stepper-btn"
+            onClick={increment}
+            aria-label="增加"
+          >
+            +
+          </button>
+        </div>
 
         <div className="modal-actions">
           <button className="btn-outline" onClick={onClose}>取消</button>
