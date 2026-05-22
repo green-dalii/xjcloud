@@ -3,13 +3,113 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    /* ── Color Tokens (Warm Earth Palette) ── */
+    --bg-paper: #f5f1ea;
+    --bg-ink: #2d2a26;
+    --color-moss: #3d5a3f;
+    --color-forest: #4a6741;
+    --color-stone: #7a7468;
+    --color-wheat: #c9a96e;
+    --color-wheat-light: #d4b87a;
+    --color-clay: #b85c48;
+    --color-cream: #f5f1ea;
+    --color-white: #faf8f4;
+
+    --font-serif: 'Noto Serif SC', 'Songti SC', 'STSong', serif;
+    --font-display: 'Cormorant Garamond', 'Noto Serif SC', serif;
+    --font-ui: -apple-system, 'PingFang SC', 'Helvetica Neue', 'Microsoft YaHei', sans-serif;
+
+    /* shadcn variables */
+    --background: 40 24% 94%;
+    --foreground: 30 8% 16%;
+    --card: 40 24% 94%;
+    --card-foreground: 30 8% 16%;
+    --popover: 40 24% 94%;
+    --popover-foreground: 30 8% 16%;
+    --primary: 30 8% 16%;
+    --primary-foreground: 40 24% 94%;
+    --secondary: 100 14% 33%;
+    --secondary-foreground: 40 24% 94%;
+    --muted: 40 12% 88%;
+    --muted-foreground: 40 6% 48%;
+    --accent: 38 42% 61%;
+    --accent-foreground: 30 8% 16%;
+    --destructive: 14 42% 50%;
+    --destructive-foreground: 40 24% 94%;
+    --border: 40 12% 82%;
+    --input: 40 12% 82%;
+    --ring: 38 42% 61%;
+    --radius: 0.5rem;
+  }
+
   html {
     font-size: 16px;
     -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
   }
+
   body {
-    @apply bg-xj-paper text-gray-800;
+    font-family: var(--font-ui);
+    color: var(--color-moss);
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
     overscroll-behavior-y: none;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
+    word-break: keep-all;
+  }
+}
+
+@layer components {
+  .font-serif {
+    font-family: var(--font-serif);
+  }
+  .font-display {
+    font-family: var(--font-display);
+  }
+  .font-ui {
+    font-family: var(--font-ui);
+  }
+
+  .text-moss {
+    color: var(--color-moss);
+  }
+  .text-stone {
+    color: var(--color-stone);
+  }
+  .text-wheat {
+    color: var(--color-wheat);
+  }
+  .bg-ink {
+    background-color: var(--bg-ink);
+  }
+  .bg-paper {
+    background-color: var(--bg-paper);
+  }
+
+  .section-spacing {
+    padding: clamp(100px, 12vh, 180px) 0;
+  }
+
+  /* Parallax grid styles */
+  .grid__item-imgwrap {
+    overflow: hidden;
+    position: relative;
+  }
+  .grid__item-img {
+    background-size: cover;
+    background-position: 50% 50%;
+  }
+  .grid__item-img-inner {
+    background-size: cover;
+    background-position: 50% 50%;
+    width: 100%;
+    height: 100%;
   }
 }
 
@@ -21,45 +121,5 @@
   @keyframes pulse-dot {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.4; }
-  }
-}
-
-/* ── Split-screen hover expand/collapse ─────────────────────────────── */
-/* 完全接管 flex 布局，避免与 Tailwind flex-1/min-h 等工具类纠缠 */
-
-.split-hover-effect {
-  display: flex;
-  flex-direction: column;
-}
-
-.split-hover-effect > [data-panel] {
-  flex: 1;
-  transition: flex 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-}
-
-/* 桌面端：左右排列 + hover 伸缩 */
-@media (min-width: 768px) {
-  .split-hover-effect {
-    flex-direction: row;
-  }
-
-  .split-hover-effect > [data-panel] {
-    min-height: 0;
-  }
-
-  .split-hover-effect > [data-panel]:hover {
-    flex: 1.4;
-  }
-
-  /* 左面板 hover → 右面板收缩 */
-  .split-hover-effect > [data-panel="left"]:hover ~ [data-panel="right"] {
-    flex: 0.7;
-  }
-
-  /* 右面板 hover → 左面板收缩 */
-  .split-hover-effect:has(> [data-panel="right"]:hover) > [data-panel="left"] {
-    flex: 0.7;
   }
 }

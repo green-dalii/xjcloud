@@ -1,8 +1,7 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { Header } from '@/components/layout/Header'
-import { BottomNav } from '@/components/layout/BottomNav'
+import { Navbar, Footer } from '@/components/layout/NavbarFooter'
 
 export default function MainLayout({
   children,
@@ -14,11 +13,11 @@ export default function MainLayout({
 
   return (
     <>
-      {!isHome && <Header />}
-      <main className={isHome ? '' : 'max-w-6xl mx-auto px-4 pb-20 md:pb-8'}>
+      {!isHome && <Navbar />}
+      <main className={isHome ? '' : 'min-h-screen'}>
         {children}
       </main>
-      {!isHome && <BottomNav />}
+      {!isHome && <Footer />}
     </>
   )
 }
