@@ -22,7 +22,7 @@ export function BottomNav() {
               key={tab.href}
               href={tab.href}
               className={`flex flex-col items-center gap-0.5 text-xs ${
-                active ? 'text-xj-amber' : 'text-gray-500'
+                active ? 'text-xj-earth' : 'text-gray-500'
               }`}
             >
               <span className="text-base">{tab.icon}</span>
