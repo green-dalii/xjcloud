@@ -1,3 +1,6 @@
+'use client'
+
+import { usePathname } from 'next/navigation'
 import { Header } from '@/components/layout/Header'
 import { BottomNav } from '@/components/layout/BottomNav'
 
@@ -6,13 +9,16 @@ export default function MainLayout({
 }: {
   children: React.ReactNode
 }) {
+  const pathname = usePathname()
+  const isHome = pathname === '/'
+
   return (
     <>
-      <Header />
-      <main className="max-w-6xl mx-auto px-4 pb-20 md:pb-8">
+      {!isHome && <Header />}
+      <main className={isHome ? '' : 'max-w-6xl mx-auto px-4 pb-20 md:pb-8'}>
         {children}
       </main>
-      <BottomNav />
+      {!isHome && <BottomNav />}
     </>
   )
 }

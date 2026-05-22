@@ -1,139 +1,188 @@
+'use client'
+
 import Link from 'next/link'
-import { MapBackground } from '@/components/home/MapBackground'
-import { MoodTags } from '@/components/home/MoodTags'
 
 export default function HomePage() {
   return (
-    <div className="relative min-h-screen">
-      {/* Hand-drawn map background */}
-      <MapBackground />
-
-      {/* Content overlay */}
-      <div className="relative z-10 flex flex-col min-h-screen">
-        {/* Top: subtle brand */}
-        <div className="pt-6 px-6 text-center">
-          <h1 className="text-lg font-bold text-xj-earth-dark tracking-wider">
-            🌾 乡建协作
-          </h1>
-          <p className="text-xs text-xj-earth/70 mt-1">
-            让乡建人协作起来
-          </p>
+    <div className="relative min-h-screen bg-[#2d2a26] overflow-hidden">
+      {/* Top Navigation */}
+      <nav className="absolute top-0 left-0 right-0 h-14 flex items-center justify-between px-4 md:px-8 z-20 bg-black/15 backdrop-blur-md">
+        <div className="text-[#f5f1ea] text-lg font-semibold tracking-wider">
+          乡<span className="text-[#c9a96e]">·</span>遇见
         </div>
+        <div className="flex gap-4 md:gap-6">
+          <Link href="/activities" className="text-[#f5f1ea] text-sm no-underline opacity-80 hover:opacity-100 transition-opacity">
+            活动
+          </Link>
+          <Link href="/feed" className="text-[#f5f1ea] text-sm no-underline opacity-80 hover:opacity-100 transition-opacity hidden md:block">
+            在地故事
+          </Link>
+          <Link href="/profile" className="text-[#f5f1ea] text-sm no-underline opacity-80 hover:opacity-100 transition-opacity">
+            登录
+          </Link>
+        </div>
+      </nav>
 
-        {/* Middle: mood tags */}
-        <div className="flex-1 flex flex-col justify-center items-center px-6 pb-32">
-          <p className="text-sm text-white/80 mb-4 font-medium drop-shadow-md">
-            今天你想...
-          </p>
-          <MoodTags />
+      {/* Split Screen */}
+      <div className="flex flex-col md:flex-row h-screen w-full group/split">
+        {/* Left Panel - Traveler */}
+        <div className="flex-1 relative overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] cursor-pointer md:hover:flex-[1.4] group-left min-h-[50vh]">
+          {/* Background */}
+          <div
+            className="absolute inset-0"
+            style={{ background: 'linear-gradient(135deg, #4a6741 0%, #6b8e5a 50%, #8ba87a 100%)' }}
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `
+                radial-gradient(circle at 20% 30%, rgba(255,220,150,0.2) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(150,200,120,0.3) 0%, transparent 50%)
+              `
+            }}
+          />
 
-          {/* Inspiration hint */}
-          <div className="mt-8 bg-white/20 backdrop-blur-md rounded-2xl p-4 max-w-xs mx-auto border border-white/30">
-            <p className="text-xs text-white/90 text-center leading-relaxed">
-              ✨ 今日灵感：龙潭村木艺工坊<br />
-              <span className="text-white/60">张师傅教你做木雕小鸟</span>
+          {/* Floating dots */}
+          <div
+            className="absolute rounded-full bg-white/60"
+            style={{ width: 6, height: 6, top: '25%', right: '15%', animation: 'float 4s ease-in-out infinite' }}
+          />
+          <div
+            className="absolute rounded-full bg-white/60"
+            style={{ width: 4, height: 4, top: '60%', left: '20%', animation: 'float 4s ease-in-out 1s infinite' }}
+          />
+
+          {/* Avatars */}
+          <div className="absolute top-20 left-4 md:left-14 flex items-center gap-2">
+            <div className="flex -space-x-2">
+              <div className="w-8 h-8 rounded-full border-2 border-[#f5f1ea] bg-gradient-to-br from-[#c9a96e] to-[#8b6f47] flex items-center justify-center text-white text-xs">A</div>
+              <div className="w-8 h-8 rounded-full border-2 border-[#f5f1ea] bg-gradient-to-br from-[#c9a96e] to-[#8b6f47] flex items-center justify-center text-white text-xs">B</div>
+              <div className="w-8 h-8 rounded-full border-2 border-[#f5f1ea] bg-gradient-to-br from-[#c9a96e] to-[#8b6f47] flex items-center justify-center text-white text-xs">C</div>
+            </div>
+            <div className="flex items-center gap-1 text-xs text-[#f5f1ea]">
+              <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
+              238人在路上
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="absolute inset-0 flex flex-col justify-center px-8 md:px-14 text-[#f5f1ea] z-10">
+            <span className="inline-block w-fit px-3.5 py-1.5 border border-[#f5f1ea]/50 rounded-full text-xs tracking-widest mb-6 backdrop-blur-sm">
+              F O R · T R A V E L E R
+            </span>
+            <h2 className="text-4xl font-light leading-snug mb-3 tracking-wide">
+              找一个周末<br />
+              <strong className="font-semibold text-white">去别人的生活里住几天</strong>
+            </h2>
+            <p className="text-sm opacity-85 mb-9 leading-relaxed">
+              从插秧到围炉，128个真实在地体验<br />等你解锁
             </p>
+            <Link
+              href="/feed"
+              className="inline-flex items-center gap-3 w-fit px-7 py-3.5 bg-[#f5f1ea]/95 text-[#2d2a26] rounded-full text-sm font-medium transition-all hover:bg-white hover:translate-x-1"
+            >
+              开始探索
+              <span className="w-6 h-6 rounded-full bg-[#2d2a26] text-[#f5f1ea] flex items-center justify-center text-xs">
+                →
+              </span>
+            </Link>
           </div>
         </div>
 
-        {/* Bottom: dual entrance buttons */}
-        <div className="fixed bottom-20 left-0 right-0 px-6 flex justify-between items-end pointer-events-none"
-          style={{ zIndex: 20 }}
-        >
-          {/* Explore button - bottom left */}
-          <Link
-            href="/feed"
-            className="pointer-events-auto flex flex-col items-center gap-2 group"
-          >
-            <div className="w-16 h-16 bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl flex items-center justify-center group-hover:scale-110 transition-transform border-2 border-xj-rice/30">
-              <span className="text-2xl">🗺️</span>
-            </div>
-            <span className="text-sm font-bold text-white drop-shadow-md">
-              我要探索
-            </span>
-          </Link>
+        {/* Divider */}
+        <div
+          className="absolute top-0 bottom-0 left-1/2 w-0.5 z-[5] opacity-40 -translate-x-1/2"
+          style={{ background: 'linear-gradient(to bottom, transparent 0%, #f5f1ea 20%, #f5f1ea 80%, transparent 100%)' }}
+        />
 
-          {/* Create button - bottom right */}
-          <Link
-            href="/activities"
-            className="pointer-events-auto flex flex-col items-center gap-2 group"
-          >
-            <div className="w-16 h-16 bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl flex items-center justify-center group-hover:scale-110 transition-transform border-2 border-xj-sunset/30">
-              <span className="text-2xl">✨</span>
-            </div>
-            <span className="text-sm font-bold text-white drop-shadow-md">
-              我要造趣
-            </span>
-          </Link>
-        </div>
+        {/* Right Panel - Host */}
+        <div className="flex-1 relative overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] cursor-pointer md:hover:flex-[1.4] group-right min-h-[50vh]">
+          {/* Background */}
+          <div
+            className="absolute inset-0"
+            style={{ background: 'linear-gradient(135deg, #8b6f47 0%, #a08560 50%, #c9a96e 100%)' }}
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `
+                radial-gradient(circle at 70% 20%, rgba(255,200,120,0.25) 0%, transparent 45%),
+                radial-gradient(circle at 30% 80%, rgba(180,130,80,0.3) 0%, transparent 50%)
+              `
+            }}
+          />
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 animate-bounce">
-          <span className="text-xs text-white/60">下滑发现更多</span>
-          <svg className="w-5 h-5 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-          </svg>
+          {/* Floating dot */}
+          <div
+            className="absolute rounded-full bg-white/60"
+            style={{ width: 8, height: 8, bottom: '20%', right: '30%', animation: 'float 4s ease-in-out 2s infinite' }}
+          />
+
+          {/* Avatars */}
+          <div className="absolute top-20 right-4 md:right-14 flex items-center gap-2">
+            <div className="flex items-center gap-1 text-xs text-[#f5f1ea]">
+              <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
+              62位主理人在线
+            </div>
+            <div className="flex -space-x-2 ml-2">
+              <div className="w-8 h-8 rounded-full border-2 border-[#f5f1ea] bg-gradient-to-br from-[#c9a96e] to-[#8b6f47] flex items-center justify-center text-white text-xs">阿</div>
+              <div className="w-8 h-8 rounded-full border-2 border-[#f5f1ea] bg-gradient-to-br from-[#c9a96e] to-[#8b6f47] flex items-center justify-center text-white text-xs">木</div>
+              <div className="w-8 h-8 rounded-full border-2 border-[#f5f1ea] bg-gradient-to-br from-[#c9a96e] to-[#8b6f47] flex items-center justify-center text-white text-xs">茶</div>
+            </div>
+          </div>
+
+          {/* Content - right aligned on desktop, left on mobile */}
+          <div className="absolute inset-0 flex flex-col justify-center px-8 md:px-14 text-[#f5f1ea] z-10 items-start text-left md:items-end md:text-right">
+            <span className="inline-block w-fit px-3.5 py-1.5 border border-[#f5f1ea]/50 rounded-full text-xs tracking-widest mb-6 backdrop-blur-sm">
+              F O R · H O S T
+            </span>
+            <h2 className="text-4xl font-light leading-snug mb-3 tracking-wide">
+              把你的院子<br />
+              <strong className="font-semibold text-white">分享给懂的人</strong>
+            </h2>
+            <p className="text-sm opacity-85 mb-9 leading-relaxed">
+              不止是民宿主，你是这片土地的<br />讲述者与守护者
+            </p>
+            <Link
+              href="/activities"
+              className="inline-flex items-center gap-3 w-fit px-7 py-3.5 bg-[#f5f1ea]/95 text-[#2d2a26] rounded-full text-sm font-medium transition-all hover:bg-white hover:translate-x-1"
+            >
+              成为主理人
+              <span className="w-6 h-6 rounded-full bg-[#2d2a26] text-[#f5f1ea] flex items-center justify-center text-xs">
+                →
+              </span>
+            </Link>
+          </div>
         </div>
       </div>
 
-      {/* Secondary screen: recent content */}
-      <div className="relative z-10 bg-xj-paper px-6 py-12">
-        <h2 className="text-xl font-bold text-xj-earth-dark mb-6">
-          最近的活动
-        </h2>
-
-        <div className="space-y-4">
-          {/* Activity card 1 */}
-          <div className="bg-white rounded-2xl p-4 shadow-sm border border-xj-earth/10">
-            <div className="flex items-start gap-3">
-              <div className="w-12 h-12 bg-xj-rice/20 rounded-xl flex items-center justify-center text-xl flex-shrink-0">
-                🪵
-              </div>
-              <div className="flex-1">
-                <h3 className="font-bold text-gray-900">龙潭村木艺亲子工坊</h3>
-                <p className="text-sm text-gray-500 mt-1">
-                  跟着张师傅学木雕，制作属于自己的木制小动物
-                </p>
-                <div className="flex items-center gap-3 mt-2 text-xs text-gray-400">
-                  <span>📍 龙潭村</span>
-                  <span>👥 8/15 人</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Activity card 2 */}
-          <div className="bg-white rounded-2xl p-4 shadow-sm border border-xj-earth/10">
-            <div className="flex items-start gap-3">
-              <div className="w-12 h-12 bg-xj-sunset/10 rounded-xl flex items-center justify-center text-xl flex-shrink-0">
-                🎨
-              </div>
-              <div className="flex-1">
-                <h3 className="font-bold text-gray-900">四坪古村写生营</h3>
-                <p className="text-sm text-gray-500 mt-1">
-                  三天两晚古村写生，住民宿、吃农家菜、画老宅
-                </p>
-                <div className="flex items-center gap-3 mt-2 text-xs text-gray-400">
-                  <span>📍 四坪村</span>
-                  <span>👥 12/20 人</span>
-                </div>
-              </div>
-            </div>
-          </div>
+      {/* Bottom Bar */}
+      <div className="absolute bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 md:gap-3 px-4 md:px-6 py-2.5 md:py-3.5 bg-[#f5f1ea]/95 rounded-full shadow-xl z-10 backdrop-blur-xl max-w-[90vw]">
+        <div className="w-6 h-6 md:w-7 md:h-7 rounded-full bg-[#c9a96e] flex items-center justify-center text-white text-xs md:text-sm flex-shrink-0">
+          ✦
         </div>
-
-        <div className="text-center mt-6">
-          <Link
-            href="/activities"
-            className="inline-flex items-center gap-1 text-sm text-xj-earth font-medium hover:text-xj-earth-dark transition-colors"
-          >
-            查看更多活动
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </Link>
+        <div className="text-[#2d2a26] text-xs md:text-sm truncate">
+          说一句 <strong className="text-[#4a6741]">&ldquo;我想要这样的周末&rdquo;</strong>，让主理人来找你 →
         </div>
       </div>
+
+      {/* CSS for hover flex behavior - desktop only */}
+      <style jsx>{`
+        @media (min-width: 768px) {
+          .group\/split:hover .group-left {
+            flex: 0.7;
+          }
+          .group\/split:hover .group-left:hover {
+            flex: 1.4;
+          }
+          .group\/split:hover .group-right {
+            flex: 0.7;
+          }
+          .group\/split:hover .group-right:hover {
+            flex: 1.4;
+          }
+        }
+      `}</style>
     </div>
   )
 }

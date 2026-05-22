@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - NextAuth v5 configuration with Credentials provider and JWT sessions
 - Custom auth types for role-based access
 - Registration API endpoint with validation
+- Login/Register pages with forms
+- Profile page with user info API
+- **Homepage redesign v2**: hand-drawn map background, dual entrance ("我要探索" + "我要造趣"), mood tags, new earth-tone color palette
+- Updated brand colors: earth brown, rice field green, sunset orange, paper white
 
 ## [0.1.0] - 2026-05-22
 
