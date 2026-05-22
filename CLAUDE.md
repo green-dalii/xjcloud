@@ -43,6 +43,16 @@ npm run lint
 - `components/layout/NavbarFooter.tsx` — Navbar（scroll 透明→毛玻璃渐变）+ Footer
 - `app/(main)/layout.tsx` — 根据 pathname 决定是否渲染 Navbar/Footer（首页不渲染）
 
+### Explore 页面组件架构（`app/(main)/explore/page.tsx`）
+状态机：`phase: 'guide' | 'cards' | 'list'`，由 `guideStep` 和 `filters` 驱动。
+
+- `GuideScreen` — 3 步引导问卷（性别→出行方式→同行身份），Framer Motion `AnimatePresence` 切换，支持跳过
+- `CardStack` — 管理 `currentIndex` 和 swipe actions 历史，渲染 3 层堆叠卡片 + 底部按钮 + 计数器 + 空状态
+- `SwipeCard` — Framer Motion `drag` + `useMotionValue`/`useTransform`，实时旋转/透明度/方向指示器，spring exit 动画（variants 驱动方向）
+- `ResultList` — 响应式网格列表（1/2/3 列），stagger 入场动画，sticky header
+
+Mock 数据：`lib/data/mock-activities.ts` — 20 条 `ActivityCard`，`filterActivities()` 按性别/出行方式/同行身份调整 matchScore。
+
 ### 状态管理
 - 认证通过 NextAuth v5 (Auth.js beta) + JWT session，`app/layout.tsx` 包裹 `SessionProvider`
 - 首页视频播放依赖 `mounted` 状态：服务端渲染占位 div，客户端 hydration 后渲染完整内容（避免 SSR/CSR mismatch）
