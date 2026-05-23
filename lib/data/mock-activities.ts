@@ -69,10 +69,10 @@ export const ALL_ACTIVITIES: ActivityCard[] = [
     matchScore: 92,
   },
   {
-    id: '4', title: '稻田骑行与星空露营', location: '浙江 · 莫干山', host: '大田',
-    image: '/images/featured-tonglu.jpg', tags: ['骑行', '露营', '自然'],
-    price: 560, duration: '2天1晚', maxPeople: 15,
-    description: '穿越金色稻田的骑行路线，夜晚在稻田中央露营看银河',
+    id: '4', title: '屏南非遗蛋茶制作', location: '福建 · 屏南', host: '茶姑',
+    image: '/images/tea.jpg', tags: ['手作', '非遗', '茶艺'],
+    price: 180, duration: '半天', maxPeople: 12,
+    description: '学习屏南百年传承的非遗蛋茶工艺，从选茶、煮茶到打蛋花的完整体验',
     matchScore: 85,
   },
   {
@@ -83,10 +83,10 @@ export const ALL_ACTIVITIES: ActivityCard[] = [
     matchScore: 78,
   },
   {
-    id: '6', title: '山野瑜伽 Retreat', location: '杭州 · 桐庐', host: '林老师',
-    image: '/images/featured-tonglu.jpg', tags: ['疗愈', '瑜伽', '自然'],
-    price: 680, duration: '3天2晚', maxPeople: 12,
-    description: '在竹林深处的木平台上做晨间瑜伽，聆听溪流与鸟鸣',
+    id: '6', title: '手作披萨烘焙体验', location: '杭州 · 桐庐', host: '麦子',
+    image: '/images/pizza.png', tags: ['美食', '手作', '聚会'],
+    price: 280, duration: '半天', maxPeople: 12,
+    description: '用土窑和在地食材手工制作意式披萨，从揉面到出炉的治愈体验',
     matchScore: 90,
   },
   {
@@ -98,7 +98,7 @@ export const ALL_ACTIVITIES: ActivityCard[] = [
   },
   {
     id: '8', title: '有机农场采摘日', location: '浙江 · 莫干山', host: '阿芳',
-    image: '/images/featured-shaxi.jpg', tags: ['采摘', '亲子友好', '美食'],
+    image: '/images/tea.jpg', tags: ['采摘', '亲子友好', '美食'],
     price: 180, duration: '半天', maxPeople: 20,
     description: '当季蔬果采摘+农家土灶午餐，从土地到餐桌的完整体验',
     matchScore: 75,
@@ -119,7 +119,7 @@ export const ALL_ACTIVITIES: ActivityCard[] = [
   },
   {
     id: '11', title: '洱海骑行环海线', location: '云南 · 大理', host: '风哥',
-    image: '/images/featured-shaxi.jpg', tags: ['骑行', '自然', '风景'],
+    image: '/images/tea.jpg', tags: ['骑行', '自然', '风景'],
     price: 240, duration: '1天', maxPeople: 15,
     description: '130km洱海生态廊道骑行，一路苍山洱海相伴',
     matchScore: 87,
@@ -133,7 +133,7 @@ export const ALL_ACTIVITIES: ActivityCard[] = [
   },
   {
     id: '13', title: '深山禅修体验', location: '福建 · 屏南', host: '慧明师父',
-    image: '/images/featured-tonglu.jpg', tags: ['疗愈', '禅修', '静心'],
+    image: '/images/pizza.png', tags: ['疗愈', '禅修', '静心'],
     price: 800, duration: '3天2晚', maxPeople: 8,
     description: '古寺清修，晨钟暮鼓，过堂用斋，体验真正的山中一日',
     matchScore: 89,
@@ -147,7 +147,7 @@ export const ALL_ACTIVITIES: ActivityCard[] = [
   },
   {
     id: '15', title: '茶园民宿管家体验', location: '杭州 · 桐庐', host: '小鹿',
-    image: '/images/featured-tonglu.jpg', tags: ['深度体验', '民宿', '自然'],
+    image: '/images/tea.jpg', tags: ['深度体验', '民宿', '自然'],
     price: 1500, duration: '7天6晚', maxPeople: 4,
     description: '深度入住茶园民宿，学习民宿运营，参与日常农事',
     matchScore: 84,
@@ -161,21 +161,21 @@ export const ALL_ACTIVITIES: ActivityCard[] = [
   },
   {
     id: '17', title: '陶艺蜜月套餐', location: '景德镇 · 湘湖', host: '老周',
-    image: '/images/featured-jingdezhen.jpg', tags: ['浪漫', '手作', '深度体验'],
+    image: '/images/pizza.png', tags: ['浪漫', '手作', '深度体验'],
     price: 1280, duration: '2天1晚', maxPeople: 2,
     description: '情侣专属陶艺体验，为彼此做一对杯子，柴窑烧制后寄送',
     matchScore: 97,
   },
   {
     id: '18', title: '稻田音乐节露营', location: '浙江 · 莫干山', host: '大田',
-    image: '/images/featured-tonglu.jpg', tags: ['音乐', '露营', '聚会'],
+    image: '/images/pizza.png', tags: ['音乐', '露营', '聚会'],
     price: 320, duration: '2天1晚', maxPeople: 50,
     description: '秋日稻田里的独立音乐节，帐篷、篝火、民谣与星空',
     matchScore: 86,
   },
   {
     id: '19', title: '亲子自然研学营', location: '四川 · 明月村', host: '自然君',
-    image: '/images/featured-shaxi.jpg', tags: ['亲子友好', '研学', '自然'],
+    image: '/images/tea.jpg', tags: ['亲子友好', '研学', '自然'],
     price: 680, duration: '3天2晚', maxPeople: 15,
     description: '昆虫观察、植物标本制作、夜间探险，给孩子最好的自然课堂',
     matchScore: 94,

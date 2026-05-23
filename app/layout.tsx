@@ -3,8 +3,8 @@ import { AuthProvider } from "@/lib/auth-context";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "乡建协作",
-  description: "让乡建人协作起来",
+  title: "爱故乡驿站",
+  description: "AI 驱动的乡村活动协作平台",
 };
 
 export default function RootLayout({

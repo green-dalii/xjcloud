@@ -331,7 +331,8 @@ function SearchHero({
         </div>
         <button
           onClick={onSubmit}
-          className="font-ui font-medium text-sm md:text-base px-5 py-3.5 rounded-xl flex-shrink-0 transition-all duration-300 hover:brightness-110 active:scale-[0.98]"
+          disabled={!value.trim()}
+          className="font-ui font-medium text-sm md:text-base px-5 py-3.5 rounded-xl flex-shrink-0 transition-all duration-300 hover:brightness-110 active:scale-[0.98] disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:brightness-100 disabled:active:scale-100"
           style={{
             background: 'var(--color-wheat)',
             color: 'var(--bg-ink)',

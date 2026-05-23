@@ -603,3 +603,31 @@ export const LOADING_MESSAGES = [
   '在向做过这条线的旅人取经，看哪里值得多待一会儿…',
   '差不多了，帮你在吃穿住行之间，串起一条不急不赶的路…',
 ]
+
+/* ─── 方案配图生成 Prompt ───
+   用于 Midjourney / DALL·E / Stable Diffusion 为旅行方案的每一天生成配图。
+   每个方案的 days[n] 提取核心场景元素，生成对应 prompt。
+
+   用法示例：
+   const prompt = IMAGE_PROMPTS.TONGLU.day1
+   生图比例 16:9（横版），风格统一为 warm film photography。
+   ────────────────────────────────────────────────────── */
+
+export const IMAGE_PROMPTS = {
+  TONGLU: {
+    day1: `A serene morning drive along the Fuchun River near Tonglu, Zhejiang, mist rising over emerald water, karst hills in soft morning light, winding highway with sparse traffic, early summer greenery — warm film photography, 16:9, golden hour haze, nostalgic travel aesthetic`,
+    day2: `A rustic countryside guesthouse courtyard in Tonglu, an old camphor tree casting shade over a wooden table with tea set, distant terraced tea fields, cobblestone alley of a thousand-year village, late afternoon sunlight filtering through leaves — warm film photography, 16:9, soft bokeh, slow-living atmosphere`,
+  },
+  SHAXI: {
+    day1: `Ancient Shaxi town square in Yunnan, cobblestone streets of Sideng Street, a Bai-style courtyard with weathered wooden beams, the old horse caravan stage with saddle and lanterns, Yunnan plateau golden light, distant Jade Bridge — warm film photography, 16:9, cinematic, golden hour`,
+    day2: `Morning Friday market in Shaxi, Bai minority villagers in traditional indigo clothing selling wild mushrooms and herbs on bamboo mats, steaming bowls of rice noodles in morning light, mountain backdrop at 2100m altitude — warm film photography, 16:9, street documentary style, soft morning glow`,
+  },
+  JINGDEZHEN: {
+    day1: `A pottery workshop in Jingdezhen's Sculpture Ceramics Factory, hands shaping wet clay on a spinning wheel, rows of unfired porcelain drying on wooden shelves, afternoon light through dusty factory windows, the orange glow of a kiln in the background — warm film photography, 16:9, tactile artisan aesthetic`,
+    day2: `Taoxichuan creative district at night, strings of warm fairy lights over ceramic market stalls, young artisans displaying handmade cups and vases, food street with steaming pots, the old factory chimney silhouetted against dusk sky — warm film photography, 16:9, lively night market atmosphere`,
+  },
+  GENERIC: {
+    day1: `A peaceful rural weekend escape, a renovated rammed-earth farmhouse courtyard with wooden beam ceilings, fields stretching to distant hills, a simple farm-to-table meal on a wooden table under a tree, warm summer afternoon light — warm film photography, 16:9, pastoral minimalism, serene countryside`,
+    day2: `Morning light over a quiet village, steaming breakfast of handmade noodles and fresh soy milk on a stone table, a narrow country road winding through green hills, wildflowers along the path, the feeling of unhurried Sunday morning — warm film photography, 16:9, nostalgic rural charm`,
+  },
+} as const

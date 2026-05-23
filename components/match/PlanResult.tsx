@@ -49,11 +49,14 @@ function PlanItemCard({ item }: { item: PlanItem }) {
     >
       <div className="flex items-start justify-between gap-3 mb-2">
         <h4
-          className="font-ui font-medium"
+          className="font-ui"
           style={{
-            fontSize: 14,
+            fontSize: 15,
+            fontWeight: 700,
             color: 'var(--text-heading)',
             lineHeight: 1.4,
+            paddingLeft: 10,
+            borderLeft: '3px solid var(--color-wheat)',
           }}
         >
           {item.title}
@@ -85,7 +88,11 @@ function PlanItemCard({ item }: { item: PlanItem }) {
             <span
               key={i}
               className="font-ui text-[11px] px-2 py-0.5 rounded-full"
-              style={{
+              style={i === 0 ? {
+                background: 'var(--color-wheat)',
+                color: 'var(--bg-ink)',
+                fontWeight: 600,
+              } : {
                 background: 'rgba(201,169,110,0.1)',
                 color: 'var(--color-wheat)',
                 border: '1px solid rgba(201,169,110,0.15)',

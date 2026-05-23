@@ -10,13 +10,22 @@ import ResultList from '@/components/explore/ResultList'
 import { filterActivities, ALL_ACTIVITIES } from '@/lib/data/mock-activities'
 import type { Filters, ActivityInterest } from '@/lib/data/mock-activities'
 
+function shufflePick10<T>(arr: T[]): T[] {
+  const shuffled = [...arr]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  return shuffled.slice(0, 10)
+}
+
 export default function ExplorePage() {
   const router = useRouter()
   const { user } = useAuth()
   const [phase, setPhase] = useState<'guide' | 'loading' | 'cards' | 'list'>('guide')
   const [guideStep, setGuideStep] = useState(1)
   const [filters, setFilters] = useState<Filters>({})
-  const [cards, setCards] = useState(ALL_ACTIVITIES)
+  const [cards, setCards] = useState(() => shufflePick10(ALL_ACTIVITIES))
 
   // Redirect logged-in users to /match
   useEffect(() => {
@@ -69,7 +78,7 @@ export default function ExplorePage() {
       setGuideStep(4)
     } else if (guideStep === 4) {
       const filtered = filterActivities(latestFilters)
-      setCards(filtered)
+      setCards(shufflePick10(filtered))
       setPhase('loading')
     }
   }, [guideStep, filters])
