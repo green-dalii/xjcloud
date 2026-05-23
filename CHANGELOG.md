@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.3] - 2026-05-23
+
+### Added
+- **活动日历系统 (`/calendar` + `/calendar/day/[date]`)** — 完整月视图+日视图
+  - 月视图 7×6 网格，严格等宽（`min-width: 0; overflow: hidden` 防内容撑开）
+  - 顶部区域选择器按地点筛选活动，支持"全部地点"
+  - 活动标签：圆点 + 类型 + 标题（桌面端显示完整，移动端仅圆点+类型）
+  - 活动过多显示 "···"，点击日期格子统一跳转日视图（避免月视图弹窗触控冲突）
+  - 日视图：日期导航、活动详情卡片、信息网格（价格/时长/名额）
+  - 日历 Mock 数据：2026年5月~8月共 60 个活动，8种类型
+  - 移动优先响应式：基础样式移动端，`@media (min-width: 769px)` 桌面增强
+- **统一 Navbar 系统** — 所有页面共享同一组件 `components/layout/NavbarFooter.tsx`
+  - 自动检测 pathname：首页透明→毛玻璃，其他页面实底
+  - 桌面端：Logo + 4 导航链接（探索/日历/共建/广场）+ 登录/注册按钮 或 用户头像
+  - 移动端：汉堡菜单 → Framer Motion 滑出面板，含导航链接 + 认证区
+  - 认证页（/login、/register）：最小化仅显示 Logo
+- **Profile 页面设计系统对齐** — 替换旧 Tailwind 类（`text-gray-500`、`bg-white` 等）为 Warm Earth CSS 变量
+
+### Changed
+- **首页 (`/`)** — 移除嵌入式旧 nav，完全复用共享 NavbarFooter
+- **Auth 布局 (`app/(auth)/layout.tsx`)** — 使用共享 Navbar，移除重复代码
+- **Square 页面 (`/square`)** — 修复 fixed Navbar 遮挡：page 加 `paddingTop: 56`，`feed-container` paddingTop 从 120px 调为 64px
+
+### Removed
+- **死代码清理**
+  - `components/layout/Header.tsx` — 旧 Header（未引用）
+  - `components/layout/BottomNav.tsx` — 旧底部导航（未引用）
+  - `components/home/MapBackground.tsx` — 旧首页 SVG 背景（未引用）
+  - `components/home/MoodTags.tsx` — 旧首页情绪标签（未引用）
+  - `components/home/` 空目录
+- **未使用 CSS 清理** — `globals.css` 移除旧 nav 类（`.nav-transparent`、`.nav-logo`、`.nav-center`、`.nav-links`、`.nav-link`、`.nav-right`）约 70 行，移除重复 `@keyframes`
+
 ## [0.3.2] - 2026-05-23
 
 ### Added

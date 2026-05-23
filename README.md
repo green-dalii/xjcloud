@@ -67,6 +67,10 @@ app/
       page.tsx          # 共建者页
     square/
       page.tsx          # UGC 广场（帖子流 + 打赏稻米）
+    calendar/
+      page.tsx          # 活动日历（月视图，server component）
+      day/[date]/
+        page.tsx        # 日视图（单日活动详情列表）
     layout.tsx          # 主布局（Navbar + 内容 + Footer）
   api/                  # API 路由
 components/
@@ -81,10 +85,15 @@ components/
   square/
     SquareFeed.tsx      # UGC 帖子流（Tab + 帖子卡片 + 操作栏）
     RiceModal.tsx       # 打赏稻米弹窗
+  calendar/
+    CalendarPageClient.tsx  # 日历客户端状态管理
+    ActivityCalendar.tsx    # 月视图组件
+    EventDetailModal.tsx    # 活动详情弹窗
 lib/
   data/
-    mock-activities.ts  # 20 条乡建活动 mock 数据
-    mock-posts.ts       # UGC 帖子 mock 数据
+    mock-activities.ts      # 20 条乡建活动 mock 数据
+    mock-posts.ts           # UGC 帖子 mock 数据
+    mock-calendar-events.ts # 60 个日历活动 mock 数据
   db/                   # Drizzle schema + client
   auth.ts               # NextAuth 配置
 public/
@@ -99,6 +108,8 @@ public/
 | `/` | 首页 — 全屏双面板视频沉浸 | ✅ |
 | `/explore` | 探索 — 引导问卷 + 卡片堆叠 + 列表 | ✅ |
 | `/host` | 共建者 — 视频 Hero + 案例展示 | ✅ |
+| `/calendar` | 活动日历 — 月视图 + 地点筛选 | ✅ |
+| `/calendar/day/[date]` | 日视图 — 单日活动详情 | ✅ |
 | `/square` | 广场 — UGC 帖子流 + 打赏稻米 | ✅ |
 | `/login` | 登录 — 深色主题认证 | ✅ |
 | `/register` | 注册 — 深色主题认证 | ✅ |

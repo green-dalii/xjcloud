@@ -1,11 +1,26 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
+import { useSession, signOut } from 'next-auth/react'
+import { motion, AnimatePresence } from 'framer-motion'
+
+const NAV_ITEMS = [
+  { label: '探索', href: '/explore' },
+  { label: '日历', href: '/calendar' },
+  { label: '共建', href: '/host' },
+  { label: '广场', href: '/square' },
+]
 
 export function Navbar() {
-  const [scrolled, setScrolled] = useState(false)
   const router = useRouter()
+  const pathname = usePathname()
+  const { data: session, status } = useSession()
+  const [scrolled, setScrolled] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
+
+  const isHome = pathname === '/'
+  const isAuthPage = pathname === '/login' || pathname === '/register'
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 60)
@@ -13,75 +28,296 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const textColor = scrolled ? 'var(--bg-ink)' : 'var(--text-heading)'
-  const mutedColor = scrolled ? 'rgba(45,42,38,0.5)' : 'var(--text-secondary)'
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileOpen(false)
+  }, [pathname])
 
-  const navItems = ['探索', '指南', '共建', '广场']
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => { document.body.style.overflow = '' }
+  }, [mobileOpen])
+
+  // Home page: transparent when not scrolled, otherwise same as other pages
+  const isTransparent = isHome && !scrolled && !mobileOpen
+
+  const bgStyle = isTransparent
+    ? { backgroundColor: 'transparent', backdropFilter: 'none' as const, WebkitBackdropFilter: 'none' as const }
+    : { backgroundColor: 'rgba(245, 241, 234, 0.92)', backdropFilter: 'blur(14px) saturate(160%)' as const, WebkitBackdropFilter: 'blur(14px) saturate(160%)' as const }
+
+  const textColor = isTransparent ? 'var(--text-heading)' : 'var(--bg-ink)'
+  const mutedColor = isTransparent ? 'var(--text-secondary)' : 'rgba(45,42,38,0.55)'
+
+  if (isAuthPage) {
+    // Auth pages: minimal nav with just logo
+    return (
+      <nav className="fixed top-0 left-0 w-full z-50" style={{ backgroundColor: 'transparent' }}>
+        <div className="max-w-[1400px] mx-auto px-6 md:px-10 flex items-center h-14">
+          <button
+            onClick={() => router.push('/')}
+            className="transition-colors duration-500"
+            style={{
+              color: 'var(--text-heading)',
+              letterSpacing: 2,
+              fontSize: 17,
+              fontWeight: 600,
+              fontFamily: 'var(--font-serif)',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+            }}
+          >
+            原<span style={{ color: 'var(--color-wheat)' }}>乡</span>
+          </button>
+        </div>
+      </nav>
+    )
+  }
 
   return (
-    <nav
-      className="fixed top-0 left-0 w-full z-50 transition-all duration-700"
-      style={{
-        backgroundColor: scrolled ? 'rgba(245, 241, 234, 0.88)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(14px) saturate(160%)' : 'none',
-        WebkitBackdropFilter: scrolled ? 'blur(14px) saturate(160%)' : 'none',
-      }}
-    >
-      <div className="max-w-[1400px] mx-auto px-6 md:px-10 flex items-center justify-between h-14">
-        <button
-          onClick={() => router.push('/')}
-          className="transition-colors duration-500"
-          style={{
-            color: textColor,
-            letterSpacing: 2,
-            fontSize: 17,
-            fontWeight: 600,
-            fontFamily: 'var(--font-serif)',
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-          }}
-        >
-          原<span style={{ color: 'var(--color-wheat)' }}>乡</span>
-        </button>
+    <>
+      <nav
+        className="fixed top-0 left-0 w-full z-50 transition-all duration-500"
+        style={bgStyle}
+      >
+        <div className="max-w-[1400px] mx-auto px-4 md:px-10 flex items-center justify-between h-14">
+          {/* Logo */}
+          <button
+            onClick={() => router.push('/')}
+            className="transition-colors duration-500"
+            style={{
+              color: textColor,
+              letterSpacing: 2,
+              fontSize: 17,
+              fontWeight: 600,
+              fontFamily: 'var(--font-serif)',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              flexShrink: 0,
+            }}
+          >
+            原<span style={{ color: 'var(--color-wheat)' }}>乡</span>
+          </button>
 
-        <div className="hidden md:flex items-center gap-8">
-          {navItems.map((item) => (
-            <button
-              key={item}
-              className="font-ui text-xs tracking-widest uppercase cursor-pointer transition-colors duration-500"
-              style={{ color: mutedColor, background: 'none', border: 'none' }}
-              onClick={() => {
-                if (item === '探索') router.push('/explore')
-                if (item === '广场') router.push('/square')
+          {/* Desktop nav links */}
+          <div className="hidden md:flex items-center gap-8">
+            {NAV_ITEMS.map((item) => (
+              <button
+                key={item.label}
+                className="font-ui text-xs tracking-widest uppercase cursor-pointer transition-colors duration-500"
+                style={{ color: mutedColor, background: 'none', border: 'none' }}
+                onClick={() => router.push(item.href)}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Desktop auth */}
+          <div className="hidden md:flex items-center gap-3">
+            {status === 'authenticated' && session?.user ? (
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => router.push('/profile')}
+                  className="flex items-center gap-2 transition-opacity duration-300 hover:opacity-80"
+                  style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                >
+                  <div
+                    style={{
+                      width: 30,
+                      height: 30,
+                      borderRadius: '50%',
+                      background: 'var(--color-wheat)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'var(--bg-ink)',
+                      fontSize: 13,
+                      fontWeight: 600,
+                      fontFamily: 'var(--font-ui)',
+                    }}
+                  >
+                    {session.user.name?.[0] || session.user.email?.[0] || 'U'}
+                  </div>
+                  <span
+                    className="font-ui text-xs"
+                    style={{ color: mutedColor }}
+                  >
+                    {session.user.name || session.user.email?.split('@')[0]}
+                  </span>
+                </button>
+                <button
+                  onClick={() => signOut({ callbackUrl: '/' })}
+                  className="font-ui text-xs tracking-wider cursor-pointer transition-colors duration-300"
+                  style={{ color: mutedColor, background: 'none', border: 'none' }}
+                >
+                  退出
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => router.push('/login')}
+                className="font-ui text-xs tracking-widest uppercase transition-all duration-500"
+                style={{
+                  color: isTransparent ? 'rgba(245,241,234,0.8)' : 'var(--color-moss)',
+                  border: isTransparent ? '1px solid var(--border-default)' : '1px solid rgba(61,90,63,0.25)',
+                  borderRadius: 50,
+                  padding: '8px 18px',
+                  background: 'transparent',
+                  cursor: 'pointer',
+                  fontFamily: 'var(--font-ui)',
+                }}
+              >
+                登录 / 注册
+              </button>
+            )}
+          </div>
+
+          {/* Mobile hamburger */}
+          <button
+            className="md:hidden flex flex-col justify-center items-center gap-[5px] w-10 h-10"
+            style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label="菜单"
+          >
+            <span
+              className="block w-5 h-[1.5px] transition-all duration-300"
+              style={{
+                background: textColor,
+                transform: mobileOpen ? 'rotate(45deg) translateY(3.5px)' : 'none',
               }}
-            >
-              {item}
-            </button>
-          ))}
+            />
+            <span
+              className="block w-5 h-[1.5px] transition-all duration-300"
+              style={{
+                background: textColor,
+                opacity: mobileOpen ? 0 : 1,
+              }}
+            />
+            <span
+              className="block w-5 h-[1.5px] transition-all duration-300"
+              style={{
+                background: textColor,
+                transform: mobileOpen ? 'rotate(-45deg) translateY(-3.5px)' : 'none',
+              }}
+            />
+          </button>
         </div>
+      </nav>
 
-        <button
-          onClick={() => router.push('/host')}
-          className="font-ui text-xs tracking-widest uppercase transition-all duration-500"
-          style={{
-            color: scrolled ? 'var(--color-moss)' : 'rgba(245,241,234,0.8)',
-            border: scrolled ? '1px solid rgba(61,90,63,0.2)' : '1px solid var(--border-default)',
-            borderRadius: 50,
-            padding: '8px 18px',
-            background: 'transparent',
-            cursor: 'pointer',
-            fontFamily: 'var(--font-ui)',
-          }}
-        >
-          成为共建者 →
-        </button>
-      </div>
-    </nav>
+      {/* Mobile menu overlay */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            className="fixed inset-0 z-40 md:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            {/* Backdrop */}
+            <div
+              className="absolute inset-0"
+              style={{ background: 'rgba(0,0,0,0.5)' }}
+              onClick={() => setMobileOpen(false)}
+            />
+            {/* Panel */}
+            <motion.div
+              className="absolute top-14 left-0 right-0"
+              style={{
+                background: 'rgba(245, 241, 234, 0.97)',
+                backdropFilter: 'blur(16px)',
+                borderBottom: '1px solid var(--border-subtle)',
+              }}
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -20, opacity: 0 }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <div className="px-6 py-6 flex flex-col gap-1">
+                {NAV_ITEMS.map((item) => (
+                  <button
+                    key={item.label}
+                    className="font-ui text-sm tracking-wider py-3 text-left transition-colors duration-200"
+                    style={{
+                      color: pathname === item.href ? 'var(--color-moss)' : 'var(--bg-ink)',
+                      fontWeight: pathname === item.href ? 600 : 400,
+                      background: 'none',
+                      border: 'none',
+                      borderBottom: '1px solid rgba(0,0,0,0.06)',
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => { router.push(item.href); setMobileOpen(false) }}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+
+                {/* Mobile auth */}
+                <div className="mt-4 pt-4" style={{ borderTop: '1px solid rgba(0,0,0,0.08)' }}>
+                  {status === 'authenticated' && session?.user ? (
+                    <div className="flex items-center justify-between">
+                      <button
+                        onClick={() => { router.push('/profile'); setMobileOpen(false) }}
+                        className="flex items-center gap-3"
+                        style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                      >
+                        <div
+                          style={{
+                            width: 36,
+                            height: 36,
+                            borderRadius: '50%',
+                            background: 'var(--color-wheat)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: 'var(--bg-ink)',
+                            fontSize: 14,
+                            fontWeight: 600,
+                            fontFamily: 'var(--font-ui)',
+                          }}
+                        >
+                          {session.user.name?.[0] || session.user.email?.[0] || 'U'}
+                        </div>
+                        <span className="font-ui text-sm" style={{ color: 'var(--bg-ink)' }}>
+                          {session.user.name || session.user.email?.split('@')[0]}
+                        </span>
+                      </button>
+                      <button
+                        onClick={() => { signOut({ callbackUrl: '/' }); setMobileOpen(false) }}
+                        className="font-ui text-xs tracking-wider"
+                        style={{ color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer' }}
+                      >
+                        退出
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => { router.push('/login'); setMobileOpen(false) }}
+                      className="btn-primary w-full"
+                    >
+                      登录 / 注册
+                    </button>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   )
 }
 
 export function Footer() {
+  const router = useRouter()
+
   return (
     <footer style={{ backgroundColor: 'var(--bg-ink)', padding: 'var(--footer-py) 0 var(--footer-pb)' }}>
       <div className="max-w-[1200px] mx-auto px-6 md:px-10">
@@ -112,11 +348,20 @@ export function Footer() {
             <div>
               <p className="font-ui text-xs tracking-widest uppercase mb-5" style={{ color: 'var(--text-dim)' }}>探索</p>
               <ul className="space-y-3">
-                {['活动日历', '共建地地图', '生活方式', '行前指南'].map((item) => (
-                  <li key={item}>
-                    <span className="font-ui text-sm cursor-default transition-colors duration-300 hover:text-wheat" style={{ color: 'var(--text-secondary)' }}>
-                      {item}
-                    </span>
+                {[
+                  { label: '活动日历', href: '/calendar' },
+                  { label: '共建地地图', href: '#' },
+                  { label: '生活方式', href: '#' },
+                  { label: '行前指南', href: '#' },
+                ].map((item) => (
+                  <li key={item.label}>
+                    <button
+                      className="font-ui text-sm cursor-pointer transition-colors duration-300 hover:text-wheat"
+                      style={{ color: 'var(--text-secondary)', background: 'none', border: 'none' }}
+                      onClick={() => router.push(item.href)}
+                    >
+                      {item.label}
+                    </button>
                   </li>
                 ))}
               </ul>

@@ -33,15 +33,22 @@ npm run lint
 ## 关键架构
 
 ### 路由结构
-- `/` → `app/(main)/page.tsx` — 首页，全屏沉浸双面板（视频背景 + hover 伸缩），不走 layout 的 Navbar/Footer
-- `/explore` → `app/(main)/explore/page.tsx` — 探索页，带 Navbar/Footer
-- `/host` → `app/(main)/host/page.tsx` — 共建者页，带 Navbar/Footer
+- `/` → `app/(main)/page.tsx` — 首页，全屏沉浸双面板（视频背景 + hover 伸缩）
+- `/explore` → `app/(main)/explore/page.tsx` — 探索页
+- `/host` → `app/(main)/host/page.tsx` — 共建者页
+- `/calendar` → `app/(main)/calendar/page.tsx` — 活动日历（server component + metadata）
+- `/calendar/day/[date]` → `app/(main)/calendar/day/[date]/page.tsx` — 日视图
+- `/square` → `app/(main)/square/page.tsx` — UGC 广场
+- `/profile` → `app/(main)/profile/page.tsx` — 个人中心
 - `/login`, `/register` → `app/(auth)/` — 认证页
 - `/api/*` → `app/api/` — API 路由
 
 ### 核心组件
-- `components/layout/NavbarFooter.tsx` — Navbar（scroll 透明→毛玻璃渐变）+ Footer
-- `app/(main)/layout.tsx` — 根据 pathname 决定是否渲染 Navbar/Footer（首页不渲染）
+- `components/layout/NavbarFooter.tsx` — 统一 Navbar + Footer，所有页面共享
+  - Navbar：自动检测 pathname（首页透明→毛玻璃，其他页面实底）+ 滚动状态 + 移动端汉堡菜单
+  - 认证状态：未登录显示「登录/注册」按钮，已登录显示用户头像 + 退出
+  - Footer：深色底，多栏链接布局
+- `app/(main)/layout.tsx` — 所有 (main) 组页面统一渲染 Navbar + Footer
 
 ### Explore 页面组件架构（`app/(main)/explore/page.tsx`）
 状态机：`phase: 'guide' | 'cards' | 'list'`，由 `guideStep` 和 `filters` 驱动。
@@ -57,7 +64,17 @@ Mock 数据：`lib/data/mock-activities.ts` — 20 条 `ActivityCard`，`filterA
 - 认证通过 NextAuth v5 (Auth.js beta) + JWT session，`app/layout.tsx` 包裹 `SessionProvider`
 - 首页视频播放依赖 `mounted` 状态：服务端渲染占位 div，客户端 hydration 后渲染完整内容（避免 SSR/CSR mismatch）
 
+### Calendar 页面组件架构（`components/calendar/`）
+- `CalendarPageClient.tsx` — 客户端状态管理：currentDate、locationFilter、view切换
+- `ActivityCalendar.tsx` — 月视图渲染：7×6 网格、活动标签、地点筛选器
+- `EventDetailModal.tsx` — 活动详情弹窗（仅在日视图中使用）
+- Mock 数据：`lib/data/mock-calendar-events.ts` — 60 个活动，8 种类型，支持 `getEventsByDateFiltered()`
+
+### 设计系统原则
+- **移动优先**：所有页面基础样式为移动端，`@media (min-width: 769px)` 做桌面增强
+- **无私有 CSS**：所有颜色/字体通过 `globals.css` CSS 变量，禁止页面内嵌 `<style>` 或硬编码色值
+- **Grid 防撑开**：`grid-template-columns: repeat(7, 1fr)` 的子元素必须加 `min-width: 0; overflow: hidden`
+
 ### 首页特殊处理
-- 首页 (`page.tsx`) 使用 `'use client'`，内嵌 `<style>` 标签管理所有首屏 CSS
-- 视频播放通过 `useEffect([mounted])` 在组件挂载后触发
-- 区域选择器使用 ref + document click listener 实现外部点击关闭
+- 首页 (`page.tsx`) 使用 `'use client'`，所有 CSS 在 `globals.css` 的 `@layer components` 中管理
+- 视频播放通过 `useEffect([mounted])` 在组件挂载后触发（避免 SSR/CSR mismatch）
