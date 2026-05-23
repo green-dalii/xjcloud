@@ -11,6 +11,9 @@ export const users = sqliteTable('users', {
   location: text('location'),
   interests: text('interests', { mode: 'json' }).$type<string[]>(),
   website: text('website'),
+  gender: text('gender', { enum: ['male', 'female', 'unspecified'] }),
+  age: integer('age'),
+  skills: text('skills', { mode: 'json' }).$type<string[]>(),
   riceBalance: integer('rice_balance').default(0),
   role: text('role', { enum: ['participant', 'organizer', 'provider'] }).default('participant'),
   createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
@@ -22,7 +25,7 @@ export const activities = sqliteTable('activities', {
   title: text('title').notNull(),
   description: text('description'),
   type: text('type'),
-  status: text('status', { enum: ['draft', 'published', 'completed', 'cancelled'] }).default('draft'),
+  status: text('status', { enum: ['draft', 'planning', 'upcoming', 'ongoing', 'completed', 'cancelled'] }).default('draft'),
   capacity: integer('capacity'),
   enrolledCount: integer('enrolled_count').default(0),
   createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
@@ -43,7 +46,7 @@ export const enrollments = sqliteTable('enrollments', {
   id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   activityId: text('activity_id').notNull().references(() => activities.id),
   participantId: text('participant_id').notNull().references(() => users.id),
-  status: text('status', { enum: ['pending', 'confirmed', 'cancelled'] }).default('pending'),
+  status: text('status', { enum: ['registered', 'confirmed', 'ongoing', 'completed', 'cancelled', 'no_show'] }).default('registered'),
   createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
 })
 

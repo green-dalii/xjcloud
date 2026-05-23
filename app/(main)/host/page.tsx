@@ -1,10 +1,97 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
+import { useRouter } from 'next/navigation'
+import { motion } from 'framer-motion'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useAuth } from '@/lib/auth-context'
+import MultiStepGuide from '@/components/shared/MultiStepGuide'
+import type { GuideQuestion } from '@/components/shared/MultiStepGuide'
 
 gsap.registerPlugin(ScrollTrigger)
+
+/* ─── Host Guide Questions ─── */
+
+const HOST_QUESTIONS: GuideQuestion[] = [
+  {
+    key: 'hostRole',
+    question: '你是以什么身份发起活动？',
+    options: [
+      { label: '我是想法发起人', value: 'idea_initiator', desc: '我有一个活动创意，正在寻找合适的场地和伙伴' },
+      { label: '我是在地主理人', value: 'local_host', desc: '我有一片土地/空间，想把它变成独特的体验场所' },
+    ],
+  },
+]
+
+/* ─── Auth Prompt Screen ─── */
+
+function AuthPrompt() {
+  const router = useRouter()
+
+  return (
+    <div
+      className="relative w-full min-h-screen flex flex-col items-center justify-center px-6"
+      style={{ background: 'linear-gradient(135deg, #2d2a26 0%, #3a3630 50%, #2d2a26 100%)' }}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="text-center max-w-md"
+      >
+        <div
+          className="w-20 h-20 rounded-full mx-auto mb-8 flex items-center justify-center"
+          style={{ background: 'rgba(201,169,110,0.08)', border: '1px solid rgba(201,169,110,0.2)' }}
+        >
+          <span className="text-3xl">🏡</span>
+        </div>
+
+        <h2
+          className="font-serif mb-4"
+          style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 300, color: '#f5f1ea', letterSpacing: '0.02em' }}
+        >
+          造趣需要一点仪式感
+        </h2>
+
+        <p className="font-ui mb-10" style={{ color: 'rgba(245,241,234,0.55)', fontSize: 15, lineHeight: 1.7 }}>
+          在发起活动之前，我们需要确认你的身份，
+          <br />
+          这样才能为你提供最合适的发起工具和场地资源
+        </p>
+
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <button
+            onClick={() => router.push('/login')}
+            className="font-ui text-sm tracking-wider py-3.5 px-8 rounded-full transition-all duration-300 hover:brightness-110"
+            style={{
+              background: '#c9a96e',
+              color: '#2d2a26',
+              border: 'none',
+              cursor: 'pointer',
+            }}
+          >
+            登录
+          </button>
+          <button
+            onClick={() => router.push('/register')}
+            className="font-ui text-sm tracking-wider py-3.5 px-8 rounded-full transition-all duration-300"
+            style={{
+              background: 'transparent',
+              color: '#c9a96e',
+              border: '1.5px solid rgba(201,169,110,0.35)',
+              cursor: 'pointer',
+            }}
+          >
+            注册
+          </button>
+        </div>
+      </motion.div>
+    </div>
+  )
+}
+
+/* ─── Landing Content (original host page) ─── */
 
 const cases = [
   { image: '/images/featured-shaxi.jpg', host: '沙溪老院 · 阿明', title: '把百年白族院子改成开放茶室', desc: '3个月，47位体验者，营收破10万', tag: '老宅改造' },
@@ -17,17 +104,6 @@ const steps = [
   { num: '02', title: '设定时间节奏', desc: '周末体验 / 短期驻留 / 长期共建，灵活安排', fields: ['活动类型', '开放频率', '接待人数'] },
   { num: '03', title: '设计独特玩法', desc: '我们的策划团队帮你打磨体验细节', fields: ['核心玩法', '定价建议', '物料清单'] },
 ]
-
-export default function HostPage() {
-  return (
-    <div className="bg-paper">
-      <HeroSection />
-      <InspirationSection />
-      <CreateFlowSection />
-      <CtaSection />
-    </div>
-  )
-}
 
 function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null)
@@ -156,4 +232,79 @@ function CtaSection() {
       </div>
     </section>
   )
+}
+
+function LandingContent() {
+  return (
+    <div className="bg-paper">
+      <HeroSection />
+      <InspirationSection />
+      <CreateFlowSection />
+      <CtaSection />
+    </div>
+  )
+}
+
+/* ─── Main Page ─── */
+
+export default function HostPage() {
+  const { user } = useAuth()
+  const [phase, setPhase] = useState<'guide' | 'landing'>('guide')
+  const [step, setStep] = useState(1)
+  const [answers, setAnswers] = useState<Record<string, string | string[]>>({})
+
+  const handleSelect = useCallback((key: string, value: string) => {
+    setAnswers((prev) => {
+      const q = HOST_QUESTIONS[step - 1]
+      if (q?.multi) {
+        const current = (prev[key] as string[]) || []
+        const exists = current.includes(value)
+        if (exists) {
+          return { ...prev, [key]: current.filter((v) => v !== value) }
+        }
+        return { ...prev, [key]: [...current, value] }
+      }
+      return { ...prev, [key]: value }
+    })
+  }, [step])
+
+  const handleNext = useCallback(() => {
+    if (step < HOST_QUESTIONS.length) {
+      setStep((s) => s + 1)
+    } else {
+      setPhase('landing')
+    }
+  }, [step])
+
+  const handlePrev = useCallback(() => {
+    if (step > 1) {
+      setStep((s) => s - 1)
+    }
+  }, [step])
+
+  const handleSkip = useCallback(() => {
+    setPhase('landing')
+  }, [])
+
+  if (!user) {
+    return <AuthPrompt />
+  }
+
+  if (phase === 'guide') {
+    return (
+      <MultiStepGuide
+        step={step}
+        totalSteps={HOST_QUESTIONS.length}
+        questions={HOST_QUESTIONS}
+        answers={answers}
+        onSelect={handleSelect}
+        onNext={handleNext}
+        onPrev={handlePrev}
+        onSkip={handleSkip}
+        skipLabel="跳过，先看看别人怎么玩 →"
+      />
+    )
+  }
+
+  return <LandingContent />
 }

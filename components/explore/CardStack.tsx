@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import SwipeCard from './SwipeCard'
@@ -21,6 +21,18 @@ export default function CardStack({ cards, onShowAll, onShowSaved, onNavigateToH
   const router = useRouter()
   const [currentIndex, setCurrentIndex] = useState(0)
   const [actions, setActions] = useState<SwipeAction[]>([])
+  const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([])
+
+  const addTimeout = (fn: () => void, ms: number) => {
+    const id = setTimeout(fn, ms)
+    timeoutsRef.current.push(id)
+    return id
+  }
+
+  useEffect(() => {
+    return () => timeoutsRef.current.forEach(clearTimeout)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   const [exitingDirection, setExitingDirection] = useState<'left' | 'right' | 'down'>('left')
   const [showSaved, setShowSaved] = useState(false)
   const [showAdopted, setShowAdopted] = useState(false)
@@ -44,7 +56,7 @@ export default function CardStack({ cards, onShowAll, onShowSaved, onNavigateToH
   }, [currentCard])
 
   const advanceCard = useCallback(() => {
-    setTimeout(() => {
+    addTimeout(() => {
       setCurrentIndex((i) => i + 1)
     }, 80)
   }, [])
@@ -54,7 +66,7 @@ export default function CardStack({ cards, onShowAll, onShowSaved, onNavigateToH
 
     if (direction === 'down') {
       setShowSaved(true)
-      setTimeout(() => setShowSaved(false), 600)
+      addTimeout(() => setShowSaved(false), 600)
     }
 
     setExitingDirection(direction)
@@ -70,7 +82,7 @@ export default function CardStack({ cards, onShowAll, onShowSaved, onNavigateToH
 
   const handleSave = () => {
     setShowSaved(true)
-    setTimeout(() => {
+    addTimeout(() => {
       setShowSaved(false)
       setExitingDirection('down')
       recordAction('down')
@@ -80,11 +92,10 @@ export default function CardStack({ cards, onShowAll, onShowSaved, onNavigateToH
 
   const handleLikeDetail = () => {
     setShowAdopted(true)
-    setTimeout(() => {
+    addTimeout(() => {
       setShowAdopted(false)
       setIsFlipped(true)
-      // 翻转动画约 600-800ms，延迟 500ms 后开始整体放大
-      setTimeout(() => {
+      addTimeout(() => {
         setIsExpanded(true)
       }, 500)
     }, 600)
@@ -92,9 +103,9 @@ export default function CardStack({ cards, onShowAll, onShowSaved, onNavigateToH
 
   const handleFlipBack = () => {
     setIsExpanded(false)
-    setTimeout(() => {
+    addTimeout(() => {
       setIsFlipped(false)
-      setTimeout(() => {
+      addTimeout(() => {
         setExitingDirection('right')
         recordAction('right')
         advanceCard()

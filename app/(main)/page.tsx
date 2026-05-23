@@ -87,7 +87,7 @@ export default function LandingPage() {
             <span className="landing-tag">FOR &middot; HOST</span>
             <h1 className="landing-headline">把你的院子<br /><strong>分享给懂的人</strong></h1>
             <p className="landing-subline">不止是民宿主，你是这片土地的讲述者与守护者</p>
-            <button className="landing-cta landing-cta-right">成为主理人<span className="landing-cta-arrow">&rarr;</span></button>
+            <button className="landing-cta landing-cta-right">我要造趣<span className="landing-cta-arrow">&rarr;</span></button>
           </div>
         </div>
       </div>

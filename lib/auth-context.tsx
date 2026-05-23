@@ -13,6 +13,9 @@ export interface User {
   location: string | null
   interests: string[] | null
   website: string | null
+  gender: 'male' | 'female' | 'unspecified' | null
+  age: number | null
+  skills: string[] | null
   riceBalance: number
   createdAt: string
 }
@@ -37,6 +40,10 @@ interface AuthContextType extends AuthState {
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)
+
+export function getUserInitial(user: { name?: string | null; email?: string | null }): string {
+  return user.name?.[0] || user.email?.[0] || 'U'
+}
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787'
 const TOKEN_KEY = 'xjcloud_token'
@@ -68,7 +75,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loading: true,
   })
 
-  // Load token on mount and validate
   useEffect(() => {
     const token = localStorage.getItem(TOKEN_KEY)
     if (!token) {

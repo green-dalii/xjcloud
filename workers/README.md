@@ -30,6 +30,30 @@ workers/
 - **Auth**: JWT (jose library)
 - **Deploy**: Wrangler CLI
 
+## 当前 API 路由
+
+```
+POST /api/auth/register   → 注册（name, email, password, role）→ 返回 JWT
+POST /api/auth/login      → 登录（email, password）→ 返回 JWT
+GET  /api/auth/me         → 获取当前用户（需 Bearer token）
+PUT  /api/users/me        → 更新 Profile（name, bio, phone, location, avatar, website, interests, gender, age, skills）
+```
+
+## Profile 字段说明
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| name | string | 姓名 |
+| bio | string | 个人简介 |
+| phone | string | 手机号 |
+| location | string | 所在地（"省 · 市" 格式） |
+| avatar | string | 头像 URL |
+| website | string | 个人网站 |
+| interests | string[] | 兴趣方向（JSON 数组） |
+| gender | string | 性别（male/female） |
+| age | string | 年龄 |
+| skills | string[] | 技能标签（JSON 数组，最多 8 个） |
+
 ## 开发命令
 
 ```bash

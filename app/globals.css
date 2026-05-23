@@ -659,6 +659,7 @@
   .btn-ghost {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     padding: 8px 18px;
     border-radius: var(--radius-pill);
     background: transparent;

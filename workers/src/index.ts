@@ -1,4 +1,4 @@
-import { handleOptions, corsHeaders } from './middleware'
+import { handleOptions, corsHeaders, errorResponse } from './middleware'
 import { healthRouter } from './routes/health'
 import { authRouter } from './routes/auth'
 import { usersRouter } from './routes/users'
@@ -27,10 +27,7 @@ export default {
       } else if (pathname.startsWith('/api/users/')) {
         response = await usersRouter(request, env)
       } else {
-        response = new Response(JSON.stringify({ error: 'Not found' }), {
-          status: 404,
-          headers: { 'Content-Type': 'application/json' },
-        })
+        response = errorResponse('Not found', 404)
       }
 
       // Add CORS headers to all responses
@@ -42,13 +39,7 @@ export default {
       return response
     } catch (err) {
       console.error('Unhandled error:', err)
-      return new Response(
-        JSON.stringify({ error: 'Internal server error' }),
-        {
-          status: 500,
-          headers: { 'Content-Type': 'application/json', ...corsHeaders() },
-        }
-      )
+      return errorResponse('Internal server error', 500)
     }
   },
 }

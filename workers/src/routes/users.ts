@@ -1,81 +1,44 @@
 import { eq } from 'drizzle-orm'
-import { createClient } from '../db/client'
+import { createClient, USER_PROJECTION } from '../db/client'
 import { users } from '../../../lib/db/schema'
 import { ensureMethod, jsonResponse, errorResponse, requireAuth } from '../middleware'
 import type { Env } from '../index'
+
+const ALLOWED_PROFILE_FIELDS = ['name', 'bio', 'phone', 'location', 'avatar', 'website', 'interests', 'gender', 'age', 'skills'] as const
 
 export async function usersRouter(request: Request, env: Env): Promise<Response> {
   const url = new URL(request.url)
   const path = url.pathname.replace('/api/users', '')
 
-  // PUT /api/users/me
   if (path === '/me' || path === '/me/') {
-    const methodCheck = ensureMethod(request, ['PUT', 'GET'])
+    const methodCheck = ensureMethod(request, ['PUT'])
     if (methodCheck) return methodCheck
 
     const { response, user: authUser } = await requireAuth(request, env)
     if (response) return response
     if (!authUser) return errorResponse('Unauthorized', 401)
 
-    if (request.method === 'GET') {
-      const db = createClient(env.DB)
-      const user = await db.select({
-        id: users.id,
-        name: users.name,
-        email: users.email,
-        role: users.role,
-        avatar: users.avatar,
-        bio: users.bio,
-        phone: users.phone,
-        location: users.location,
-        interests: users.interests,
-        website: users.website,
-        riceBalance: users.riceBalance,
-        createdAt: users.createdAt,
-      }).from(users).where(eq(users.id, authUser.id)).get()
-
-      if (!user) return errorResponse('User not found', 404)
-      return jsonResponse({ user })
-    }
-
-    // PUT - update profile
-    const body = await request.json() as {
-      name?: string; bio?: string; phone?: string; location?: string
-      avatar?: string; website?: string; interests?: string[]
-    }
-
-    const db = createClient(env.DB)
+    const body = await request.json() as Record<string, unknown>
     const updates: Record<string, unknown> = {}
 
-    if (body.name !== undefined) updates.name = body.name
-    if (body.bio !== undefined) updates.bio = body.bio
-    if (body.phone !== undefined) updates.phone = body.phone
-    if (body.location !== undefined) updates.location = body.location
-    if (body.avatar !== undefined) updates.avatar = body.avatar
-    if (body.website !== undefined) updates.website = body.website
-    if (body.interests !== undefined) updates.interests = body.interests
+    for (const key of ALLOWED_PROFILE_FIELDS) {
+      if (body[key] !== undefined) {
+        updates[key] = body[key]
+      }
+    }
 
     if (Object.keys(updates).length === 0) {
       return errorResponse('No fields to update', 422)
     }
 
-    await db.update(users).set(updates).where(eq(users.id, authUser.id))
+    const db = createClient(env.DB)
+    const updated = await db.update(users)
+      .set(updates)
+      .where(eq(users.id, authUser.id))
+      .returning(USER_PROJECTION)
+      .get()
 
-    // Return updated user
-    const updated = await db.select({
-      id: users.id,
-      name: users.name,
-      email: users.email,
-      role: users.role,
-      avatar: users.avatar,
-      bio: users.bio,
-      phone: users.phone,
-      location: users.location,
-      interests: users.interests,
-      website: users.website,
-      riceBalance: users.riceBalance,
-      createdAt: users.createdAt,
-    }).from(users).where(eq(users.id, authUser.id)).get()
+    if (!updated) return errorResponse('User not found', 404)
 
     return jsonResponse({ user: updated })
   }

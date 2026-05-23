@@ -2,15 +2,15 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { useAuth } from '@/lib/auth-context'
+import { useAuth, getUserInitial } from '@/lib/auth-context'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const NAV_ITEMS = [
   { label: '探索', href: '/explore', authHref: '/match' },
+  { label: '我要造趣', href: '/host' },
   { label: '所有活动', href: '/activities' },
-  { label: '共建', href: '/host' },
   { label: '活动日历', href: '/calendar' },
-  { label: '广场', href: '/square' },
+  { label: '分享广场', href: '/square' },
 ]
 
 export function Navbar() {
@@ -147,7 +147,7 @@ export function Navbar() {
                       fontFamily: 'var(--font-ui)',
                     }}
                   >
-                    {user.name?.[0] || user.email?.[0] || 'U'}
+                    {getUserInitial(user)}
                   </div>
                   <span
                     className="font-ui text-xs"
@@ -245,23 +245,27 @@ export function Navbar() {
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
             >
               <div className="px-6 py-6 flex flex-col gap-1">
-                {NAV_ITEMS.map((item) => (
+                {NAV_ITEMS.map((item) => {
+                  const href = resolveHref(item)
+                  const isActive = pathname === href
+                  return (
                   <button
                     key={item.label}
                     className="font-ui text-sm tracking-wider py-3 text-left transition-colors duration-200"
                     style={{
-                      color: pathname === resolveHref(item) ? 'var(--color-moss)' : 'var(--bg-ink)',
-                      fontWeight: pathname === resolveHref(item) ? 600 : 400,
+                      color: isActive ? 'var(--color-moss)' : 'var(--bg-ink)',
+                      fontWeight: isActive ? 600 : 400,
                       background: 'none',
                       border: 'none',
                       borderBottom: '1px solid rgba(0,0,0,0.06)',
                       cursor: 'pointer',
                     }}
-                    onClick={() => { router.push(resolveHref(item)); setMobileOpen(false) }}
+                    onClick={() => { router.push(href); setMobileOpen(false) }}
                   >
                     {item.label}
                   </button>
-                ))}
+                  )
+                })}
 
                 {/* Mobile auth */}
                 <div className="mt-4 pt-4" style={{ borderTop: '1px solid rgba(0,0,0,0.08)' }}>

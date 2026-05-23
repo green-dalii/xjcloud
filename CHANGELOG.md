@@ -5,6 +5,61 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.7] - 2026-05-23
+
+### Added
+- **Match 页面搜索优先 UX** — 登录用户进入 `/match` 首先展示搜索框（搜索引擎式体验）
+  - 旋转占位文案：6 条口语化描述循环轮换，模拟真实搜索体验
+  - 搜索 Hero 居中布局，深色渐变背景，麦金边框聚焦态
+  - 输入后按 Enter 或点击按钮进入 Dock 卡片展示
+- **macOS Dock 风格卡片堆叠 (`/match`)** — 替换死板网格卡片
+  - 5 张卡片横向堆叠，透视旋转（rotateY ±25deg）+ z-index 层级
+  - 悬停时卡片上浮、放大（桌面 1.22x / 移动端 1.12x）、聚焦，其余卡片后退缩小
+  - Framer Motion spring 物理动画，`stiffness: 300, damping: 20`
+  - 响应式：移动端卡片 100×140px，桌面端 140×200px
+- **MultiStepGuide 抽象组件** — `components/shared/MultiStepGuide.tsx`
+  - 通用多步引导问卷：进度指示器（圆点）、返回按钮、问题切换动画
+  - 单选模式：垂直胶囊按钮（圆角全宽，选中麦金高亮）
+  - 多选模式：Bento 不规则网格（≤8 选项）或规则网格（>8 选项），选中展开 desc
+  - 支持跳过、登录引导（onAuth）、自定义跳过文案
+- **Host 页面 (`/host`) 全面重构 — 「我要造趣」**
+  - 未登录用户：AuthPrompt 深色全屏引导（登录/注册按钮），替代直接展示内容
+  - 已登录用户：复用 MultiStepGuide，第一步选择身份（想法发起人 / 在地主理人）
+  - 引导完成后进入原 landing 内容：视频 Hero + 案例卡片 + 三步创建流程 + CTA
+- **Profile 页面技能标签输入** — 类似 GitHub Topics 的 TagInput 组件
+  - Enter 或逗号添加标签，Backspace 或 × 删除
+  - 最多 8 个标签，超出禁用输入并提示
+  - 已选标签以麦金圆角 pill 展示，hover 显示删除 ×
+- **Profile 省市级联选择器** — `lib/data/china-regions.ts` 含 34 省市区数据
+  - 先选省份，再动态加载该省城市列表
+  - 表单保存时合并为 `location: "省 · 市"`
+- **Profile 月份时间轴** — 「我参与的活动」和「我发起的活动」统一时间轴展示
+  - `groupByMonth()` 按月分组，`sortMonthKeysDesc()` 降序排列
+  - 每月一条时间线节点，卡片垂直列表
+  - 固定高度容器（500px），超出可滚动
+- **Profile 资料补全提示** — 未填写 bio/phone/location/skills 时显示顶部横幅
+  - 文案："完善个人资料，获取更精准的活动匹配"
+  - 点击跳转到编辑模式并自动聚焦第一个空字段
+
+### Changed
+- **导航栏重命名与重排** — "共建" → "我要造趣"，"广场" → "分享广场"
+  - 新顺序：探索 → 我要造趣 → 所有活动 → 活动日历 → 分享广场
+- **首页右面板 CTA** — "成为主理人" → "我要造趣"
+- **Explore GuideScreen** — 重构为 MultiStepGuide 的薄包装层，零行为变更
+- **Schema 扩展** — `users` 表新增 `gender`/`age`/`skills` 字段
+  - `skills` 存储为 JSON 数组（`text('skills', { mode: 'json' }).$type<string[]>()`）
+  - 旧 comma-separated string 数据已迁移到 JSON 数组格式
+- **Workers 后端 Profile 支持**
+  - `ALLOWED_PROFILE_FIELDS` 包含 `gender`/`age`/`skills`
+  - `USER_PROJECTION` 包含新字段
+  - `safeRole` 签名修正为接受 `string | null | undefined`
+- **AuthContext 类型更新** — `skills: string | null` → `skills: string[] | null`
+
+### Fixed
+- **Profile 编辑按钮文字居中** — 退出登录、取消编辑按钮文字垂直居中
+- **Match 页面 404 错误** — Next.js dev server chunk 缓存失效，清理 `.next` 后恢复
+- **Profile 保存 Internal Server Error** — D1 `users` 表缺失 `gender`/`age`/`skills` 列，已 ALTER TABLE 补齐
+
 ## [0.3.6] - 2026-05-23
 
 ### Added
