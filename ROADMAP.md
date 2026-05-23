@@ -49,6 +49,43 @@
 
 ---
 
+## Phase 1.5: Cloudflare 部署与架构预留 (进行中)
+
+**目标**: 前端上线 Pages，后端预留 Workers 骨架
+
+- [x] **Cloudflare Pages 静态导出配置** — `output: 'export'`, `distDir: 'dist'`
+- [x] **pnpm 包管理器切换** — 本地开发 + Pages 构建环境统一
+- [x] **GitHub 集成** — push 自动触发 Pages 部署
+- [x] **Workers 后端骨架** — `workers/` 目录：JWT 认证、D1 绑定、路由预留
+- [ ] **Pages 部署成功** — Dashboard 构建设置修正后重试
+- [ ] **D1 本地开发验证** — `wrangler dev` + D1 本地模拟
+
+---
+
+## Phase 2: 核心功能 (规划中)
+
+**目标**: 实现乡建协作的核心价值——AI 活动方案生成
+
+- [ ] AI 活动方案生成（Claude API 集成）
+- [ ] 活动发布与管理
+- [ ] 参与者报名系统
+- [ ] 服务方对接
+- [ ] 稻米积分系统（基础版）
+
+---
+
+## Phase 3: 数据飞轮 (规划中)
+
+**目标**: 让数据流动起来，形成网络效应
+
+- [ ] 推荐算法（基于行为的智能匹配）
+- [ ] 内容发现与搜索
+- [ ] 驿站/节点系统
+- [ ] 评价与信任体系
+- [ ] 数据分析仪表盘
+
+---
+
 ## Phase 4: 生态扩展 (规划中)
 
 **目标**: 多驿站接入，形成乡建协作网络
@@ -56,9 +93,9 @@
 - [ ] 多驿站支持
 - [ ] 乡建 DAO 治理接入
 - [ ] 微信小程序适配
-- [ ] Cloudflare D1 迁移
+- [ ] Cloudflare D1 迁移（从 SQLite schema 复用）
 - [ ] API 开放（供第三方对接）
-- [ ] Cloudflare Workers 后端（替换当前前端 Mock 数据）
+- [ ] **Cloudflare Workers 后端上线** — 替换 Mock 数据，提供真实 API
 
 ---
 

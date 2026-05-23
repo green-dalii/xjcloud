@@ -97,6 +97,21 @@ Mock 数据：`lib/data/mock-activities.ts` — 20 条 `ActivityCard`，`filterA
 - 构建输出到 `dist/` 目录（已加入 `.gitignore`），用于 Cloudflare Pages 部署
 - API 路由在静态导出中不支持，当前已移至 `app/_api-backup/`，未来由 Cloudflare Workers 提供后端
 
+### Cloudflare Pages 构建设置（Dashboard 中配置）
+| 字段 | 值 |
+|------|-----|
+| Framework preset | `None`（禁用自动检测，避免 wrangler 误判为 Workers） |
+| Build command | `pnpm build` |
+| Output directory | `dist` |
+| Deploy command | 留空 |
+
+### 未来架构：Pages + Workers
+- **前端**：`app/` + `components/` + `lib/data/` → Cloudflare Pages（静态托管 `dist/`）
+- **后端**：`workers/` → Cloudflare Workers（D1 数据库 + JWT 认证）
+- **共享**：`lib/db/schema.ts` 可被 Workers 复用（D1 也是 SQLite）
+- `workers/README.md` 有完整的后端开发指南
+- `workers/wrangler.toml.example` 是配置模板，复制后填入真实值
+
 ### 首页特殊处理
 - 首页 (`page.tsx`) 使用 `'use client'`，所有 CSS 在 `globals.css` 的 `@layer components` 中管理
 - 视频播放通过 `useEffect([mounted])` 在组件挂载后触发（避免 SSR/CSR mismatch）
