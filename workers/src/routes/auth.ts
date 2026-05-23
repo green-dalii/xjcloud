@@ -48,6 +48,7 @@ export async function authRouter(request: Request, env: Env): Promise<Response> 
       email,
       passwordHash,
       role: finalRole,
+      riceBalance: 10,
       createdAt: now,
     })
 
@@ -55,7 +56,7 @@ export async function authRouter(request: Request, env: Env): Promise<Response> 
 
     return jsonResponse({
       token,
-      user: { id, name, email, role: finalRole, avatar: null },
+      user: { id, name, email, role: finalRole, avatar: null, riceBalance: 10 },
     }, 201)
   }
 

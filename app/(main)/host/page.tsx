@@ -91,6 +91,57 @@ function AuthPrompt() {
   )
 }
 
+/* ─── Profile Incomplete Prompt ─── */
+
+function ProfilePrompt({ onGoProfile }: { onGoProfile: () => void }) {
+  return (
+    <div
+      className="relative w-full min-h-screen flex flex-col items-center justify-center px-6"
+      style={{ background: 'linear-gradient(135deg, #2d2a26 0%, #3a3630 50%, #2d2a26 100%)' }}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="text-center max-w-md"
+      >
+        <div
+          className="w-20 h-20 rounded-full mx-auto mb-8 flex items-center justify-center"
+          style={{ background: 'rgba(201,169,110,0.08)', border: '1px solid rgba(201,169,110,0.2)' }}
+        >
+          <span className="text-3xl">📋</span>
+        </div>
+
+        <h2
+          className="font-serif mb-4"
+          style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 300, color: '#f5f1ea', letterSpacing: '0.02em' }}
+        >
+          完善个人资料
+        </h2>
+
+        <p className="font-ui mb-10" style={{ color: 'rgba(245,241,234,0.55)', fontSize: 15, lineHeight: 1.7 }}>
+          在发起活动前，需要先完善你的个人资料，
+          <br />
+          这样其他参与者才能更好地了解你
+        </p>
+
+        <button
+          onClick={onGoProfile}
+          className="font-ui text-sm tracking-wider py-3.5 px-8 rounded-full transition-all duration-300 hover:brightness-110"
+          style={{
+            background: '#c9a96e',
+            color: '#2d2a26',
+            border: 'none',
+            cursor: 'pointer',
+          }}
+        >
+          前往完善资料
+        </button>
+      </motion.div>
+    </div>
+  )
+}
+
 /* ─── Landing Content (original host page) ─── */
 
 const cases = [
@@ -249,6 +300,7 @@ function LandingContent() {
 
 export default function HostPage() {
   const { user } = useAuth()
+  const router = useRouter()
   const [phase, setPhase] = useState<'guide' | 'landing'>('guide')
   const [step, setStep] = useState(1)
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({})
@@ -288,6 +340,12 @@ export default function HostPage() {
 
   if (!user) {
     return <AuthPrompt />
+  }
+
+  const hasMinimalProfile = !!(user.bio && user.phone && user.location && user.skills && user.skills.length > 0)
+
+  if (!hasMinimalProfile) {
+    return <ProfilePrompt onGoProfile={() => router.push('/profile')} />
   }
 
   if (phase === 'guide') {

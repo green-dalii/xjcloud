@@ -6,7 +6,7 @@ import { useAuth, getUserInitial } from '@/lib/auth-context'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const NAV_ITEMS = [
-  { label: '探索', href: '/explore', authHref: '/match' },
+  { label: '我要探索', href: '/explore', authHref: '/match' },
   { label: '我要造趣', href: '/host' },
   { label: '所有活动', href: '/activities' },
   { label: '活动日历', href: '/calendar' },
@@ -111,16 +111,54 @@ export function Navbar() {
 
           {/* Desktop nav links */}
           <div className="hidden md:flex items-center gap-8">
-            {NAV_ITEMS.map((item) => (
+            {NAV_ITEMS.map((item) => {
+              const resolved = resolveHref(item)
+              const isActive =
+                pathname === resolved ||
+                pathname.startsWith(resolved + '/') ||
+                // "我要探索" highlights both /explore and /match
+                (item.label === '我要探索' && (pathname === '/explore' || pathname === '/match'))
+              return (
               <button
                 key={item.label}
-                className="font-ui text-xs tracking-widest uppercase cursor-pointer transition-colors duration-500"
-                style={{ color: mutedColor, background: 'none', border: 'none' }}
-                onClick={() => router.push(resolveHref(item))}
+                className="font-ui text-xs tracking-widest uppercase cursor-pointer transition-all duration-300 relative py-1"
+                style={{
+                  color: isActive ? 'var(--color-wheat)' : mutedColor,
+                  background: 'none',
+                  border: 'none',
+                  fontWeight: isActive ? 600 : 400,
+                  opacity: isActive ? 1 : undefined,
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.color = 'var(--color-wheat)'
+                    e.currentTarget.style.opacity = '0.85'
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.color = mutedColor
+                    e.currentTarget.style.opacity = '1'
+                  }
+                }}
+                onClick={() => router.push(resolved)}
               >
                 {item.label}
+                {isActive && (
+                  <span
+                    className="absolute left-1/2 -translate-x-1/2"
+                    style={{
+                      bottom: -4,
+                      width: 16,
+                      height: 2,
+                      borderRadius: 2,
+                      background: 'var(--color-wheat)',
+                    }}
+                  />
+                )}
               </button>
-            ))}
+              )
+            })}
           </div>
 
           {/* Desktop auth */}
@@ -247,21 +285,35 @@ export function Navbar() {
               <div className="px-6 py-6 flex flex-col gap-1">
                 {NAV_ITEMS.map((item) => {
                   const href = resolveHref(item)
-                  const isActive = pathname === href
+                  const isActive = pathname === href || pathname.startsWith(href + '/') ||
+                    (item.label === '我要探索' && (pathname === '/explore' || pathname === '/match'))
                   return (
                   <button
                     key={item.label}
-                    className="font-ui text-sm tracking-wider py-3 text-left transition-colors duration-200"
+                    className="font-ui text-sm tracking-wider py-3 text-left transition-all duration-200 relative"
                     style={{
-                      color: isActive ? 'var(--color-moss)' : 'var(--bg-ink)',
+                      color: isActive ? 'var(--color-wheat)' : 'var(--bg-ink)',
                       fontWeight: isActive ? 600 : 400,
                       background: 'none',
                       border: 'none',
                       borderBottom: '1px solid rgba(0,0,0,0.06)',
                       cursor: 'pointer',
+                      paddingLeft: isActive ? 12 : 0,
                     }}
                     onClick={() => { router.push(href); setMobileOpen(false) }}
                   >
+                    {isActive && (
+                      <span style={{
+                        position: 'absolute',
+                        left: 0,
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        width: 3,
+                        height: 16,
+                        borderRadius: 2,
+                        background: 'var(--color-wheat)',
+                      }} />
+                    )}
                     {item.label}
                   </button>
                   )

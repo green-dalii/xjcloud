@@ -11,6 +11,7 @@ export function RegisterForm() {
   const [role, setRole] = useState('participant')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
   const router = useRouter()
   const { register } = useAuth()
 
@@ -21,12 +22,28 @@ export function RegisterForm() {
 
     try {
       await register({ name, email, password, role })
-      router.push('/match')
+      setSuccess(true)
+      setTimeout(() => {
+        router.push('/')
+      }, 1500)
     } catch (err) {
       setError(err instanceof Error ? err.message : '网络错误')
-    } finally {
       setLoading(false)
     }
+  }
+
+  if (success) {
+    return (
+      <div className="text-center space-y-4">
+        <div className="w-16 h-16 rounded-full mx-auto flex items-center justify-center" style={{ background: 'rgba(61,90,63,0.1)' }}>
+          <span className="text-3xl">&#10003;</span>
+        </div>
+        <h2 className="auth-heading">注册成功</h2>
+        <p className="font-ui" style={{ color: 'var(--text-secondary)', fontSize: 14, lineHeight: 1.7 }}>
+          欢迎加入原乡，即将跳转首页...
+        </p>
+      </div>
+    )
   }
 
   return (
