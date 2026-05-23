@@ -1,25 +1,31 @@
 import { authMiddleware as verifyAuth } from './auth'
 import type { Env } from './index'
 
-const CORS_HEADERS: Record<string, string> = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+const ALLOWED_ORIGINS = [
+  'https://xjcloud-2vz.pages.dev',
+  'https://xjcloud.greenerai.top',
+  'http://localhost:3001',
+  'http://localhost:3000',
+]
+
+export function corsHeaders(origin?: string | null): Record<string, string> {
+  const allowOrigin = origin && ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0]
+  return {
+    'Access-Control-Allow-Origin': allowOrigin,
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Vary': 'Origin',
+  }
 }
 
-export function corsHeaders(): Record<string, string> {
-  return { ...CORS_HEADERS }
-}
-
-export function handleOptions(): Response {
-  return new Response(null, { headers: CORS_HEADERS })
+export function handleOptions(request: Request): Response {
+  const headers = corsHeaders(request.headers.get('Origin'))
+  return new Response(null, { headers })
 }
 
 export function jsonResponse(data: unknown, status = 200): Response {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { 'Content-Type': 'application/json', ...CORS_HEADERS },
-  })
+  const headers = { ...corsHeaders(), 'Content-Type': 'application/json' }
+  return new Response(JSON.stringify(data), { status, headers })
 }
 
 export function errorResponse(message: string, status = 400): Response {

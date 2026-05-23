@@ -14,7 +14,7 @@ export default {
     const pathname = url.pathname
 
     if (request.method === 'OPTIONS') {
-      return handleOptions()
+      return handleOptions(request)
     }
 
     try {
@@ -30,8 +30,8 @@ export default {
         response = errorResponse('Not found', 404)
       }
 
-      // Add CORS headers to all responses
-      const headers = corsHeaders()
+      // Override CORS with request-specific origin
+      const headers = corsHeaders(request.headers.get('Origin'))
       Object.entries(headers).forEach(([key, value]) => {
         response.headers.set(key, value)
       })
