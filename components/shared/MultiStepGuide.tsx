@@ -15,6 +15,7 @@ export interface GuideQuestion {
   question: string
   options: GuideOption[]
   multi?: boolean
+  layout?: 'vertical' | 'grid'
 }
 
 interface MultiStepGuideProps {
@@ -28,6 +29,8 @@ interface MultiStepGuideProps {
   onSkip: () => void
   onAuth?: () => void
   skipLabel?: string
+  /** 点击这些选项值时不会自动推进到下一步 */
+  preventAutoAdvance?: string[]
 }
 
 // Bento grid spans: row1 [7,5], row2 [4,4,4], row3 [3,6,3]
@@ -53,6 +56,7 @@ export default function MultiStepGuide({
   onSkip,
   onAuth,
   skipLabel = '跳过，看全部结果 →',
+  preventAutoAdvance = [],
 }: MultiStepGuideProps) {
   const currentQ = questions[step - 1]
   if (!currentQ) return null
@@ -68,7 +72,7 @@ export default function MultiStepGuide({
 
   function handleOptionClick(optValue: string) {
     onSelect(currentQ.key, optValue)
-    if (!isMulti) {
+    if (!isMulti && !preventAutoAdvance.includes(optValue)) {
       onNext()
     }
   }
@@ -137,29 +141,67 @@ export default function MultiStepGuide({
             {isMulti && '（可多选）'}
           </h2>
 
-          {/* Single choice — vertical stack */}
+          {/* Single choice — responsive */}
           {!isMulti && (
-            <div className="flex flex-col gap-4 w-full">
+            <div className={`flex gap-3 md:gap-4 w-full ${currentQ.layout === 'grid' ? 'flex-col md:grid md:grid-cols-2' : 'flex-col'}`}>
               {currentQ.options.map((opt) => (
                 <motion.button
                   key={opt.value}
-                  whileHover={{ scale: 1.03, backgroundColor: 'rgba(201,169,110,0.12)' }}
+                  whileHover={{ scale: 1.02, backgroundColor: 'rgba(201,169,110,0.12)' }}
                   whileTap={{ scale: 0.97 }}
                   onClick={() => handleOptionClick(opt.value)}
-                  className="w-full py-4 px-8 rounded-full text-center transition-colors duration-300"
+                  className={`w-full transition-colors duration-300 ${currentQ.layout === 'grid' ? 'py-5 px-6 rounded-2xl text-left' : 'py-4 px-8 rounded-full text-center'}`}
                   style={{
                     border: '1.5px solid rgba(245,241,234,0.18)',
                     backgroundColor: isSelected(opt.value)
                       ? 'rgba(201,169,110,0.15)'
                       : 'transparent',
-                    color: isSelected(opt.value) ? '#c9a96e' : 'rgba(245,241,234,0.85)',
-                    fontSize: 'clamp(16px, 2.5vw, 20px)',
-                    fontFamily: "'Noto Serif SC', serif",
-                    letterSpacing: '0.05em',
                     cursor: 'pointer',
                   }}
                 >
-                  {opt.label}
+                  {currentQ.layout === 'grid' ? (
+                    <>
+                      <div className="flex items-center gap-2.5 mb-1">
+                        {opt.emoji && <span className="text-xl flex-shrink-0">{opt.emoji}</span>}
+                        <span
+                          className="font-serif"
+                          style={{
+                            color: isSelected(opt.value) ? '#c9a96e' : '#f5f1ea',
+                            fontSize: 'clamp(15px, 2vw, 17px)',
+                            fontWeight: 500,
+                            letterSpacing: '0.04em',
+                          }}
+                        >
+                          {opt.label}
+                        </span>
+                      </div>
+                      {opt.subtitle && (
+                        <span
+                          className="font-ui block"
+                          style={{
+                            color: isSelected(opt.value) ? 'rgba(201,169,110,0.7)' : 'rgba(245,241,234,0.45)',
+                            fontSize: 'clamp(11px, 1.3vw, 12px)',
+                            lineHeight: 1.5,
+                            marginLeft: opt.emoji ? '2rem' : 0,
+                          }}
+                        >
+                          {opt.subtitle}
+                        </span>
+                      )}
+                    </>
+                  ) : (
+                    <span
+                      className="font-serif"
+                      style={{
+                        color: isSelected(opt.value) ? '#c9a96e' : 'rgba(245,241,234,0.85)',
+                        fontSize: 'clamp(16px, 2.5vw, 20px)',
+                        letterSpacing: '0.05em',
+                      }}
+                    >
+                      {opt.emoji && <>{opt.emoji} </>}
+                      {opt.label}
+                    </span>
+                  )}
                 </motion.button>
               ))}
             </div>

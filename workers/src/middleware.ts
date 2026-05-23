@@ -34,7 +34,7 @@ export function errorResponse(message: string, status = 400): Response {
 
 export function ensureMethod(request: Request, allowed: string[]): Response | null {
   if (!allowed.includes(request.method)) {
-    return errorResponse('Method not allowed', 405)
+    return errorResponse('请求方法不允许', 405)
   }
   return null
 }
@@ -42,7 +42,7 @@ export function ensureMethod(request: Request, allowed: string[]): Response | nu
 export async function requireAuth(request: Request, env: Env) {
   const token = await verifyAuth(request, env)
   if (!token) {
-    return { response: errorResponse('Unauthorized', 401), user: null }
+    return { response: errorResponse('未授权，请重新登录', 401), user: null }
   }
   return { response: null, user: token }
 }

@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth, getUserInitial, type User } from '@/lib/auth-context'
 import { INTEREST_OPTIONS } from '@/lib/data/mock-activities'
 import { PROVINCE_CITY_DATA, PROVINCES } from '@/lib/data/china-regions'
@@ -26,6 +27,8 @@ const GENDER_LABELS: Record<Gender, string> = {
   female: '女',
   unspecified: '暂不透露',
 }
+
+type Section = 'info' | 'edit' | 'enrolled' | 'published'
 
 function parseLocation(location: string | null): { province: string; city: string } {
   if (!location) return { province: '', city: '' }
@@ -229,21 +232,9 @@ function ProfileEditor({
   const labelStyle = { color: 'var(--text-muted)' } as const
 
   return (
-    <div
-      style={{
-        background: 'rgba(45, 42, 38, 0.6)',
-        border: '1px solid var(--border-subtle)',
-        borderRadius: 16,
-        padding: 24,
-        backdropFilter: 'blur(8px)',
-      }}
-    >
-      <h3 className="font-serif mb-6" style={{ fontSize: 18, color: 'var(--text-heading)', fontWeight: 500 }}>
-        编辑资料
-      </h3>
-
+    <div className="space-y-6">
       {/* 基本身份 */}
-      <div className="mb-6">
+      <div>
         <p className="font-ui text-xs tracking-widest uppercase mb-3" style={labelStyle}>基本身份</p>
         <div className="space-y-4">
           <div>
@@ -271,7 +262,7 @@ function ProfileEditor({
       </div>
 
       {/* 匹配信息 */}
-      <div className="mb-6">
+      <div>
         <p className="font-ui text-xs tracking-widest uppercase mb-3" style={labelStyle}>匹配信息</p>
         <div className="space-y-4">
           <div>
@@ -349,11 +340,6 @@ function ProfileEditor({
               placeholder="输入技能后按回车或逗号添加，如摄影、编程..."
               maxTags={10}
             />
-            {form.skills.length >= 10 && (
-              <p className="font-ui text-[11px] mt-1" style={{ color: 'var(--text-muted)' }}>
-                最多添加 10 个技能
-              </p>
-            )}
           </div>
           <div>
             <label className="font-ui text-xs block mb-2" style={labelStyle}>兴趣方向（可多选）</label>
@@ -383,7 +369,7 @@ function ProfileEditor({
       </div>
 
       {/* 联系方式 */}
-      <div className="mb-6">
+      <div>
         <p className="font-ui text-xs tracking-widest uppercase mb-3" style={labelStyle}>联系方式</p>
         <div className="space-y-4">
           <div>
@@ -416,22 +402,20 @@ function ProfileEditor({
       </div>
 
       {/* 关于你 */}
-      <div className="mb-2">
+      <div>
         <p className="font-ui text-xs tracking-widest uppercase mb-3" style={labelStyle}>关于你</p>
-        <div className="space-y-4">
-          <div>
-            <label className="font-ui text-xs block mb-2" style={labelStyle}>个人简介</label>
-            <textarea
-              value={form.bio}
-              onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))}
-              style={{ ...inputStyle, minHeight: 80, resize: 'vertical' as const }}
-              placeholder="简单介绍一下自己，让更多人了解你..."
-            />
-          </div>
+        <div>
+          <label className="font-ui text-xs block mb-2" style={labelStyle}>个人简介</label>
+          <textarea
+            value={form.bio}
+            onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))}
+            style={{ ...inputStyle, minHeight: 80, resize: 'vertical' as const }}
+            placeholder="简单介绍一下自己，让更多人了解你..."
+          />
         </div>
       </div>
 
-      <div className="flex gap-3 mt-6">
+      <div className="flex gap-3 pt-2">
         <button onClick={handleSave} disabled={saving} className="btn-primary flex-1">
           {saving ? '保存中...' : '保存'}
         </button>
@@ -445,32 +429,20 @@ function ProfileEditor({
 
 /* ─── Month Timeline (shared) ─── */
 
-interface TimelineItem {
-  id: string
-  date: string
-  render: () => React.ReactNode
-}
-
 function MonthTimeline({ items, maxHeight = 480 }: { items: TimelineItem[]; maxHeight?: number }) {
   const grouped = useMemo(() => groupByMonth(items), [items])
   const sortedMonths = useMemo(() => sortMonthKeysDesc(Object.keys(grouped)), [grouped])
 
   return (
-    <div
-      className="overflow-y-auto pr-1"
-      style={{ maxHeight }}
-    >
+    <div className="overflow-y-auto pr-1" style={{ maxHeight }}>
       <div className="relative">
-        {/* continuous vertical line */}
         <div
           className="absolute left-[11px] md:left-[15px] top-3 bottom-3 w-[1px]"
           style={{ background: 'var(--border-subtle)' }}
         />
-
         <div className="space-y-6">
           {sortedMonths.map((month) => (
             <div key={month}>
-              {/* Month header node */}
               <div className="relative flex items-center gap-3 mb-3">
                 <div
                   className="relative z-10 w-[22px] h-[22px] md:w-[30px] md:h-[30px] rounded-full flex items-center justify-center flex-shrink-0"
@@ -482,12 +454,9 @@ function MonthTimeline({ items, maxHeight = 480 }: { items: TimelineItem[]; maxH
                   {month}
                 </span>
               </div>
-
-              {/* Items in this month */}
               <div className="space-y-3">
                 {grouped[month].map((item) => (
                   <div key={item.id} className="relative pl-8 md:pl-10">
-                    {/* Small dot on the line */}
                     <div
                       className="absolute left-[14px] md:left-[18px] top-3 w-[5px] h-[5px] md:w-[6px] md:h-[6px] rounded-full"
                       style={{ background: 'var(--border-default)' }}
@@ -502,6 +471,12 @@ function MonthTimeline({ items, maxHeight = 480 }: { items: TimelineItem[]; maxH
       </div>
     </div>
   )
+}
+
+interface TimelineItem {
+  id: string
+  date: string
+  render: () => React.ReactNode
 }
 
 /* ─── Enrollment Card ─── */
@@ -586,16 +561,166 @@ function PublishedCard({ activity }: { activity: MyPublishedActivity }) {
   )
 }
 
+/* ─── User Info Section ─── */
+
+function UserInfoSection({ user, hasDetails, onEdit }: { user: User; hasDetails: boolean; onEdit: () => void }) {
+  const skillTags = user.skills || []
+
+  return (
+    <div>
+      <div className="flex items-center gap-4 mb-6">
+        {user.avatar ? (
+          <img
+            src={user.avatar}
+            alt=""
+            style={{ width: 64, height: 64, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }}
+          />
+        ) : (
+          <div
+            className="flex items-center justify-center text-2xl"
+            style={{
+              width: 64, height: 64, borderRadius: '50%',
+              background: 'var(--color-wheat)', color: 'var(--bg-ink)',
+              fontWeight: 600, fontFamily: 'var(--font-ui)', flexShrink: 0,
+            }}
+          >
+            {getUserInitial(user)}
+          </div>
+        )}
+        <div className="min-w-0">
+          <h2 className="font-serif" style={{ fontSize: 20, color: 'var(--text-heading)', fontWeight: 500 }}>
+            {user.name}
+          </h2>
+          <p className="font-ui" style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 2 }}>
+            {user.email}
+          </p>
+          <div className="flex gap-2 mt-2 flex-wrap">
+            <span className="font-ui text-xs" style={{
+              background: 'var(--wheat-bg)', color: 'var(--color-wheat)',
+              padding: '2px 10px', borderRadius: 50,
+            }}>
+              {ROLE_LABELS[user.role] || user.role}
+            </span>
+            <span className="font-ui text-xs" style={{
+              background: 'var(--success-bg)', color: 'var(--color-success)',
+              padding: '2px 10px', borderRadius: 50,
+            }}>
+              {user.riceBalance} 稻米
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        {user.gender && user.gender !== 'unspecified' && (
+          <div className="flex items-center gap-2">
+            <span className="font-ui text-xs" style={{ color: 'var(--text-muted)', minWidth: 48 }}>性别</span>
+            <span className="font-ui text-sm" style={{ color: 'var(--text-body)' }}>{GENDER_LABELS[user.gender]}</span>
+          </div>
+        )}
+        {user.age != null && (
+          <div className="flex items-center gap-2">
+            <span className="font-ui text-xs" style={{ color: 'var(--text-muted)', minWidth: 48 }}>年龄</span>
+            <span className="font-ui text-sm" style={{ color: 'var(--text-body)' }}>{user.age} 岁</span>
+          </div>
+        )}
+        {user.location && (
+          <div className="flex items-center gap-2">
+            <span className="font-ui text-xs" style={{ color: 'var(--text-muted)', minWidth: 48 }}>常居地</span>
+            <span className="font-ui text-sm" style={{ color: 'var(--text-body)' }}>{user.location}</span>
+          </div>
+        )}
+        {skillTags.length > 0 && (
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-ui text-xs" style={{ color: 'var(--text-muted)', minWidth: 48 }}>技能</span>
+            <div className="flex flex-wrap gap-1">
+              {skillTags.map((tag, i) => (
+                <span key={i} className="font-ui text-xs" style={{
+                  background: 'rgba(52,211,153,0.1)', color: '#34d399',
+                  padding: '2px 8px', borderRadius: 50,
+                }}>
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+        {user.bio && (
+          <div>
+            <span className="font-ui text-xs" style={{ color: 'var(--text-muted)' }}>简介</span>
+            <p className="font-ui text-sm mt-0.5" style={{ color: 'var(--text-body)' }}>{user.bio}</p>
+          </div>
+        )}
+        {user.phone && (
+          <div className="flex items-center gap-2">
+            <span className="font-ui text-xs" style={{ color: 'var(--text-muted)', minWidth: 48 }}>手机</span>
+            <span className="font-ui text-sm" style={{ color: 'var(--text-body)' }}>{user.phone}</span>
+          </div>
+        )}
+        {user.website && (
+          <div className="flex items-center gap-2">
+            <span className="font-ui text-xs" style={{ color: 'var(--text-muted)', minWidth: 48 }}>网站</span>
+            <a href={user.website} target="_blank" rel="noopener noreferrer" className="font-ui text-sm" style={{ color: 'var(--color-wheat)' }}>
+              {user.website}
+            </a>
+          </div>
+        )}
+        {user.interests && user.interests.length > 0 && (
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-ui text-xs" style={{ color: 'var(--text-muted)', minWidth: 48 }}>兴趣</span>
+            <div className="flex flex-wrap gap-1">
+              {user.interests.map((tag, i) => (
+                <span key={i} className="font-ui text-xs" style={{
+                  background: 'rgba(201,169,110,0.12)', color: 'var(--color-wheat)',
+                  padding: '2px 8px', borderRadius: 50,
+                }}>
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+        {!hasDetails && (
+          <p className="font-ui text-sm" style={{ color: 'var(--text-muted)' }}>暂无更多信息</p>
+        )}
+      </div>
+
+      <button onClick={onEdit} className="btn-primary w-full mt-6">
+        编辑资料
+      </button>
+    </div>
+  )
+}
+
+/* ─── Sidebar Nav ─── */
+
+const NAV_ITEMS: { key: Section; label: string; emoji: string }[] = [
+  { key: 'info', label: '用户信息', emoji: '👤' },
+  { key: 'edit', label: '编辑资料', emoji: '✏️' },
+  { key: 'enrolled', label: '参加的活动', emoji: '📋' },
+  { key: 'published', label: '发布的活动', emoji: '📌' },
+]
+
 /* ─── Main Page ─── */
 
 export default function ProfilePage() {
   const { user, loading, logout, updateProfile } = useAuth()
   const router = useRouter()
-  const [editing, setEditing] = useState(false)
+  const [activeSection, setActiveSection] = useState<Section>('info')
+
+  // Deep-link support: ?section=published|enrolled|edit|info
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const params = new URLSearchParams(window.location.search)
+    const section = params.get('section')
+    if (section && ['info', 'edit', 'enrolled', 'published'].includes(section)) {
+      setActiveSection(section as Section)
+    }
+  }, [])
 
   const handleSave = useCallback(async (data: Partial<User>) => {
     await updateProfile(data)
-    setEditing(false)
+    setActiveSection('info')
   }, [updateProfile])
 
   const enrollmentTimelineItems = useMemo(() =>
@@ -662,15 +787,40 @@ export default function ProfilePage() {
     (user.interests && user.interests.length > 0)
   )
 
-  const skillTags = user.skills || []
+  const renderContent = () => {
+    switch (activeSection) {
+      case 'info':
+        return <UserInfoSection user={user} hasDetails={hasDetails} onEdit={() => setActiveSection('edit')} />
+      case 'edit':
+        return <ProfileEditor user={user} onSave={handleSave} onCancel={() => setActiveSection('info')} />
+      case 'enrolled':
+        return (
+          <div>
+            <h3 className="font-serif mb-4" style={{ fontSize: 16, color: 'var(--text-heading)', fontWeight: 500 }}>
+              我参加的活动
+            </h3>
+            <MonthTimeline items={enrollmentTimelineItems} maxHeight={480} />
+          </div>
+        )
+      case 'published':
+        return (
+          <div>
+            <h3 className="font-serif mb-4" style={{ fontSize: 16, color: 'var(--text-heading)', fontWeight: 500 }}>
+              我发布的活动
+            </h3>
+            <MonthTimeline items={publishedTimelineItems} maxHeight={480} />
+          </div>
+        )
+    }
+  }
 
   return (
     <div className="page-bg" style={{ minHeight: '100vh', paddingTop: 80 }}>
-      <div className="max-w-[720px] mx-auto px-6 py-8 space-y-6">
+      <div className="max-w-[960px] mx-auto px-6 py-8">
         {/* Profile completion prompt */}
-        {!hasDetails && !editing && (
+        {!hasDetails && activeSection !== 'edit' && (
           <div
-            className="flex items-center gap-3 p-4 rounded-xl"
+            className="flex items-center gap-3 p-4 rounded-xl mb-6"
             style={{
               background: 'rgba(201,169,110,0.08)',
               border: '1px solid rgba(201,169,110,0.2)',
@@ -686,7 +836,7 @@ export default function ProfilePage() {
               </p>
             </div>
             <button
-              onClick={() => setEditing(true)}
+              onClick={() => setActiveSection('edit')}
               className="font-ui text-xs font-medium px-4 py-2 rounded-lg flex-shrink-0 transition-all duration-300 hover:brightness-110"
               style={{
                 background: 'var(--color-wheat)',
@@ -700,151 +850,95 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {/* User info card */}
-        <div style={cardStyle}>
-          <div className="flex items-center gap-4 mb-6">
-            {user.avatar ? (
-              <img
-                src={user.avatar}
-                alt=""
-                style={{
-                  width: 64, height: 64, borderRadius: '50%', objectFit: 'cover', flexShrink: 0,
-                }}
-              />
-            ) : (
-              <div
-                className="flex items-center justify-center text-2xl"
-                style={{
-                  width: 64, height: 64, borderRadius: '50%',
-                  background: 'var(--color-wheat)', color: 'var(--bg-ink)',
-                  fontWeight: 600, fontFamily: 'var(--font-ui)', flexShrink: 0,
-                }}
-              >
-                {getUserInitial(user)}
-              </div>
-            )}
-            <div className="min-w-0">
-              <h2 className="font-serif" style={{ fontSize: 20, color: 'var(--text-heading)', fontWeight: 500 }}>
-                {user.name}
-              </h2>
-              <p className="font-ui" style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 2 }}>
-                {user.email}
-              </p>
-              <div className="flex gap-2 mt-2 flex-wrap">
-                <span className="font-ui text-xs" style={{
-                  background: 'var(--wheat-bg)', color: 'var(--color-wheat)',
-                  padding: '2px 10px', borderRadius: 50,
-                }}>
-                  {ROLE_LABELS[user.role] || user.role}
-                </span>
-                <span className="font-ui text-xs" style={{
-                  background: 'var(--success-bg)', color: 'var(--color-success)',
-                  padding: '2px 10px', borderRadius: 50,
-                }}>
-                  {user.riceBalance} 稻米
-                </span>
+        {/* Mobile: horizontal tab bar */}
+        <div className="md:hidden flex gap-1 mb-4 overflow-x-auto pb-1">
+          {NAV_ITEMS.map((item) => (
+            <button
+              key={item.key}
+              onClick={() => setActiveSection(item.key)}
+              className="flex-shrink-0 font-ui text-xs px-3 py-2 rounded-full transition-all duration-200"
+              style={{
+                background: activeSection === item.key ? 'rgba(201,169,110,0.15)' : 'transparent',
+                color: activeSection === item.key ? 'var(--color-wheat)' : 'var(--text-muted)',
+                border: `1px solid ${activeSection === item.key ? 'rgba(201,169,110,0.35)' : 'var(--border-subtle)'}`,
+                cursor: 'pointer',
+              }}
+            >
+              {item.emoji} {item.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Desktop: left-right layout */}
+        <div className="md:flex md:gap-6">
+          {/* Left sidebar — desktop only */}
+          <div className="hidden md:block w-[200px] flex-shrink-0">
+            <div style={cardStyle} className="p-4 sticky top-[100px]">
+              <nav className="space-y-1">
+                {NAV_ITEMS.map((item) => {
+                  const isActive = activeSection === item.key
+                  return (
+                    <button
+                      key={item.key}
+                      onClick={() => setActiveSection(item.key)}
+                      className="w-full text-left font-ui text-sm px-3 py-2.5 rounded-lg transition-all duration-200 flex items-center gap-2.5"
+                      style={{
+                        background: isActive ? 'rgba(201,169,110,0.1)' : 'transparent',
+                        color: isActive ? 'var(--color-wheat)' : 'var(--text-secondary)',
+                        border: 'none',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <span className="text-base">{item.emoji}</span>
+                      <span>{item.label}</span>
+                    </button>
+                  )
+                })}
+              </nav>
+
+              <div className="mt-4 pt-4" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                <button
+                  onClick={() => { logout(); router.push('/') }}
+                  className="w-full text-left font-ui text-sm px-3 py-2.5 rounded-lg transition-all duration-200 flex items-center gap-2.5"
+                  style={{
+                    background: 'transparent',
+                    color: 'var(--text-muted)',
+                    border: 'none',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <span className="text-base">🚪</span>
+                  <span>退出登录</span>
+                </button>
               </div>
             </div>
           </div>
 
-          <div className="space-y-3">
-            {user.gender && user.gender !== 'unspecified' && (
-              <div className="flex items-center gap-2">
-                <span className="font-ui text-xs" style={{ color: 'var(--text-muted)' }}>性别</span>
-                <span className="font-ui text-sm" style={{ color: 'var(--text-body)' }}>
-                  {GENDER_LABELS[user.gender]}
-                </span>
-              </div>
-            )}
-            {user.age != null && (
-              <div className="flex items-center gap-2">
-                <span className="font-ui text-xs" style={{ color: 'var(--text-muted)' }}>年龄</span>
-                <span className="font-ui text-sm" style={{ color: 'var(--text-body)' }}>{user.age} 岁</span>
-              </div>
-            )}
-            {user.location && (
-              <div className="flex items-center gap-2">
-                <span className="font-ui text-xs" style={{ color: 'var(--text-muted)' }}>常居地</span>
-                <span className="font-ui text-sm" style={{ color: 'var(--text-body)' }}>{user.location}</span>
-              </div>
-            )}
-            {skillTags.length > 0 && (
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-ui text-xs" style={{ color: 'var(--text-muted)' }}>技能</span>
-                {skillTags.map((tag, i) => (
-                  <span key={i} className="font-ui text-xs" style={{
-                    background: 'rgba(52,211,153,0.1)', color: '#34d399',
-                    padding: '2px 8px', borderRadius: 50,
-                  }}>
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
-            {user.bio && (
-              <div>
-                <span className="font-ui text-xs" style={{ color: 'var(--text-muted)' }}>简介</span>
-                <p className="font-ui text-sm mt-0.5" style={{ color: 'var(--text-body)' }}>{user.bio}</p>
-              </div>
-            )}
-            {user.phone && (
-              <div className="flex items-center gap-2">
-                <span className="font-ui text-xs" style={{ color: 'var(--text-muted)' }}>手机</span>
-                <span className="font-ui text-sm" style={{ color: 'var(--text-body)' }}>{user.phone}</span>
-              </div>
-            )}
-            {user.website && (
-              <div className="flex items-center gap-2">
-                <span className="font-ui text-xs" style={{ color: 'var(--text-muted)' }}>网站</span>
-                <a href={user.website} target="_blank" rel="noopener noreferrer" className="font-ui text-sm" style={{ color: 'var(--color-wheat)' }}>
-                  {user.website}
-                </a>
-              </div>
-            )}
-            {user.interests && user.interests.length > 0 && (
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-ui text-xs" style={{ color: 'var(--text-muted)' }}>兴趣</span>
-                {user.interests.map((tag, i) => (
-                  <span key={i} className="font-ui text-xs" style={{
-                    background: 'rgba(201,169,110,0.12)', color: 'var(--color-wheat)',
-                    padding: '2px 8px', borderRadius: 50,
-                  }}>
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
-            {!hasDetails && (
-              <p className="font-ui text-sm" style={{ color: 'var(--text-muted)' }}>暂无更多信息</p>
-            )}
+          {/* Main content area */}
+          <div className="flex-1 min-w-0">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeSection}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                style={cardStyle}
+              >
+                {renderContent()}
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Mobile logout button */}
+            <div className="md:hidden mt-4">
+              <button
+                onClick={() => { logout(); router.push('/') }}
+                className="btn-ghost w-full"
+              >
+                退出登录
+              </button>
+            </div>
           </div>
-
-          <div className="flex gap-3 mt-6">
-            <button onClick={() => setEditing(true)} className="btn-primary flex-1">
-              编辑资料
-            </button>
-            <button onClick={() => { logout(); router.push('/') }} className="btn-ghost flex-1">
-              退出登录
-            </button>
-          </div>
-        </div>
-
-        {editing && <ProfileEditor user={user} onSave={handleSave} onCancel={() => setEditing(false)} />}
-
-        {/* 我参加的活动 */}
-        <div style={cardStyle}>
-          <h3 className="font-serif mb-4" style={{ fontSize: 16, color: 'var(--text-heading)', fontWeight: 500 }}>
-            我参加的活动
-          </h3>
-          <MonthTimeline items={enrollmentTimelineItems} maxHeight={400} />
-        </div>
-
-        {/* 我发布的活动 */}
-        <div style={cardStyle}>
-          <h3 className="font-serif mb-4" style={{ fontSize: 16, color: 'var(--text-heading)', fontWeight: 500 }}>
-            我发布的活动
-          </h3>
-          <MonthTimeline items={publishedTimelineItems} maxHeight={400} />
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import gsap from 'gsap'
@@ -13,16 +13,57 @@ gsap.registerPlugin(ScrollTrigger)
 
 /* ─── Host Guide Questions ─── */
 
-const HOST_QUESTIONS: GuideQuestion[] = [
-  {
-    key: 'hostRole',
-    question: '你是以什么身份发起活动？',
-    options: [
-      { label: '我是想法发起人', value: 'idea_initiator', desc: '我有一个活动创意，正在寻找合适的场地和伙伴' },
-      { label: '我是在地主理人', value: 'local_host', desc: '我有一片土地/空间，想把它变成独特的体验场所' },
-    ],
-  },
-]
+const ROLE_QUESTION: GuideQuestion = {
+  key: 'hostRole',
+  question: '你是以什么身份发起活动？',
+  options: [
+    { label: '我是想法发起人', value: 'idea_initiator', desc: '我有一个活动创意，正在寻找合适的场地和伙伴' },
+    { label: '我是在地主理人', value: 'local_host', desc: '我有一片土地/空间，想把它变成独特的体验场所' },
+  ],
+}
+
+const EVENT_TYPE_QUESTION: GuideQuestion = {
+  key: 'eventType',
+  question: '你想发起哪一种相遇？',
+  layout: 'grid',
+  options: [
+    { emoji: '🍽️', label: '饭桌共创局', value: 'dinner', subtitle: '从一顿饭开始，认识一群人和一个地方。' },
+    { emoji: '🛠️', label: '一起动手局', value: 'craft', subtitle: '做陶、做木、做饭，让陌生人先从手上熟起来。' },
+    { emoji: '📖', label: '地方故事局', value: 'story', subtitle: '跟着本地人走走，把一条街巷慢慢看懂。' },
+    { emoji: '🌿', label: '自然共处局', value: 'nature', subtitle: '去山野、田地、河边，和同频的人待在一起。' },
+    { emoji: '💬', label: '主题分享局', value: 'share', subtitle: '围绕一个兴趣、议题或生活经验，坐下来聊聊。' },
+    { emoji: '🤝', label: '一起帮忙局', value: 'help', subtitle: '为一个地方做点实事，顺手认识一群人。' },
+    { emoji: '🤔', label: '我还没想好', value: 'undecided', subtitle: '先逛逛，看到喜欢的再说' },
+    { emoji: '✨', label: '我来输入', value: 'custom', subtitle: '有其他想法？自己写一个' },
+  ],
+}
+
+const LOCATION_QUESTION: GuideQuestion = {
+  key: 'eventLocation',
+  question: '在哪里举行？',
+  options: [
+    { label: '云南沙溪', value: 'yunnan_shaxi', subtitle: '茶马古道上的千年集市' },
+    { label: '浙江桐庐', value: 'zhejiang_tonglu', subtitle: '富春江边的隐逸山水' },
+    { label: '景德镇', value: 'jiangxi_jingdezhen', subtitle: '千年瓷都，手艺人的乌托邦' },
+    { label: '四川明月村', value: 'sichuan_mingyue', subtitle: '川西林盘里的新乡村实验' },
+    { label: '福建泰宁', value: 'fujian_taining', subtitle: '丹霞地貌间的客家聚落' },
+    { label: '广东中山旗溪', value: 'guangdong_qixi', subtitle: '珠三角的恬静田园' },
+    { label: '江苏计家墩', value: 'jiangsu_jijiadun', subtitle: '离上海最近的理想村' },
+    { label: '其他地点', value: 'other', subtitle: '我有别的地方想去' },
+  ],
+}
+
+const TIME_QUESTION: GuideQuestion = {
+  key: 'eventTime',
+  question: '我想什么时候举行？',
+  options: [
+    { label: '马上！立刻！', value: 'now' },
+    { label: '近一周', value: 'week' },
+    { label: '近一个月', value: 'month' },
+    { label: '近半年', value: 'half_year' },
+    { label: '其他', value: 'other' },
+  ],
+}
 
 /* ─── Auth Prompt Screen ─── */
 
@@ -136,6 +177,64 @@ function ProfilePrompt({ onGoProfile }: { onGoProfile: () => void }) {
           }}
         >
           前往完善资料
+        </button>
+      </motion.div>
+    </div>
+  )
+}
+
+/* ─── Confirmation Screen ─── */
+
+function ConfirmationScreen({ onGoProfile }: { onGoProfile: () => void }) {
+  return (
+    <div
+      className="relative w-full min-h-screen flex flex-col items-center justify-center px-6"
+      style={{ background: 'linear-gradient(135deg, #2d2a26 0%, #3a3630 50%, #2d2a26 100%)' }}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="text-center max-w-md"
+      >
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.2, type: 'spring', stiffness: 200, damping: 16 }}
+          className="w-20 h-20 rounded-full mx-auto mb-8 flex items-center justify-center"
+          style={{ background: 'rgba(61,90,63,0.3)', border: '1px solid rgba(61,90,63,0.4)' }}
+        >
+          <span className="text-3xl">✨</span>
+        </motion.div>
+
+        <h2
+          className="font-serif mb-4"
+          style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 300, color: '#f5f1ea', letterSpacing: '0.02em' }}
+        >
+          活动意向已创建！
+        </h2>
+
+        <p className="font-ui mb-4" style={{ color: 'rgba(245,241,234,0.55)', fontSize: 15, lineHeight: 1.7 }}>
+          你的想法已经被记录下来。
+        </p>
+
+        <p className="font-ui mb-10" style={{ color: 'rgba(245,241,234,0.4)', fontSize: 14, lineHeight: 1.7 }}>
+          前往个人资料页的「我发布的活动」，
+          <br />
+          可以进一步完善活动信息并发布。
+        </p>
+
+        <button
+          onClick={onGoProfile}
+          className="font-ui text-sm tracking-wider py-3.5 px-8 rounded-full transition-all duration-300 hover:brightness-110"
+          style={{
+            background: '#c9a96e',
+            color: '#2d2a26',
+            border: 'none',
+            cursor: 'pointer',
+          }}
+        >
+          前往个人资料页
         </button>
       </motion.div>
     </div>
@@ -301,13 +400,36 @@ function LandingContent() {
 export default function HostPage() {
   const { user } = useAuth()
   const router = useRouter()
-  const [phase, setPhase] = useState<'guide' | 'landing'>('guide')
+  const [phase, setPhase] = useState<'guide' | 'landing' | 'confirmed'>('guide')
   const [step, setStep] = useState(1)
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({})
+  const [customInput, setCustomInput] = useState('')
+  const [showCustomInput, setShowCustomInput] = useState(false)
+  const roleRef = useRef<string | undefined>(undefined)
+
+  // Determine which questions to show based on role answer
+  const hostRole = answers.hostRole as string | undefined
+  const isIdeaInitiator = hostRole === 'idea_initiator'
+
+  // Build dynamic question list
+  const questions = useMemo<GuideQuestion[]>(() => {
+    const qs: GuideQuestion[] = [ROLE_QUESTION]
+    if (isIdeaInitiator) {
+      qs.push(EVENT_TYPE_QUESTION, LOCATION_QUESTION, TIME_QUESTION)
+    }
+    return qs
+  }, [isIdeaInitiator])
+  const totalSteps = questions.length
 
   const handleSelect = useCallback((key: string, value: string) => {
+    if (key === 'eventType' && value === 'custom') {
+      setShowCustomInput(true)
+    }
+    if (key === 'hostRole') {
+      roleRef.current = value
+    }
     setAnswers((prev) => {
-      const q = HOST_QUESTIONS[step - 1]
+      const q = questions[step - 1]
       if (q?.multi) {
         const current = (prev[key] as string[]) || []
         const exists = current.includes(value)
@@ -318,15 +440,44 @@ export default function HostPage() {
       }
       return { ...prev, [key]: value }
     })
-  }, [step])
+  }, [step, questions])
 
-  const handleNext = useCallback(() => {
-    if (step < HOST_QUESTIONS.length) {
+  const handleCustomSubmit = useCallback(() => {
+    const trimmed = customInput.trim()
+    if (!trimmed) return
+    setAnswers((prev) => ({ ...prev, eventType: trimmed }))
+    setShowCustomInput(false)
+    setCustomInput('')
+    // Advance to next step
+    if (step < totalSteps) {
       setStep((s) => s + 1)
     } else {
-      setPhase('landing')
+      setPhase('confirmed')
     }
-  }, [step])
+  }, [customInput, step, totalSteps])
+
+  const handleNext = useCallback(() => {
+    // Step 1 branching: check the role via ref (sync) not answers state (async)
+    if (step === 1) {
+      if (roleRef.current === 'idea_initiator') {
+        setStep(2)
+        return
+      }
+      // local_host or no selection → landing
+      setPhase('landing')
+      return
+    }
+
+    if (step < totalSteps) {
+      setStep((s) => s + 1)
+    } else {
+      if (isIdeaInitiator) {
+        setPhase('confirmed')
+      } else {
+        setPhase('landing')
+      }
+    }
+  }, [step, totalSteps, isIdeaInitiator])
 
   const handlePrev = useCallback(() => {
     if (step > 1) {
@@ -348,21 +499,84 @@ export default function HostPage() {
     return <ProfilePrompt onGoProfile={() => router.push('/profile')} />
   }
 
-  if (phase === 'guide') {
-    return (
+  if (phase === 'confirmed') {
+    return <ConfirmationScreen onGoProfile={() => router.push('/profile?section=published')} />
+  }
+
+  if (phase === 'landing') {
+    return <LandingContent />
+  }
+
+  // Custom input overlay for event type question
+  const showEventTypeCustomInput = showCustomInput && questions[step - 1]?.key === 'eventType'
+
+  return (
+    <>
       <MultiStepGuide
         step={step}
-        totalSteps={HOST_QUESTIONS.length}
-        questions={HOST_QUESTIONS}
+        totalSteps={totalSteps}
+        questions={questions}
         answers={answers}
         onSelect={handleSelect}
         onNext={handleNext}
         onPrev={handlePrev}
         onSkip={handleSkip}
         skipLabel="跳过，先看看别人怎么玩 →"
+        preventAutoAdvance={['custom']}
       />
-    )
-  }
 
-  return <LandingContent />
+      {/* Custom input modal for "我来输入" */}
+      {showEventTypeCustomInput && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-6" style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="w-full max-w-md p-8 rounded-2xl"
+            style={{ background: '#3a3630', border: '1px solid rgba(201,169,110,0.25)' }}
+          >
+            <h3 className="font-serif mb-4" style={{ fontSize: 20, color: '#f5f1ea', fontWeight: 400 }}>
+              你想发起什么样的相遇？
+            </h3>
+            <input
+              type="text"
+              value={customInput}
+              onChange={(e) => setCustomInput(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') handleCustomSubmit() }}
+              placeholder="输入你的想法…"
+              autoFocus
+              className="w-full font-ui text-base px-4 py-3 rounded-xl mb-4 transition-all duration-200"
+              style={{
+                background: 'rgba(245,241,234,0.06)',
+                border: '1.5px solid rgba(201,169,110,0.3)',
+                color: '#f5f1ea',
+                outline: 'none',
+              }}
+            />
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => { setShowCustomInput(false); setCustomInput('') }}
+                className="font-ui text-sm px-5 py-2.5 rounded-full transition-colors duration-200"
+                style={{ color: 'rgba(245,241,234,0.5)', background: 'transparent', border: '1px solid rgba(245,241,234,0.15)', cursor: 'pointer' }}
+              >
+                取消
+              </button>
+              <button
+                onClick={handleCustomSubmit}
+                disabled={!customInput.trim()}
+                className="font-ui text-sm px-6 py-2.5 rounded-full transition-all duration-200"
+                style={{
+                  background: customInput.trim() ? '#c9a96e' : 'rgba(201,169,110,0.3)',
+                  color: customInput.trim() ? '#2d2a26' : 'rgba(45,42,38,0.5)',
+                  border: 'none',
+                  cursor: customInput.trim() ? 'pointer' : 'not-allowed',
+                }}
+              >
+                确定
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </>
+  )
 }

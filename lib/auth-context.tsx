@@ -50,19 +50,24 @@ const TOKEN_KEY = 'xjcloud_token'
 
 async function apiRequest<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = localStorage.getItem(TOKEN_KEY)
-  const res = await fetch(`${API_BASE}${path}`, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...options.headers,
-    },
-  })
+  let res: Response
+  try {
+    res = await fetch(`${API_BASE}${path}`, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...options.headers,
+      },
+    })
+  } catch {
+    throw new Error('网络连接失败，请检查网络后重试')
+  }
 
   const data = await res.json()
 
   if (!res.ok) {
-    throw new Error(data.error || 'Request failed')
+    throw new Error(data.error || '请求失败，请稍后重试')
   }
 
   return data as T

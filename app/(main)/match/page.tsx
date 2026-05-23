@@ -335,7 +335,7 @@ function SearchHero({
             whiteSpace: 'nowrap',
           }}
         >
-          帮我找到最适合的活动
+          帮我梳理方案
         </button>
       </div>
 

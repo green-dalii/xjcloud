@@ -9,7 +9,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 PORT=3001 pnpm dev
 
 # 编译检查（静态导出，输出到 dist/）
-PORT=3001 pnpm build
+PORT=3001 pnpm -w build
+
+# 启动 Workers 本地服务器（D1 模拟读写，端口 8787）
+cd workers && npx wrangler dev --local
 
 # 数据库迁移
 pnpm db:push

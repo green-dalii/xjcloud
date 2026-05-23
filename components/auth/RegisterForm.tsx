@@ -50,7 +50,12 @@ export function RegisterForm() {
     <form onSubmit={handleSubmit} className="space-y-4">
       <h2 className="auth-heading">注册</h2>
 
-      {error && <p className="auth-error">{error}</p>}
+      {error && (
+        <div className="flex items-center gap-3 px-4 py-3 rounded-lg" style={{ background: 'rgba(220,53,69,0.08)', border: '1px solid rgba(220,53,69,0.2)' }}>
+          <span className="text-sm flex-shrink-0">⚠️</span>
+          <p className="font-ui text-sm" style={{ color: '#dc3545' }}>{error}</p>
+        </div>
+      )}
 
       <div>
         <input

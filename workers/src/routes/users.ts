@@ -16,7 +16,7 @@ export async function usersRouter(request: Request, env: Env): Promise<Response>
 
     const { response, user: authUser } = await requireAuth(request, env)
     if (response) return response
-    if (!authUser) return errorResponse('Unauthorized', 401)
+    if (!authUser) return errorResponse('未授权，请重新登录', 401)
 
     const body = await request.json() as Record<string, unknown>
     const updates: Record<string, unknown> = {}
@@ -28,7 +28,7 @@ export async function usersRouter(request: Request, env: Env): Promise<Response>
     }
 
     if (Object.keys(updates).length === 0) {
-      return errorResponse('No fields to update', 422)
+      return errorResponse('没有可更新的字段', 422)
     }
 
     const db = createClient(env.DB)
@@ -38,10 +38,10 @@ export async function usersRouter(request: Request, env: Env): Promise<Response>
       .returning(USER_PROJECTION)
       .get()
 
-    if (!updated) return errorResponse('User not found', 404)
+    if (!updated) return errorResponse('用户不存在', 404)
 
     return jsonResponse({ user: updated })
   }
 
-  return errorResponse('Not found', 404)
+  return errorResponse('接口不存在', 404)
 }

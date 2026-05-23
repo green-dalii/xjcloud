@@ -23,18 +23,18 @@ export async function authRouter(request: Request, env: Env): Promise<Response> 
     }
 
     if (!name || !email || !password) {
-      return errorResponse('Name, email, and password are required', 422)
+      return errorResponse('请填写姓名、邮箱和密码', 422)
     }
 
     if (password.length < 6) {
-      return errorResponse('Password must be at least 6 characters', 422)
+      return errorResponse('密码长度不能少于6位', 422)
     }
 
     const db = createClient(env.DB)
 
     const existing = await db.select({ id: users.id }).from(users).where(eq(users.email, email)).get()
     if (existing) {
-      return errorResponse('Email already registered', 409)
+      return errorResponse('该邮箱已被注册', 409)
     }
 
     const passwordHash = await bcrypt.hash(password, 10)
@@ -67,7 +67,7 @@ export async function authRouter(request: Request, env: Env): Promise<Response> 
     const { email, password } = await request.json() as { email?: string; password?: string }
 
     if (!email || !password) {
-      return errorResponse('Email and password are required', 422)
+      return errorResponse('请填写邮箱和密码', 422)
     }
 
     const db = createClient(env.DB)
@@ -82,12 +82,12 @@ export async function authRouter(request: Request, env: Env): Promise<Response> 
     }).from(users).where(eq(users.email, email)).get()
 
     if (!user) {
-      return errorResponse('Invalid email or password', 401)
+      return errorResponse('邮箱或密码错误', 401)
     }
 
     const valid = await bcrypt.compare(password, user.passwordHash)
     if (!valid) {
-      return errorResponse('Invalid email or password', 401)
+      return errorResponse('邮箱或密码错误', 401)
     }
 
     const finalRole = safeRole(user.role)
@@ -114,7 +114,7 @@ export async function authRouter(request: Request, env: Env): Promise<Response> 
 
     const { response, user: authUser } = await requireAuth(request, env)
     if (response) return response
-    if (!authUser) return errorResponse('Unauthorized', 401)
+    if (!authUser) return errorResponse('未授权，请重新登录', 401)
 
     const db = createClient(env.DB)
     const user = await db.select(USER_PROJECTION)
@@ -123,11 +123,11 @@ export async function authRouter(request: Request, env: Env): Promise<Response> 
       .get()
 
     if (!user) {
-      return errorResponse('User not found', 404)
+      return errorResponse('用户不存在', 404)
     }
 
     return jsonResponse({ user })
   }
 
-  return errorResponse('Not found', 404)
+  return errorResponse('接口不存在', 404)
 }
