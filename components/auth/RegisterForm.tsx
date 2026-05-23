@@ -40,7 +40,7 @@ export function RegisterForm() {
         </div>
         <h2 className="auth-heading">注册成功</h2>
         <p className="font-ui" style={{ color: 'var(--text-secondary)', fontSize: 14, lineHeight: 1.7 }}>
-          欢迎加入原乡，即将跳转首页...
+          欢迎加入爱故乡驿站，即将跳转首页...
         </p>
       </div>
     )

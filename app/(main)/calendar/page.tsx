@@ -1,7 +1,7 @@
 import CalendarPageClient from '@/components/calendar/CalendarPageClient'
 
 export const metadata = {
-  title: '活动日历 - 原乡',
+  title: '活动日历 - 爱故乡驿站',
   description: '探索乡村活动的月度日历视图',
 }
 

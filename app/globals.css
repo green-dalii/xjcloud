@@ -229,12 +229,133 @@
      ═══════════════════════════════════════════ */
   .landing-root {
     width: 100%;
+    background-color: var(--bg-ink);
+    font-family: var(--font-ui);
+  }
+
+  /* ── Landing Hero (first screen) ── */
+  .landing-hero {
+    width: 100%;
     height: 100vh;
     min-height: 600px;
-    background-color: var(--bg-ink);
-    overflow: hidden;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .landing-hero-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url('/images/hero-aerial-village.jpg');
+    background-size: cover;
+    background-position: center;
+    transform: scale(1.05);
+    transition: transform 6s ease-out;
+  }
+  .landing-root.loaded .landing-hero-bg {
+    transform: scale(1);
+  }
+  .landing-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom,
+      rgba(45,42,38,0.35) 0%,
+      rgba(45,42,38,0.45) 40%,
+      rgba(45,42,38,0.7) 100%
+    );
+  }
+  .landing-hero-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 0 24px;
+    max-width: 640px;
+  }
+  .landing-hero-slogan {
     font-family: var(--font-ui);
+    font-size: clamp(32px, 5.5vw, 56px);
+    font-weight: 800;
+    color: #f5f1ea;
+    letter-spacing: 0.04em;
+    line-height: 1.3;
+    margin-bottom: 16px;
+  }
+  .landing-hero-sub {
+    font-family: var(--font-ui);
+    font-size: clamp(18px, 2.5vw, 26px);
+    font-weight: 700;
+    color: var(--color-wheat);
+    letter-spacing: 0.08em;
+    margin-bottom: 48px;
+  }
+  .landing-hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 40px;
+    background: var(--color-wheat);
+    color: var(--bg-ink);
+    border: none;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-ui);
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: all 0.35s ease;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+  }
+  .landing-hero-cta:hover {
+    background: #d4b87a;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+  }
+  .landing-hero-cta-arrow {
+    display: inline-flex;
+    transition: transform 0.3s ease;
+  }
+  .landing-hero-cta:hover .landing-hero-cta-arrow {
+    transform: translateY(3px);
+  }
+
+  /* Scroll-down hint */
+  .landing-hero-hint {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    opacity: 0.45;
+    transition: opacity 0.3s ease;
+  }
+  .landing-hero-hint:hover {
+    opacity: 0.8;
+  }
+  .landing-hero-hint span {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: rgba(245,241,234,0.6);
+  }
+  .landing-hero-hint-line {
+    width: 1px;
+    height: 28px;
+    background: linear-gradient(to bottom, rgba(245,241,234,0.5), transparent);
+  }
+
+  /* ── Panels section (second screen) ── */
+  .landing-panels-section {
+    width: 100%;
+    height: 100vh;
+    min-height: 600px;
+    position: relative;
+    overflow: hidden;
   }
   .landing-panels {
     display: flex;
@@ -285,17 +406,6 @@
     position: absolute; inset: 0;
     background: radial-gradient(circle at 70% 20%, rgba(255,200,120,0.2) 0%, transparent 45%),
                 radial-gradient(circle at 30% 80%, rgba(180,130,80,0.2) 0%, transparent 50%);
-    pointer-events: none;
-  }
-
-  .landing-divider {
-    position: absolute;
-    top: 0; bottom: 0;
-    left: 50%;
-    width: 2px;
-    background: linear-gradient(to bottom, transparent 0%, var(--border-strong) 20%, var(--border-strong) 80%, transparent 100%);
-    transform: translateX(-50%);
-    z-index: 20;
     pointer-events: none;
   }
 
@@ -476,7 +586,24 @@
 
   /* ── Mobile landing overrides ── */
   @media (max-width: 768px) {
-    .landing-root {
+    .landing-hero-slogan {
+      font-size: clamp(32px, 10vw, 48px);
+      font-weight: 800;
+      line-height: 1.25;
+    }
+    .landing-hero-sub {
+      font-size: clamp(15px, 4vw, 20px);
+      font-weight: 700;
+      margin-bottom: 36px;
+    }
+    .landing-hero-cta {
+      padding: 14px 32px;
+      font-size: 16px;
+    }
+    .landing-hero-hint {
+      bottom: 28px;
+    }
+    .landing-panels-section {
       min-height: auto;
       height: auto;
       overflow: visible;
@@ -494,15 +621,6 @@
       flex: none !important;
       height: 50vh;
       min-height: 380px;
-    }
-    .landing-divider {
-      left: 0; right: 0;
-      top: auto; bottom: auto;
-      position: relative;
-      width: 100%;
-      height: 2px;
-      background: linear-gradient(to right, transparent 0%, var(--border-strong) 20%, var(--border-strong) 80%, transparent 100%);
-      transform: none;
     }
     .landing-avatars { top: 20px; }
     .landing-avatars-left  { left: 20px; }

@@ -76,7 +76,7 @@ export function Navbar() {
               cursor: 'pointer',
             }}
           >
-            原<span style={{ color: 'var(--color-wheat)' }}>乡</span>
+            爱故乡<span style={{ color: 'var(--color-wheat)' }}>驿站</span>
           </button>
         </div>
       </nav>
@@ -106,7 +106,7 @@ export function Navbar() {
               flexShrink: 0,
             }}
           >
-            原<span style={{ color: 'var(--color-wheat)' }}>乡</span>
+            爱故乡<span style={{ color: 'var(--color-wheat)' }}>驿站</span>
           </button>
 
           {/* Desktop nav links */}
@@ -391,7 +391,7 @@ export function Footer() {
               fontFamily: 'var(--font-serif)',
               lineHeight: 1.2,
             }}>
-              原乡
+              爱故乡驿站
             </h3>
             <p style={{
               fontSize: 13,
@@ -442,7 +442,7 @@ export function Footer() {
         </div>
         <div className="w-full mb-7" style={{ height: 1, backgroundColor: 'var(--border-subtle)' }} />
         <div className="flex flex-col md:flex-row justify-between items-center gap-3">
-          <p className="font-ui text-xs" style={{ color: 'var(--text-dim)' }}>© 2026 原乡. All rights reserved.</p>
+          <p className="font-ui text-xs" style={{ color: 'var(--text-dim)' }}>© 2026 爱故乡驿站. All rights reserved.</p>
           <p className="font-display text-xs" style={{ color: 'var(--text-dim)', fontStyle: 'italic', letterSpacing: '0.05em' }}>Rediscover the origin of life</p>
         </div>
       </div>

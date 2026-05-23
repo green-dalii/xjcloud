@@ -23,7 +23,7 @@ pnpm lint
 
 ## 项目概述
 
-乡建协作平台 (xjcloud) — AI 驱动的乡村活动协作 SaaS + UGC 平台。Next.js 14 App Router + TypeScript + Tailwind CSS，数据库用 SQLite（Drizzle ORM），后期迁移到 Cloudflare D1。
+乡建协作平台 (xjcloud) — AI 驱动的乡村活动协作 SaaS + UGC 平台（品牌名：爱故乡驿站）。Next.js 14 App Router + TypeScript + Tailwind CSS，数据库用 SQLite（Drizzle ORM），后期迁移到 Cloudflare D1。
 
 ## 设计系统
 
@@ -36,7 +36,7 @@ pnpm lint
 ## 关键架构
 
 ### 路由结构
-- `/` → `app/(main)/page.tsx` — 首页，全屏沉浸双面板（视频背景 + hover 伸缩）
+- `/` → `app/(main)/page.tsx` — 首页，双屏滚动：Hero 全屏首屏（背景图 + Slogan + CTA）+ 双面板第二屏（视频背景 + hover 伸缩）
 - `/explore` → `app/(main)/explore/page.tsx` — 探索页（引导问卷 → Loading → 卡片堆叠）
 - `/activities` → `app/(main)/activities/page.tsx` — 全部活动全览页（独立于 explore，带筛选工具栏）
 - `/host` → `app/(main)/host/page.tsx` — 「我要造趣」共建者页（未登录 → AuthPrompt 引导；已登录 → MultiStepGuide 身份选择 → landing 内容）
@@ -188,5 +188,6 @@ Mock 数据：`lib/data/mock-activities.ts` — 20 条 `ActivityCard`，`filterA
 - `workers/wrangler.toml.example` 是配置模板，复制后填入真实值
 
 ### 首页特殊处理
-- 首页 (`page.tsx`) 使用 `'use client'`，所有 CSS 在 `globals.css` 的 `@layer components` 中管理
-- 视频播放通过 `useEffect([mounted])` 在组件挂载后触发（避免 SSR/CSR mismatch）
+- 首页 (`page.tsx`) 双屏滚动设计：Hero 全屏首屏（背景图 + Slogan + CTA）+ 双面板第二屏（视频背景 + hover 伸缩）
+- 首屏 Hero 100vh 沉浸式设计，背景图 Ken Burns 缩放动画，深色渐变 overlay
+- 第二屏双面板左右并排，左侧「我要探索」→ `/explore`，右侧「我要造趣」→ `/host`

@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.8] - 2026-05-23
+
+### Added
+- **首页 Hero 首屏** — 双屏滚动设计，新增全屏沉浸式 Hero section
+  - 背景图 `hero-aerial-village.jpg` + 深色渐变 dark overlay + Ken Burns 缓慢缩放动画
+  - Slogan "开启一种新的生活方式"（移动端分段换行），副标题 "简单 · 美好"
+  - CTA 按钮 "出发~ 🚀" 跳转到第二屏双面板
+  - 底部 "向下探索" 滚动提示（麦金线条动效）
+
+### Changed
+- **品牌重命名** — "原乡" → "爱故乡驿站"（全项目替换，含 Navbar Logo split-letter 样式）
+- **首页第二屏双面板文案更新**
+  - 左侧：主标题 "一段旅行，一份心情"，描述 "聆听时光故事，亲近乡土文明"
+  - 右侧：主标题 "去乡村田园里，创造美好空间"，描述 "不止是组织者，你也是这片土地的讲述者与守护者"
+- **左侧面板按钮** — "开始探索" → "我要探索"
+- **Match 页面按钮** — "帮我找到最适合的活动" → "帮我梳理方案"
+- **注册成功文案** — "欢迎加入爱故乡驿站"
+
+### Removed
+- **首页底部栏** — 删除 "说一句..." 输入条
+- **Hero tagline** — 删除 "为自己寻觅一个心灵归属地" 及其 CSS 类
+
+### Fixed
+- **Host 确认按钮** — 完成后跳转到 Profile 的 "发布的活动" 标签（`?section=published` 深链接）
+- **Profile 深链接** — 支持 `?section=published|enrolled|edit|info` URL 参数（`window.location.search`，兼容静态导出）
+
 ## [0.3.7] - 2026-05-23
 
 ### Added
