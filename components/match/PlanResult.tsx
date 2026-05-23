@@ -77,6 +77,26 @@ function PlanItemCard({ item }: { item: PlanItem }) {
       >
         {item.desc}
       </p>
+
+      {/* Tags */}
+      {item.tags && item.tags.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 mb-2">
+          {item.tags.map((tag, i) => (
+            <span
+              key={i}
+              className="font-ui text-[11px] px-2 py-0.5 rounded-full"
+              style={{
+                background: 'rgba(201,169,110,0.1)',
+                color: 'var(--color-wheat)',
+                border: '1px solid rgba(201,169,110,0.15)',
+              }}
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
+
       <div className="flex items-start gap-1.5">
         <span className="font-ui text-xs mt-px flex-shrink-0" style={{ color: 'rgba(201,169,110,0.6)' }}>
           💡

@@ -247,7 +247,7 @@
   .landing-hero-bg {
     position: absolute;
     inset: 0;
-    background-image: url('/images/hero-aerial-village.jpg');
+    background-image: url('/images/background.jpg');
     background-size: cover;
     background-position: center;
     transform: scale(1.05);

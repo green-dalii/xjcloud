@@ -52,3 +52,4 @@ wrangler.toml
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+workers/.next/

@@ -1,6 +1,7 @@
 'use client'
 
 import { Navbar, Footer } from '@/components/layout/NavbarFooter'
+import PageProgress from '@/components/layout/PageProgress'
 
 export default function MainLayout({
   children,
@@ -9,6 +10,7 @@ export default function MainLayout({
 }) {
   return (
     <>
+      <PageProgress />
       <Navbar />
       {children}
       <Footer />
