@@ -6,6 +6,9 @@ import { motion } from 'framer-motion'
 import { useAuth } from '@/lib/auth-context'
 import { ALL_ACTIVITIES, INTEREST_TAG_MAP } from '@/lib/data/mock-activities'
 import type { ActivityCard } from '@/lib/data/mock-activities'
+import { getTravelPlan, type TravelPlan } from '@/lib/data/mock-travel-plan'
+import AnalyzingScreen from '@/components/match/AnalyzingScreen'
+import PlanResult from '@/components/match/PlanResult'
 
 const ROTATING_PROMPTS = [
   '我想找一个能带家人一起的乡村手工艺体验...',
@@ -366,7 +369,8 @@ export default function MatchPage() {
   const { user, loading } = useAuth()
   const router = useRouter()
   const [query, setQuery] = useState('')
-  const [searched, setSearched] = useState(false)
+  const [phase, setPhase] = useState<'search' | 'analyzing' | 'result'>('search')
+  const [travelPlan, setTravelPlan] = useState<TravelPlan | null>(null)
   const { text: placeholder, fade } = useRotatingPlaceholder(3500)
 
   const userInterests = user?.interests || []
@@ -403,7 +407,19 @@ export default function MatchPage() {
   }, [user])
 
   const handleSearch = useCallback(() => {
-    setSearched(true)
+    if (!query.trim()) return
+    const plan = getTravelPlan(query, userLocation)
+    setTravelPlan(plan)
+    setPhase('analyzing')
+  }, [query, userLocation])
+
+  const handleAnalysisComplete = useCallback(() => {
+    setPhase('result')
+  }, [])
+
+  const handleBackToSearch = useCallback(() => {
+    setPhase('search')
+    setTravelPlan(null)
   }, [])
 
   if (loading) {
@@ -479,19 +495,21 @@ export default function MatchPage() {
   return (
     <div className="page-bg" style={{ minHeight: '100vh', paddingTop: 80 }}>
       <div className="max-w-[1200px] mx-auto px-6 py-8">
-        {/* Search Hero */}
-        <div className="pt-8 md:pt-16 pb-4 md:pb-6">
-          <SearchHero
-            value={query}
-            onChange={setQuery}
-            onSubmit={handleSearch}
-            placeholder={placeholder}
-            fade={fade}
-          />
-        </div>
+        {/* Search Hero — always visible in search/analyzing phase */}
+        {phase !== 'result' && (
+          <div className={`${phase === 'analyzing' ? 'pt-2 pb-0' : 'pt-8 md:pt-16 pb-4 md:pb-6'}`}>
+            <SearchHero
+              value={query}
+              onChange={setQuery}
+              onSubmit={handleSearch}
+              placeholder={placeholder}
+              fade={fade}
+            />
+          </div>
+        )}
 
-        {/* Recommendations — Dock Stack */}
-        {!searched && scored.length > 0 && (
+        {/* Phase: Search — Dock Stack */}
+        {phase === 'search' && scored.length > 0 && (
           <div className="mb-8">
             <div className="text-center mb-2">
               <p className="font-ui text-xs tracking-wider" style={{ color: 'var(--text-muted)' }}>
@@ -505,141 +523,8 @@ export default function MatchPage() {
           </div>
         )}
 
-        {/* Search results (grid) */}
-        {searched && (
-          <div className="mb-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-1 h-5 rounded-full" style={{ background: 'var(--color-wheat)' }} />
-              <h3
-                className="font-serif"
-                style={{ fontSize: 'clamp(18px, 3vw, 24px)', fontWeight: 400, color: 'var(--text-heading)' }}
-              >
-                搜索结果
-              </h3>
-            </div>
-
-            <div
-              className="grid gap-4 md:gap-5"
-              style={{
-                gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-              }}
-            >
-              {scored
-                .filter((c) => {
-                  const q = query.toLowerCase()
-                  return (
-                    c.title.toLowerCase().includes(q) ||
-                    c.description.toLowerCase().includes(q) ||
-                    c.tags.some((t) => t.toLowerCase().includes(q)) ||
-                    c.location.toLowerCase().includes(q)
-                  )
-                })
-                .slice(0, 6)
-                .map((card) => (
-                  <div
-                    key={card.id}
-                    className="group relative rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-1"
-                    style={{
-                      background: 'rgba(45, 42, 38, 0.5)',
-                      border: '1px solid rgba(245,241,234,0.06)',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    <div className="relative h-44 overflow-hidden">
-                      <div
-                        className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-                        style={{ backgroundImage: `url(${card.image})` }}
-                      />
-                      <div
-                        className="absolute inset-0"
-                        style={{ background: 'linear-gradient(to top, rgba(45,42,38,0.7) 0%, rgba(45,42,38,0) 50%)' }}
-                      />
-                      <div
-                        className="absolute top-3 left-3 rounded-full px-3 py-1 text-xs font-ui"
-                        style={{
-                          background: 'rgba(45,42,38,0.6)',
-                          color: 'var(--color-wheat)',
-                          border: '1px solid rgba(201,169,110,0.25)',
-                          backdropFilter: 'blur(8px)',
-                        }}
-                      >
-                        {card.matchScore}% 匹配
-                      </div>
-                    </div>
-                    <div className="p-4">
-                      <p className="font-ui text-[11px] tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>
-                        {card.location}
-                      </p>
-                      <h3
-                        className="font-serif mb-2 transition-colors duration-300 group-hover:text-[var(--color-wheat)]"
-                        style={{ fontSize: 16, fontWeight: 500, color: 'var(--text-heading)', lineHeight: 1.35 }}
-                      >
-                        {card.title}
-                      </h3>
-                      <p
-                        className="font-ui text-sm mb-3"
-                        style={{
-                          color: 'var(--text-secondary)',
-                          lineHeight: 1.55,
-                          display: '-webkit-box',
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: 'vertical',
-                          overflow: 'hidden',
-                        }}
-                      >
-                        {card.description}
-                      </p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {card.tags.slice(0, 3).map((tag) => (
-                          <span
-                            key={tag}
-                            className="font-ui text-[11px] px-2 py-0.5 rounded-full"
-                            style={{
-                              background: relevantTags.has(tag)
-                                ? 'rgba(201,169,110,0.1)'
-                                : 'rgba(245,241,234,0.04)',
-                              color: relevantTags.has(tag) ? 'var(--color-wheat)' : 'var(--text-muted)',
-                            }}
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-            </div>
-
-            {scored.filter((c) => {
-              const q = query.toLowerCase()
-              return (
-                c.title.toLowerCase().includes(q) ||
-                c.description.toLowerCase().includes(q) ||
-                c.tags.some((t) => t.toLowerCase().includes(q)) ||
-                c.location.toLowerCase().includes(q)
-              )
-            }).length === 0 && (
-              <div className="text-center py-16">
-                <p className="font-ui text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>
-                  没有找到匹配的活动
-                </p>
-                <button
-                  onClick={() => {
-                    setQuery('')
-                    setSearched(false)
-                  }}
-                  className="font-ui text-sm transition-colors duration-300 hover:underline"
-                  style={{ color: 'var(--color-wheat)', background: 'none', border: 'none', cursor: 'pointer' }}
-                >
-                  查看全部推荐
-                </button>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* View all link */}
-        {!searched && (
+        {/* Phase: Search — Browse all link */}
+        {phase === 'search' && (
           <div className="text-center pt-4 pb-8">
             <button
               onClick={() => router.push('/activities')}
@@ -650,6 +535,23 @@ export default function MatchPage() {
               <span>→</span>
             </button>
           </div>
+        )}
+
+        {/* Phase: Analyzing */}
+        {phase === 'analyzing' && (
+          <AnalyzingScreen
+            query={query}
+            onComplete={handleAnalysisComplete}
+            duration={4500}
+          />
+        )}
+
+        {/* Phase: Result */}
+        {phase === 'result' && travelPlan && (
+          <PlanResult
+            plan={travelPlan}
+            onBack={handleBackToSearch}
+          />
         )}
       </div>
     </div>
