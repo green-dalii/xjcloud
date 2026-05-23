@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useAuth } from '@/lib/auth-context'
 
 export function RegisterForm() {
   const [name, setName] = useState('')
@@ -11,6 +12,7 @@ export function RegisterForm() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const { register } = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -18,21 +20,10 @@ export function RegisterForm() {
     setError('')
 
     try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password, role }),
-      })
-
-      const data = await res.json()
-
-      if (!data.success) {
-        setError(data.error?.message || '注册失败')
-      } else {
-        router.push('/login')
-      }
-    } catch {
-      setError('网络错误')
+      await register({ name, email, password, role })
+      router.push('/explore')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '网络错误')
     } finally {
       setLoading(false)
     }

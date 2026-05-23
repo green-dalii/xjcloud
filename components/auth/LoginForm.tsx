@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import { useAuth } from '@/lib/auth-context'
 
 export function LoginForm() {
   const [email, setEmail] = useState('')
@@ -10,25 +10,21 @@ export function LoginForm() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const { login } = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError('')
 
-    const result = await signIn('credentials', {
-      email,
-      password,
-      redirect: false,
-    })
-
-    setLoading(false)
-
-    if (result?.error) {
-      setError('邮箱或密码错误')
-    } else {
+    try {
+      await login(email, password)
       router.push('/')
       router.refresh()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '邮箱或密码错误')
+    } finally {
+      setLoading(false)
     }
   }
 

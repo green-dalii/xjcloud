@@ -8,8 +8,10 @@
 # 安装依赖
 pnpm install
 # 数据库迁移
-pnpm db:push
-# 启动开发服务器
+npx drizzle-kit push --config=drizzle.config.ts
+# 启动 Workers 后端（终端 1）
+cd workers && pnpm dev
+# 启动前端开发服务器（终端 2）
 PORT=3001 pnpm dev
 # 访问 http://localhost:3001
 ```
@@ -19,8 +21,8 @@ PORT=3001 pnpm dev
 - **框架**: Next.js 14 (App Router) + TypeScript
 - **样式**: Tailwind CSS 3.4 + CSS custom properties（全局主题系统，无页面私有 CSS）
 - **动画**: Framer Motion + GSAP (ScrollTrigger) + CSS transitions
-- **ORM**: Drizzle ORM + better-sqlite3
-- **认证**: NextAuth.js v5 (Auth.js)
+- **ORM**: Drizzle ORM + better-sqlite3（本地）/ D1（生产，通过 Workers）
+- **认证**: 自定义 JWT（AuthContext + Workers 后端） + NextAuth v5（本地 SQLite 兜底）
 - **数据库**: SQLite（本地）→ Cloudflare D1（生产）
 
 ## 设计系统 — Warm Earth Palette

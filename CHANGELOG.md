@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.5] - 2026-05-23
+
+### Added
+- **自定义 JWT 认证系统** — 替换 NextAuth v5 API 路由，适配 Cloudflare Pages 静态导出
+  - `lib/auth-context.tsx` — AuthContext + AuthProvider + useAuth hook
+  - Token 存储于 localStorage，Bearer 方式传递到 Workers 后端
+  - 注册后自动登录并跳转 `/explore`
+- **Workers 后端核心路由**
+  - `POST /api/auth/register` — 注册（bcrypt 哈希密码，D1 写入）
+  - `POST /api/auth/login` — 登录（密码验证，JWT 签发，7天过期）
+  - `GET /api/auth/me` — 获取当前用户完整 Profile（需 Bearer token）
+  - `PUT /api/users/me` — 更新 Profile（name/bio/phone/location/avatar/website/interests）
+- **Profile 页面重构** — 真实数据 + 编辑模式
+  - 完整信息展示：姓名/邮箱/角色/稻米/简介/手机/所在地/网站/兴趣
+  - 编辑模式：表单替换只读视图，保存 → Workers API → 即时刷新
+  - 头像支持 URL 自定义，默认首字母圆圈
+- **Explore 卡片耗尽状态增强** — 未登录用户新增「注册/登录获取更精准匹配」按钮（引导到 `/login`）
+- **D1 Drizzle 客户端** — `workers/src/db/client.ts`，共享 `lib/db/schema.ts`
+- **Workers 中间件** — CORS / JSON / 方法检查 / 鉴权，统一封装在 `workers/src/middleware.ts`
+
+### Changed
+- **认证系统架构变更** — NextAuth `SessionProvider` → 自定义 `AuthProvider`
+  - `app/layout.tsx` — SessionProvider 替换为 AuthProvider
+  - `components/auth/LoginForm.tsx` — `signIn()` 替换为 `useAuth().login()`
+  - `components/auth/RegisterForm.tsx` — `fetch('/api/auth/register')` 替换为 `useAuth().register()`
+  - `components/layout/NavbarFooter.tsx` — `useSession` 替换为 `useAuth`，`signOut` 替换为 `logout`
+- **pnpm 工作区配置** — 添加 `pnpm-workspace.yaml`，workers 共享根目录依赖
+- **Schema 扩展** — users 表新增 bio/phone/location/interests/website 字段（avatar 已有）
+- **环境变量** — `.env.local` 新增 `NEXT_PUBLIC_API_URL=http://localhost:8787`
+
+### Removed
+- **NextAuth 依赖解耦** — 保留 `next-auth` 包但不再使用 SessionProvider/useSession/signIn/signOut，仅 `lib/auth.ts` 和 `lib/db/client.ts` 作为本地 SQLite 鉴权兜底
+
 ## [0.3.4] - 2026-05-23
 
 ### Added

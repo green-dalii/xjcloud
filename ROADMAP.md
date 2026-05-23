@@ -1,6 +1,6 @@
 # 乡建协作平台 - 路线图
 
-## 当前版本: 0.3.4
+## 当前版本: 0.3.5
 
 ---
 
@@ -61,6 +61,9 @@
 - [x] **pnpm 包管理器切换** — 本地开发 + Pages 构建环境统一
 - [x] **GitHub 集成** — push 自动触发 Pages 部署
 - [x] **Workers 后端骨架** — `workers/` 目录：JWT 认证、D1 绑定、路由预留
+- [x] **自定义 JWT 认证系统** — AuthContext + Workers auth/users 路由
+- [x] **Profile 编辑功能** — 接入 Workers API
+- [x] **pnpm 工作区** — workers 共享根目录依赖
 - [ ] **Pages 部署成功** — Dashboard 构建设置修正后重试
 - [ ] **D1 本地开发验证** — `wrangler dev` + D1 本地模拟
 

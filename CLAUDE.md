@@ -87,7 +87,13 @@ Mock 数据：`lib/data/mock-activities.ts` — 20 条 `ActivityCard`，`filterA
 - 搜索：实时过滤标题/地点/描述/标签
 
 ### 状态管理
-- 认证通过 NextAuth v5 (Auth.js beta) + JWT session，`app/layout.tsx` 包裹 `SessionProvider`
+- **认证**：自定义 JWT 认证系统（`lib/auth-context.tsx`），替换 NextAuth 的 SessionProvider
+  - `AuthProvider` 包裹在 `app/layout.tsx`，替代原 `SessionProvider`
+  - `useAuth()` hook 提供 `{ user, login, register, logout, updateProfile }`
+  - Token 存储在 `localStorage('xjcloud_token')`，Bearer 方式传 Workers 后端
+  - Workers 后端：`POST /api/auth/register|login` + `GET /api/auth/me`（JWT 鉴权）
+  - 所有 API 路由在 Workers，前端静态导出不受影响
+- **旧 NextAuth**：`lib/auth.ts` 保留但仅用于本地 SQLite 直接鉴权兜底，不再通过 API 路由使用
 - 首页视频播放依赖 `mounted` 状态：服务端渲染占位 div，客户端 hydration 后渲染完整内容（避免 SSR/CSR mismatch）
 
 ### Calendar 页面组件架构（`components/calendar/`）

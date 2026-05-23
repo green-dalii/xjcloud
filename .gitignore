@@ -2,11 +2,13 @@
 
 # dependencies
 /node_modules
+/workers/node_modules
 /.pnp
 .pnp.js
 .yarn/install-state.gz
 .pnpm-store/
 package-lock.json
+workers/pnpm-lock.yaml
 
 # testing
 /coverage

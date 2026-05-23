@@ -1,5 +1,7 @@
-import { authMiddleware } from './auth'
+import { handleOptions, corsHeaders } from './middleware'
 import { healthRouter } from './routes/health'
+import { authRouter } from './routes/auth'
+import { usersRouter } from './routes/users'
 
 export interface Env {
   DB: D1Database
@@ -11,41 +13,29 @@ export default {
     const url = new URL(request.url)
     const pathname = url.pathname
 
-    // CORS headers
-    const corsHeaders = {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    }
-
     if (request.method === 'OPTIONS') {
-      return new Response(null, { headers: corsHeaders })
+      return handleOptions()
     }
 
     try {
       let response: Response
 
-      // Route matching
       if (pathname === '/api/health' || pathname === '/api/health/') {
         response = await healthRouter(request, env)
       } else if (pathname.startsWith('/api/auth/')) {
-        // TODO: auth router
-        response = new Response(JSON.stringify({ error: 'Not implemented' }), { status: 501 })
+        response = await authRouter(request, env)
       } else if (pathname.startsWith('/api/users/')) {
-        // TODO: users router
-        response = new Response(JSON.stringify({ error: 'Not implemented' }), { status: 501 })
-      } else if (pathname.startsWith('/api/activities/')) {
-        // TODO: activities router
-        response = new Response(JSON.stringify({ error: 'Not implemented' }), { status: 501 })
-      } else if (pathname.startsWith('/api/posts/')) {
-        // TODO: posts router
-        response = new Response(JSON.stringify({ error: 'Not implemented' }), { status: 501 })
+        response = await usersRouter(request, env)
       } else {
-        response = new Response(JSON.stringify({ error: 'Not found' }), { status: 404 })
+        response = new Response(JSON.stringify({ error: 'Not found' }), {
+          status: 404,
+          headers: { 'Content-Type': 'application/json' },
+        })
       }
 
-      // Add CORS headers
-      Object.entries(corsHeaders).forEach(([key, value]) => {
+      // Add CORS headers to all responses
+      const headers = corsHeaders()
+      Object.entries(headers).forEach(([key, value]) => {
         response.headers.set(key, value)
       })
 
@@ -54,7 +44,10 @@ export default {
       console.error('Unhandled error:', err)
       return new Response(
         JSON.stringify({ error: 'Internal server error' }),
-        { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+        {
+          status: 500,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders() },
+        }
       )
     }
   },

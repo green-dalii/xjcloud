@@ -2,7 +2,9 @@
 
 import { useState, useCallback, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useRouter } from 'next/navigation'
 import SwipeCard from './SwipeCard'
+import { useAuth } from '@/lib/auth-context'
 import type { ActivityCard } from '@/lib/data/mock-activities'
 
 interface CardStackProps {
@@ -15,6 +17,8 @@ interface CardStackProps {
 type SwipeAction = { id: string; direction: 'left' | 'right' | 'down' }
 
 export default function CardStack({ cards, onShowAll, onShowSaved, onNavigateToHost }: CardStackProps) {
+  const { user } = useAuth()
+  const router = useRouter()
   const [currentIndex, setCurrentIndex] = useState(0)
   const [actions, setActions] = useState<SwipeAction[]>([])
   const [exitingDirection, setExitingDirection] = useState<'left' | 'right' | 'down'>('left')
@@ -132,6 +136,18 @@ export default function CardStack({ cards, onShowAll, onShowSaved, onNavigateToH
             >
               展示全部结果
             </motion.button>
+
+            {!user && (
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => router.push('/login')}
+                className="w-full font-ui text-sm tracking-wider rounded-full"
+                style={{ padding: '12px 24px', background: 'rgba(201,169,110,0.1)', color: '#c9a96e', border: '1px solid rgba(201,169,110,0.25)', cursor: 'pointer' }}
+              >
+                没有合适的，尝试注册/登录获取更精准的匹配推荐
+              </motion.button>
+            )}
 
             {hasSaved && (
               <motion.button

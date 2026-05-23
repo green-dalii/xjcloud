@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { useSession, signOut } from 'next-auth/react'
+import { useAuth } from '@/lib/auth-context'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const NAV_ITEMS = [
@@ -16,7 +16,7 @@ const NAV_ITEMS = [
 export function Navbar() {
   const router = useRouter()
   const pathname = usePathname()
-  const { data: session, status } = useSession()
+  const { user, logout } = useAuth()
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
 
@@ -122,7 +122,7 @@ export function Navbar() {
 
           {/* Desktop auth */}
           <div className="hidden md:flex items-center gap-3">
-            {status === 'authenticated' && session?.user ? (
+            {user ? (
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => router.push('/profile')}
@@ -144,17 +144,17 @@ export function Navbar() {
                       fontFamily: 'var(--font-ui)',
                     }}
                   >
-                    {session.user.name?.[0] || session.user.email?.[0] || 'U'}
+                    {user.name?.[0] || user.email?.[0] || 'U'}
                   </div>
                   <span
                     className="font-ui text-xs"
                     style={{ color: mutedColor }}
                   >
-                    {session.user.name || session.user.email?.split('@')[0]}
+                    {user.name || user.email?.split('@')[0]}
                   </span>
                 </button>
                 <button
-                  onClick={() => signOut({ callbackUrl: '/' })}
+                  onClick={() => { logout(); router.push('/') }}
                   className="font-ui text-xs tracking-wider cursor-pointer transition-colors duration-300"
                   style={{ color: mutedColor, background: 'none', border: 'none' }}
                 >
@@ -262,7 +262,7 @@ export function Navbar() {
 
                 {/* Mobile auth */}
                 <div className="mt-4 pt-4" style={{ borderTop: '1px solid rgba(0,0,0,0.08)' }}>
-                  {status === 'authenticated' && session?.user ? (
+                  {user ? (
                     <div className="flex items-center justify-between">
                       <button
                         onClick={() => { router.push('/profile'); setMobileOpen(false) }}
@@ -284,14 +284,14 @@ export function Navbar() {
                             fontFamily: 'var(--font-ui)',
                           }}
                         >
-                          {session.user.name?.[0] || session.user.email?.[0] || 'U'}
+                          {user.name?.[0] || user.email?.[0] || 'U'}
                         </div>
                         <span className="font-ui text-sm" style={{ color: 'var(--bg-ink)' }}>
-                          {session.user.name || session.user.email?.split('@')[0]}
+                          {user.name || user.email?.split('@')[0]}
                         </span>
                       </button>
                       <button
-                        onClick={() => { signOut({ callbackUrl: '/' }); setMobileOpen(false) }}
+                        onClick={() => { logout(); router.push('/'); setMobileOpen(false) }}
                         className="font-ui text-xs tracking-wider"
                         style={{ color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer' }}
                       >
