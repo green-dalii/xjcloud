@@ -5,7 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.3.8] - 2026-05-23
+## [0.3.9] - 2026-05-24
+
+### Added
+- **TypewriterText 组件** — 可复用打字机动效组件（`components/shared/TypewriterText.tsx`）
+  - 逐字打字 + 中途暂停 + 完成后回调（`onDone`）
+  - 光标闪烁（金色常驻光标）
+  - `breakAtIndex` 支持移动端指定位置换行
+- **首页动画链** — 打字机完成 → 副标题淡入 → CTA 按钮淡入 → 无限抖动循环
+  - 打字机「开启一种」停顿 1s 后继续
+  - 副标题 "简单 · 美好" 1.2s 淡入
+  - CTA 按钮 0.8s 淡入
+- **CTA 按钮无限抖动循环** — 3.5s 静止 → 0.5s 高频低幅横向震动 → 无限循环
+
+### Changed
+- **CTA 按钮重设计为机械键帽风格** — 与打字机主题统一
+  - 6 层 box-shadow 侧壁堆叠 3D 效果
+  - 5 段渐变顶面（麦金色系）
+  - 按压触底：translateY(5px) + 侧壁塌陷 + 深色内阴影
+  - 释放：after 伪元素环形脉冲扩散
+  - Hover：上浮 translateY(-2px) + 8 层侧壁
+- **首页 Hero 副标题** — 字体加大加粗，紧跟打字机完成后出现
+- **移动端打字机标题** — 「开启一种」后换行再打「新的生活方式」
+- **移动端双入口面板高度缩小约 5%** — 50vh → 47.5vh，min-height 380px → 360px
 
 ### Added
 - **首页 Hero 首屏** — 双屏滚动设计，新增全屏沉浸式 Hero section

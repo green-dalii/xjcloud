@@ -289,34 +289,139 @@
     letter-spacing: 0.08em;
     margin-bottom: 48px;
   }
+  /* ── Mechanical Keycap CTA ── */
   .landing-hero-cta {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    padding: 16px 40px;
-    background: var(--color-wheat);
+    justify-content: center;
+    padding: 13px 38px 15px;
+    background: linear-gradient(180deg,
+      #e4ce9e 0%,
+      #dac084 20%,
+      #cfae72 50%,
+      #c2a060 80%,
+      #b89548 100%
+    );
     color: var(--bg-ink);
     border: none;
-    border-radius: var(--radius-pill);
+    border-radius: 8px;
     font-family: var(--font-ui);
     font-size: 17px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
+    font-weight: 600;
+    letter-spacing: 0.12em;
     cursor: pointer;
-    transition: all 0.35s ease;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+    text-decoration: none;
+
+    /* 键帽3D:
+       1. 顶面内凹阴影 — 模拟真实的凹陷键帽顶面
+       2. 顶部高光边缘 — 模拟倒角受光面
+       3. 多层侧壁 — 每层1px的堆叠创造实体厚度感
+       4. 底部环境投影
+    */
+    box-shadow:
+      /* 顶面凹陷 */
+      0 3px 6px rgba(0, 0, 0, 0.08) inset,
+      0 -2px 4px rgba(255, 255, 255, 0.15) inset,
+      /* 倒角高光边 */
+      0 1px 0 rgba(255, 255, 255, 0.35) inset,
+      /* 侧壁实体 — 6层1px堆叠创造厚实感 */
+      0 1px 0 #8e6f30,
+      0 2px 0 #8e6f30,
+      0 3px 0 #8e6f30,
+      0 4px 0 #8e6f30,
+      0 5px 0 #8e6f30,
+      0 6px 0 #8e6f30,
+      /* 侧壁投影 */
+      0 6px 2px rgba(0, 0, 0, 0.1),
+      /* 底部环境光 */
+      0 14px 24px rgba(0, 0, 0, 0.22);
+
+    transition:
+      transform 0.08s cubic-bezier(0.25, 0.1, 0.25, 1),
+      box-shadow 0.08s cubic-bezier(0.25, 0.1, 0.25, 1);
   }
+
+  .landing-hero-cta::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: inherit;
+    background: transparent;
+    pointer-events: none;
+  }
+
+  /* Hover: 键帽微微上浮，侧壁更高 */
   .landing-hero-cta:hover {
-    background: #d4b87a;
     transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+    box-shadow:
+      0 3px 6px rgba(0, 0, 0, 0.06) inset,
+      0 -2px 4px rgba(255, 255, 255, 0.18) inset,
+      0 1px 0 rgba(255, 255, 255, 0.4) inset,
+      0 1px 0 #8e6f30,
+      0 2px 0 #8e6f30,
+      0 3px 0 #8e6f30,
+      0 4px 0 #8e6f30,
+      0 5px 0 #8e6f30,
+      0 6px 0 #8e6f30,
+      0 7px 0 #8e6f30,
+      0 8px 0 #8e6f30,
+      0 8px 2px rgba(0, 0, 0, 0.12),
+      0 18px 28px rgba(0, 0, 0, 0.28);
   }
-  .landing-hero-cta-arrow {
-    display: inline-flex;
-    transition: transform 0.3s ease;
+
+  /* PRESS — 键帽触底，侧壁几乎完全塌陷 */
+  .landing-hero-cta:active {
+    transform: translateY(5px);
+    background: linear-gradient(180deg,
+      #b89548 0%,
+      #a8843a 25%,
+      #9a7b3a 55%,
+      #8a6b28 100%
+    );
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.06) inset,
+      0 4px 10px rgba(0, 0, 0, 0.2) inset,
+      0 1px 0 #6a4b10,
+      0 1px 3px rgba(0, 0, 0, 0.18);
+    transition:
+      transform 0.04s cubic-bezier(0.25, 0.1, 0.25, 1),
+      box-shadow 0.04s cubic-bezier(0.25, 0.1, 0.25, 1);
   }
-  .landing-hero-cta:hover .landing-hero-cta-arrow {
-    transform: translateY(3px);
+
+  /* Release: actuator ring pulse */
+  .landing-hero-cta.released::after {
+    animation: ctaRingPulse 0.5s ease-out forwards;
+  }
+
+  @keyframes ctaRingPulse {
+    0%   { box-shadow: 0 0 0 0 rgba(201, 169, 110, 0.5); }
+    100% { box-shadow: 0 0 0 20px rgba(201, 169, 110, 0); }
+  }
+
+  /* Shiver: keycap wobble — horizontal-only, no rotation */
+  .landing-hero-cta.shiver {
+    animation: ctaShiver 0.5s ease-out;
+  }
+
+  @keyframes ctaShiver {
+    0%   { transform: translateX(0); }
+    4%   { transform: translateX(-4px); }
+    8%   { transform: translateX(4px); }
+    12%  { transform: translateX(-4px); }
+    16%  { transform: translateX(3.5px); }
+    20%  { transform: translateX(-3.5px); }
+    24%  { transform: translateX(3px); }
+    28%  { transform: translateX(-3px); }
+    32%  { transform: translateX(2.5px); }
+    36%  { transform: translateX(-2px); }
+    40%  { transform: translateX(1.5px); }
+    44%  { transform: translateX(-1px); }
+    48%  { transform: translateX(0.5px); }
+    52%  { transform: translateX(0); }
+    100% { transform: translateX(0); }
   }
 
   /* Scroll-down hint */
@@ -597,7 +702,7 @@
       margin-bottom: 36px;
     }
     .landing-hero-cta {
-      padding: 14px 32px;
+      padding: 12px 30px 14px;
       font-size: 16px;
     }
     .landing-hero-hint {
@@ -619,8 +724,8 @@
     }
     .landing-panel {
       flex: none !important;
-      height: 50vh;
-      min-height: 380px;
+      height: 47.5vh;
+      min-height: 360px;
     }
     .landing-avatars { top: 20px; }
     .landing-avatars-left  { left: 20px; }

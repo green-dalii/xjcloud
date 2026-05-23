@@ -2,20 +2,57 @@
 
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
+import TypewriterText from '@/components/shared/TypewriterText'
 
 export default function LandingPage() {
   const router = useRouter()
   const [loaded, setLoaded] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const [taglineVisible, setTaglineVisible] = useState(false)
+  const [ctaShiver, setCtaShiver] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const leftVideoRef = useRef<HTMLVideoElement>(null)
   const rightVideoRef = useRef<HTMLVideoElement>(null)
   const panelsRef = useRef<HTMLDivElement>(null)
+  const ctaRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     setMounted(true)
+    setIsMobile(window.innerWidth <= 768)
+    const onResize = () => setIsMobile(window.innerWidth <= 768)
+    window.addEventListener('resize', onResize)
     const t = setTimeout(() => setLoaded(true), 150)
-    return () => clearTimeout(t)
+    return () => {
+      clearTimeout(t)
+      window.removeEventListener('resize', onResize)
+    }
   }, [])
+
+  // Infinite shiver loop: stable 3.5s → shiver 0.5s → repeat, after button appears
+  useEffect(() => {
+    if (!taglineVisible) return
+    let cancelled = false
+
+    const shiverCycle = () => {
+      if (cancelled) return
+      setTimeout(() => {
+        if (cancelled) return
+        setCtaShiver(true)
+        setTimeout(() => {
+          if (cancelled) return
+          setCtaShiver(false)
+          shiverCycle()
+        }, 500)
+      }, 3500)
+    }
+
+    const initial = setTimeout(shiverCycle, 1200)
+
+    return () => {
+      cancelled = true
+      clearTimeout(initial)
+    }
+  }, [taglineVisible])
 
   useEffect(() => {
     if (!mounted) return
@@ -24,7 +61,18 @@ export default function LandingPage() {
   }, [mounted])
 
   const scrollToPanels = () => {
-    panelsRef.current?.scrollIntoView({ behavior: 'smooth' })
+    // Delay scroll so the release bounce animation plays out visibly (~400ms)
+    setTimeout(() => {
+      panelsRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }, 400)
+  }
+
+  // Mechanical release: ring pulse only, CSS handles the spring-back
+  const handleCtaUp = () => {
+    const btn = ctaRef.current
+    if (!btn) return
+    btn.classList.add('released')
+    setTimeout(() => btn.classList.remove('released'), 600)
   }
 
   if (!mounted) {
@@ -46,14 +94,37 @@ export default function LandingPage() {
             transition: 'all 1s cubic-bezier(0.16, 1, 0.3, 1)',
           }}
         >
-          <h1 className="landing-hero-slogan">
-            开启一种<br className="md:hidden" />新的生活方式
-          </h1>
-          <p className="landing-hero-sub">
+          <TypewriterText
+            text="开启一种新的生活方式"
+            pauseAtIndex={4}
+            breakAtIndex={isMobile ? 4 : undefined}
+            midPauseMs={1000}
+            className="landing-hero-slogan"
+            onDone={() => setTaglineVisible(true)}
+          />
+          <p
+            className="landing-hero-sub"
+            style={{
+              opacity: taglineVisible ? 1 : 0,
+              transform: taglineVisible ? 'translateY(0)' : 'translateY(16px)',
+              transition: 'opacity 1.2s ease, transform 1.2s cubic-bezier(0.16, 1, 0.3, 1)',
+            }}
+          >
             简单 · 美好
           </p>
-          <button className="landing-hero-cta" onClick={scrollToPanels}>
-            出发~ 🚀
+          <button
+            className={`landing-hero-cta${ctaShiver ? ' shiver' : ''}`}
+            ref={ctaRef}
+            onClick={scrollToPanels}
+            onMouseUp={handleCtaUp}
+            onTouchEnd={handleCtaUp}
+            style={{
+              opacity: taglineVisible ? 1 : 0,
+              transform: taglineVisible ? 'translateY(0)' : 'translateY(16px)',
+              transition: 'opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+            }}
+          >
+            出发
           </button>
         </div>
 
