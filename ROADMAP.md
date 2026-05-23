@@ -58,6 +58,7 @@
 - [ ] 微信小程序适配
 - [ ] Cloudflare D1 迁移
 - [ ] API 开放（供第三方对接）
+- [ ] Cloudflare Workers 后端（替换当前前端 Mock 数据）
 
 ---
 

@@ -8,11 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Cloudflare Pages 静态导出配置**
+  - `next.config.mjs` — `output: 'export'`, `distDir: 'dist'`, `images.unoptimized: true`, `trailingSlash: true`
+  - 日历日视图动态路由 — 添加 `generateStaticParams()`，预渲染 57 个有活动的日期页面
+  - API 路由临时移至 `app/_api-backup/`（静态导出不支持 API 路由，未来 Workers 后端替代）
+  - 构建验证通过：68 个静态页面成功生成
 - **环境变量配置体系**
   - `.env.example` — 环境变量模板，包含 NextAuth、数据库、LLM、Cloudflare 配置项及注释说明
   - `.env.local` — 本地开发环境变量（已配置 `AUTH_SECRET`，被 `.gitignore` 保护不提交）
   - `AUTH_SECRET` 集成 — `lib/auth.ts` 从环境变量读取，解决 `MissingSecret` 错误
   - `DATABASE_URL` 集成 — `lib/db/client.ts` 和 `drizzle.config.ts` 从环境变量读取数据库路径，默认回退 `./xjcloud.db`
+
+### Fixed
+- **Profile 页面移除后端 API 依赖** — 静态导出后 `/api/users/me` 端点不存在，改为从 `useSession` 直接获取用户信息
+- **删除 `public/` 根目录重复图片** — `featured-jingdezhen.jpg`、`featured-tonglu.jpg` 与 `public/images/` 重复
 
 ### Security
 - **`.gitignore` 强化隐私保护**

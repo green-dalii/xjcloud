@@ -2,29 +2,13 @@
 
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
 import { UserInfo } from '@/components/profile/UserInfo'
 
 export default function ProfilePage() {
   const { data: session, status } = useSession()
   const router = useRouter()
-  const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    if (status === 'authenticated') {
-      fetch('/api/users/me')
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.success) setUser(data.data)
-        })
-        .finally(() => setLoading(false))
-    } else if (status === 'unauthenticated') {
-      setLoading(false)
-    }
-  }, [status])
-
-  if (status === 'loading' || loading) {
+  if (status === 'loading') {
     return (
       <div className="page-bg" style={{ minHeight: '100vh', paddingTop: 80 }}>
         <div className="max-w-[600px] mx-auto px-6 py-8 text-center font-ui" style={{ color: 'var(--text-secondary)' }}>
@@ -59,10 +43,19 @@ export default function ProfilePage() {
     backdropFilter: 'blur(8px)',
   }
 
+  // 静态导出阶段：从 session 提取用户信息，后端 API 暂未启用
+  const user = {
+    name: session.user?.name || session.user?.email?.split('@')[0] || '用户',
+    email: session.user?.email || '',
+    role: session.user?.role || 'participant',
+    riceBalance: 0,
+    createdAt: new Date().toISOString(),
+  }
+
   return (
     <div className="page-bg" style={{ minHeight: '100vh', paddingTop: 80 }}>
       <div className="max-w-[600px] mx-auto px-6 py-8 space-y-6">
-        {user && <UserInfo user={user} />}
+        <UserInfo user={user} />
 
         <div style={cardStyle}>
           <h3 className="font-serif mb-4" style={{ fontSize: 16, color: 'var(--text-heading)', fontWeight: 500 }}>

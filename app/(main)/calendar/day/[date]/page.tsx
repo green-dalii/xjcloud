@@ -7,6 +7,12 @@ interface DayPageProps {
   params: { date: string }
 }
 
+// 静态导出：预渲染所有有活动的日期页面
+export function generateStaticParams() {
+  const eventsMap = getEventsByDate()
+  return Object.keys(eventsMap).map((date) => ({ date }))
+}
+
 function formatDate(dateStr: string) {
   const [y, m, d] = dateStr.split('-').map(Number)
   const date = new Date(y, m - 1, d)
