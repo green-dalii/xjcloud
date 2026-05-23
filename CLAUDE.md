@@ -5,14 +5,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## 常用命令
 
 ```bash
-# 启动开发服务器（端口 3001）
+# 本地开发一键启动（前端 + Workers 后端，推荐）
+pnpm dev:local
+# → Workers → http://localhost:8787
+# → Next.js → http://localhost:3001
+
+# 仅启动前端（端口 3001）
 PORT=3001 pnpm dev
+
+# 仅启动 Workers 本地服务器（D1 模拟读写，端口 8787）
+cd workers && npx wrangler dev --local
 
 # 编译检查（静态导出，输出到 dist/）
 PORT=3001 pnpm -w build
-
-# 启动 Workers 本地服务器（D1 模拟读写，端口 8787）
-cd workers && npx wrangler dev --local
 
 # 数据库迁移
 pnpm db:push
