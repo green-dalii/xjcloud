@@ -6,16 +6,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 # 启动开发服务器（端口 3001）
-PORT=3001 npm run dev
+PORT=3001 pnpm dev
 
 # 编译检查（静态导出，输出到 dist/）
-PORT=3001 npm run build
+PORT=3001 pnpm build
 
 # 数据库迁移
-npm run db:push
+pnpm db:push
 
 # Lint 检查
-npm run lint
+pnpm lint
 ```
 
 ## 项目概述
