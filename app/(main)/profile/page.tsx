@@ -679,10 +679,10 @@ export default function ProfilePage() {
             <span className="text-xl">✨</span>
             <div className="flex-1">
               <p className="font-ui text-sm" style={{ color: 'var(--text-heading)' }}>
-                完善个人资料，解锁精准推荐
+                完善个人资料，开启精彩体验
               </p>
               <p className="font-ui text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
-                填写兴趣方向、所在地、技能等信息，我们将为你匹配最合适的乡建活动
+                填写兴趣方向、所在地、技能等信息，我们将为你提供更优质的服务
               </p>
             </div>
             <button

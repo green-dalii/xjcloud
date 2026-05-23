@@ -430,10 +430,10 @@ export default function MatchPage() {
             className="font-serif mb-4"
             style={{ fontSize: 'clamp(22px, 4vw, 32px)', fontWeight: 300, color: 'var(--text-heading)' }}
           >
-            需要登录才能使用精准匹配
+            需要登录才能开始探索
           </h2>
           <p className="font-ui mb-6" style={{ color: 'var(--text-secondary)', fontSize: 14 }}>
-            登录后，我们将根据你的兴趣和所在地推荐最合适的乡建活动
+            登录后，我们将为你提供更优质的服务
           </p>
           <button onClick={() => router.push('/login')} className="btn-primary">
             去登录
@@ -461,12 +461,12 @@ export default function MatchPage() {
             className="font-serif mb-4"
             style={{ fontSize: 'clamp(22px, 4vw, 32px)', fontWeight: 300, color: 'var(--text-heading)' }}
           >
-            完善资料，获得精准推荐
+            完善资料，开启精彩体验
           </h2>
           <p className="font-ui mb-8" style={{ color: 'var(--text-secondary)', fontSize: 14, lineHeight: 1.7 }}>
             我们需要了解你的兴趣方向、所在地等信息，
             <br />
-            才能为你推荐最合适的乡建活动
+            才能为你提供更优质的服务
           </p>
           <button onClick={() => router.push('/profile')} className="btn-primary">
             去完善
