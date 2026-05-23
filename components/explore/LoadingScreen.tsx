@@ -1,23 +1,23 @@
 'use client'
 
-import { motion, AnimatePresence } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
+import { useState } from 'react'
 
 const LOADING_TEXTS = [
-  '正在分析你的偏好...',
-  '正在为你匹配最合适的乡建体验...',
-  '正在筛选优质活动...',
+  '搓搓期待的小手，你的专属「周末逃跑计划」正一路小跑向你奔来…',
+  '正在努力为你切断工作群的信号，生成专属避世指南…',
+  '别急，你的乡村乌托邦正在梳妆打扮，马上就出来见你啦…',
+  '正在把你的烦恼一脚踢飞，为你打包一份纯粹的快乐…',
+  '正在为你打包山风、晚霞和一整天的松弛感…',
+  '村口的大黄狗正在帮你叼来最新的活动计划，请耐心等它跑过那片草地…',
 ]
 
-export default function LoadingScreen() {
-  const [textIndex, setTextIndex] = useState(0)
+function getRandomText() {
+  return LOADING_TEXTS[Math.floor(Math.random() * LOADING_TEXTS.length)]
+}
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTextIndex((i) => (i + 1) % LOADING_TEXTS.length)
-    }, 1200)
-    return () => clearInterval(interval)
-  }, [])
+export default function LoadingScreen() {
+  const [text] = useState(() => getRandomText())
 
   return (
     <div
@@ -58,20 +58,16 @@ export default function LoadingScreen() {
       </motion.div>
 
       {/* Animated text */}
-      <div className="h-8 md:h-10 flex items-center justify-center">
-        <AnimatePresence mode="wait">
-          <motion.p
-            key={textIndex}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="font-ui text-sm md:text-base text-center"
-            style={{ color: 'rgba(245,241,234,0.6)' }}
-          >
-            {LOADING_TEXTS[textIndex]}
-          </motion.p>
-        </AnimatePresence>
+      <div className="min-h-[3rem] md:min-h-[3.5rem] flex items-center justify-center max-w-md px-4">
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="font-ui text-sm md:text-base text-center leading-relaxed"
+          style={{ color: 'rgba(245,241,234,0.7)' }}
+        >
+          {text}
+        </motion.p>
       </div>
 
       {/* Decorative dots */}

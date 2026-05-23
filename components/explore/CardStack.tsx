@@ -47,6 +47,12 @@ export default function CardStack({ cards, onShowAll, onShowSaved, onNavigateToH
 
   const handleSwipe = useCallback((direction: 'left' | 'right' | 'down') => {
     if (!currentCard) return
+
+    if (direction === 'down') {
+      setShowSaved(true)
+      setTimeout(() => setShowSaved(false), 600)
+    }
+
     setExitingDirection(direction)
     recordAction(direction)
     advanceCard()
@@ -166,13 +172,13 @@ export default function CardStack({ cards, onShowAll, onShowSaved, onNavigateToH
 
   return (
     <div className="relative w-full min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#2d2a26] to-[#3a3630]">
-      {/* Card container — 整体放大在这里控制 */}
+      {/* Card container — 整体放大和宽度扩展在这里控制 */}
       <div
-        className={`relative w-[90%] sm:w-[85%] md:w-full mx-auto transition-transform duration-700 ease-out ${isExpanded ? 'scale-100 md:scale-[1.12]' : 'scale-100'}`}
+        className={`relative w-[90%] sm:w-[85%] mx-auto transition-all duration-700 ease-out ${isExpanded && !isFlipped ? 'scale-100 md:scale-[1.12]' : 'scale-100'}`}
         style={{
-          height: 'calc(100vh - 210px)',
+          height: 'calc(100vh - 240px)',
           maxHeight: 540,
-          maxWidth: 420,
+          maxWidth: isFlipped && isExpanded ? 680 : 420,
         }}
       >
         {/* Third layer */}

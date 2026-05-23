@@ -15,11 +15,35 @@ export interface ActivityCard {
 export type Gender = 'male' | 'female'
 export type TravelMode = 'solo' | 'group'
 export type CompanionType = 'partner' | 'friend' | 'parent' | 'child' | 'other'
+export type ActivityInterest = 'weekend' | 'nearby' | 'family' | 'food' | 'craft' | 'culture' | 'solo' | 'friends'
 
 export interface Filters {
   gender?: Gender
   travelMode?: TravelMode
   companionType?: CompanionType
+  interests?: ActivityInterest[]
+}
+
+export const INTEREST_OPTIONS: { value: ActivityInterest; label: string; subtitle: string; desc: string; emoji: string }[] = [
+  { value: 'weekend', label: '周末想出走', subtitle: '周末短逃离', desc: '不用请假，换个地方把自己找回来。', emoji: '🏕️' },
+  { value: 'nearby', label: '附近也有新鲜事', subtitle: '附近探索', desc: '不用远行，城市边上也藏着生活彩蛋。', emoji: '🚶' },
+  { value: 'family', label: '带孩子去撒欢', subtitle: '亲子自然', desc: '摸泥巴、认植物、看小动物，比补习班开心。', emoji: '🌱' },
+  { value: 'food', label: '去吃一顿当地饭', subtitle: '在地美食', desc: '不只填饱肚子，也尝尝一个地方的脾气。', emoji: '🍜' },
+  { value: 'craft', label: '想动手做点什么', subtitle: '手作体验', desc: '陶艺、木工、编织，给双手找点正事。', emoji: '🎨' },
+  { value: 'culture', label: '跟着本地人走走', subtitle: '人文探访', desc: '少走网红路线，多听一点真正的故事。', emoji: '📖' },
+  { value: 'solo', label: '一个人也很好', subtitle: '独处放空', desc: '找个安静地方发发呆，没人问你"然后呢"。', emoji: '🍵' },
+  { value: 'friends', label: '别再说改天了', subtitle: '朋友聚会', desc: '一顿饭、一场露营，把群聊变成见面。', emoji: '🍻' },
+]
+
+export const INTEREST_TAG_MAP: Record<ActivityInterest, string[]> = {
+  weekend: ['自然', '手作', '疗愈', '露营', '徒步'],
+  nearby: ['社交', '文化', '老宅改造'],
+  family: ['亲子友好', '自然', '采摘', '研学'],
+  food: ['美食', '乡宴', '家宴', '地方菜'],
+  craft: ['手作', '陶艺', '木工', '扎染', '非遗'],
+  culture: ['文化', '老宅改造', '研学'],
+  solo: ['疗愈', '自然', '禅修', '瑜伽', '茶艺'],
+  friends: ['社交', '聚会', '音乐', '露营'],
 }
 
 export const ALL_ACTIVITIES: ActivityCard[] = [
@@ -205,6 +229,20 @@ export function filterActivities(filters: Filters): ActivityCard[] {
         ? a.matchScore + 15
         : a.matchScore,
     }))
+  }
+
+  // Interest-based scoring
+  if (filters.interests && filters.interests.length > 0) {
+    result = result.map(a => {
+      let boost = 0
+      for (const interest of filters.interests!) {
+        const tags = INTEREST_TAG_MAP[interest]
+        if (tags && a.tags.some(t => tags.includes(t))) {
+          boost += 6
+        }
+      }
+      return { ...a, matchScore: a.matchScore + boost }
+    })
   }
 
   return result.sort((a, b) => b.matchScore - a.matchScore)

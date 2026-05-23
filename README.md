@@ -6,11 +6,11 @@
 
 ```bash
 # 安装依赖
-npm install
+pnpm install
 # 数据库迁移
-npm run db:push
+pnpm db:push
 # 启动开发服务器
-PORT=3001 npm run dev
+PORT=3001 pnpm dev
 # 访问 http://localhost:3001
 ```
 
@@ -62,7 +62,9 @@ app/
   (main)/
     page.tsx            # 首页 LandingPage（全屏沉浸，双面板+视频背景）
     explore/
-      page.tsx          # 探索页（引导问卷 → Loading → 堆叠卡片 → 列表）
+      page.tsx          # 探索页（4步引导问卷 → Loading → 堆叠卡片）
+    activities/
+      page.tsx          # 全部活动全览页（独立筛选：城市tab+搜索+排序+筛选面板）
     host/
       page.tsx          # 共建者页
     square/
@@ -75,12 +77,12 @@ app/
   api/                  # API 路由
 components/
   layout/
-    NavbarFooter.tsx    # Navbar（滚动透明→毛玻璃） + Footer
+    NavbarFooter.tsx    # Navbar（滚动透明→毛玻璃）+ Footer
   explore/
-    GuideScreen.tsx     # 3步引导问卷
-    LoadingScreen.tsx   # 匹配加载动画
+    GuideScreen.tsx     # 4步引导问卷（含Bento多选）
+    LoadingScreen.tsx   # 匹配加载动画（随机趣味文案）
     CardStack.tsx       # 堆叠卡片管理器
-    SwipeCard.tsx       # 可拖拽单卡片
+    SwipeCard.tsx       # 可拖拽单卡片（翻转+宽度扩展）
     ResultList.tsx      # 结果列表
   square/
     SquareFeed.tsx      # UGC 帖子流（Tab + 帖子卡片 + 操作栏）
@@ -91,7 +93,7 @@ components/
     EventDetailModal.tsx    # 活动详情弹窗
 lib/
   data/
-    mock-activities.ts      # 20 条乡建活动 mock 数据
+    mock-activities.ts      # 20 条乡建活动 mock 数据 + INTEREST_OPTIONS + INTEREST_TAG_MAP
     mock-posts.ts           # UGC 帖子 mock 数据
     mock-calendar-events.ts # 60 个日历活动 mock 数据
   db/                   # Drizzle schema + client
@@ -106,7 +108,8 @@ public/
 | 路由 | 描述 | 状态 |
 |------|------|------|
 | `/` | 首页 — 全屏双面板视频沉浸 | ✅ |
-| `/explore` | 探索 — 引导问卷 + 卡片堆叠 + 列表 | ✅ |
+| `/explore` | 探索 — 4步引导问卷 + Bento多选 + 卡片堆叠 | ✅ |
+| `/activities` | 全部活动 — 独立全览页 + 筛选工具栏 | ✅ |
 | `/host` | 共建者 — 视频 Hero + 案例展示 | ✅ |
 | `/calendar` | 活动日历 — 月视图 + 地点筛选 | ✅ |
 | `/calendar/day/[date]` | 日视图 — 单日活动详情 | ✅ |

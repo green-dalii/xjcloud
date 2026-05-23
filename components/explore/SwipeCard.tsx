@@ -98,7 +98,7 @@ export default function SwipeCard({
       transition={{ type: 'spring', stiffness: 300, damping: 25, mass: 0.8 }}
     >
       {/* 3D flip wrapper */}
-      <div className="w-full h-full" style={{ perspective: 1000 }}>
+      <div className="w-full h-full" style={{ perspective: 1000, WebkitPerspective: 1000 }}>
         <motion.div
           animate={{
             rotateY: isFlipped ? 180 : 0,
@@ -108,11 +108,11 @@ export default function SwipeCard({
             rotateY: { type: 'spring', stiffness: 180, damping: 20 },
             scale: { type: 'spring', stiffness: 500, damping: 25 },
           }}
-          style={{ transformStyle: 'preserve-3d' }}
+          style={{ transformStyle: 'preserve-3d', WebkitTransformStyle: 'preserve-3d' }}
           className="w-full h-full relative"
         >
           {/* Front face */}
-          <div className="absolute inset-0" style={{ backfaceVisibility: 'hidden' }}>
+          <div className="absolute inset-0" style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
           {/* Image */}
           <div className="absolute inset-0">
             <Image
@@ -141,10 +141,10 @@ export default function SwipeCard({
                 ✕
               </motion.div>
               <motion.div
-                className="absolute top-10 right-5 z-20 border-[3px] border-emerald-400 rounded-xl px-3 py-1 md:top-14 md:right-7 md:px-4 md:py-1.5"
-                style={{ opacity: likeOpacity, color: '#34d399', fontWeight: 700, fontSize: 22, letterSpacing: 2 }}
+                className="absolute top-10 right-5 z-20 border-[3px] border-gray-500 rounded-xl px-3 py-1 md:top-14 md:right-7 md:px-4 md:py-1.5"
+                style={{ opacity: likeOpacity, color: '#9ca3af', fontWeight: 700, fontSize: 18, letterSpacing: 1 }}
               >
-                ✓
+                跳过
               </motion.div>
               <motion.div
                 className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 border-[3px] border-amber-400 rounded-xl px-3 py-1 md:bottom-28 md:px-4 md:py-1.5"
@@ -193,12 +193,12 @@ export default function SwipeCard({
 
         {/* Back face - Detail */}
         <div
-          className="absolute inset-0 rounded-2xl flex flex-col"
-          style={{ transform: 'rotateY(180deg)', backfaceVisibility: 'hidden', background: '#2d2a26' }}
+          className="absolute inset-0 rounded-2xl flex flex-col md:flex-row"
+          style={{ transform: 'rotateY(180deg)', WebkitTransform: 'rotateY(180deg)', backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', background: '#2d2a26' }}
           onClick={() => isTop && onFlipBack?.()}
         >
-          {/* Image header */}
-          <div className="relative h-32 md:h-40 shrink-0">
+          {/* Image header — 桌面端变为左侧图片区 */}
+          <div className="relative h-32 md:h-auto md:w-[42%] shrink-0">
             <Image
               src={activity.image}
               alt={activity.title}
@@ -206,14 +206,14 @@ export default function SwipeCard({
               className="object-cover"
               draggable={false}
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#2d2a26]" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#2d2a26] md:bg-gradient-to-r md:from-transparent md:via-transparent md:to-[#2d2a26]" />
 
             {/* 已采纳印章 */}
             <motion.div
               initial={{ opacity: 0, scale: 1.6, rotate: 25 }}
               animate={{ opacity: 1, scale: 1, rotate: -10 }}
               transition={{ delay: 0.25, type: 'spring', stiffness: 180, damping: 12 }}
-              className="absolute top-4 right-4 md:top-5 md:right-5 z-20 flex items-center justify-center rounded-full border-[2.5px] border-dashed"
+              className="absolute top-4 right-4 md:top-5 md:left-5 md:right-auto z-20 flex items-center justify-center rounded-full border-[2.5px] border-dashed"
               style={{
                 width: 72,
                 height: 72,
@@ -228,7 +228,7 @@ export default function SwipeCard({
             </motion.div>
           </div>
 
-          {/* Detail content */}
+          {/* Detail content — 桌面端变为右侧内容区 */}
           <div className="flex-1 overflow-y-auto p-4 md:p-6">
             <h3
               className="font-serif mb-2"

@@ -5,28 +5,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.3.4] - 2026-05-23
 
 ### Added
-- **Cloudflare Pages 静态导出配置**
-  - `next.config.mjs` — `output: 'export'`, `distDir: 'dist'`, `images.unoptimized: true`, `trailingSlash: true`
-  - 日历日视图动态路由 — 添加 `generateStaticParams()`，预渲染 57 个有活动的日期页面
-  - API 路由临时移至 `app/_api-backup/`（静态导出不支持 API 路由，未来 Workers 后端替代）
-  - 构建验证通过：68 个静态页面成功生成
-- **环境变量配置体系**
-  - `.env.example` — 环境变量模板，包含 NextAuth、数据库、LLM、Cloudflare 配置项及注释说明
-  - `.env.local` — 本地开发环境变量（已配置 `AUTH_SECRET`，被 `.gitignore` 保护不提交）
-  - `AUTH_SECRET` 集成 — `lib/auth.ts` 从环境变量读取，解决 `MissingSecret` 错误
-  - `DATABASE_URL` 集成 — `lib/db/client.ts` 和 `drizzle.config.ts` 从环境变量读取数据库路径，默认回退 `./xjcloud.db`
+- **独立活动全览页面 (`/activities`)** — 独立于 explore 的完整活动浏览页面
+  - 筛选架构：城市 tab 常驻（一级分类）+ 搜索框 + 排序（综合/价格/匹配度）+ 筛选面板
+  - 筛选面板：移动端底部 sheet（y 轴滑入），桌面端右侧抽屉（x 轴滑入，360px）
+  - 面板内分类：时间（单选）、风格方向（可多选）、价格区间（单选）
+  - 已选条件 pill 显示，可逐个清除或一键重置，"查看 N 个结果"按钮
+  - 搜索实时过滤标题/地点/描述/标签
+  - 卡片响应式网格（1/2/3 列），stagger 入场动画，空状态处理
+- **Explore 引导问卷第 4 步** — 活动兴趣方向 Bento 多选
+  - 8 个方向（周末短逃离/附近探索/亲子自然/在地美食/手作体验/人文探访/独处放空/朋友聚会）
+  - Bento 不规则网格布局（3 行：7+5, 4+4+4, 3+6+3），每个卡片含 emoji + 标题 + subtitle + 选中展开 desc
+  - 零 CLS：固定高度 + desc 通过 opacity 切换
+- **趣味加载文案** — 6 条随机加载文案替代原机械文案（"搓搓期待的小手…"等）
+- **下滑收藏 toast** — 卡片下滑时显示黄色"已收藏"提示
+- **Navbar 新增"所有活动"入口** — 导航顺序：探索/所有活动/共建/活动日历/广场
 
-### Fixed
-- **Profile 页面移除后端 API 依赖** — 静态导出后 `/api/users/me` 端点不存在，改为从 `useSession` 直接获取用户信息
-- **删除 `public/` 根目录重复图片** — `featured-jingdezhen.jpg`、`featured-tonglu.jpg` 与 `public/images/` 重复
+### Changed
+- **Explore 引导问卷交互增强**
+  - 进度指示器（4 圆点）与"返回上一步"按钮同行显示，flex 三栏对齐
+  - 单人出行跳过同行身份选择，直接进入兴趣方向
+  - 第 4 步标题增加"（可多选）"提示
+  - 下一步按钮全宽居中
+  - Bento 元素高度缩小（88/96px），修复桌面端溢出
+- **CardStack 翻转优化** — 桌面端翻转后卡片宽度扩展（max-width: 680px），高度调整（calc(100vh - 240px)）
+- **Explore 跳转更新** — "跳过，看全部结果"和"展示全部结果"跳转到 `/activities` 独立页面
+- **SwipeCard iOS 修复** — 添加 `-webkit-` 前缀修复 iOS Safari 3D 翻转透明度问题
 
 ### Security
-- **`.gitignore` 强化隐私保护**
-  - 忽略 `.env`（无后缀）、`*.db`、`xjcloud.db`、`wrangler.toml`、`.wrangler/`、`*.key`、`*.secret`
-  - 将已追踪的 `xjcloud.db` 从 Git 历史移除（`git rm --cached`）
+- **数据层增强** — `INTEREST_TAG_MAP` 提升为模块级导出，供 activities 页面及 Workers 后端复用
+- **`Filters` 接口扩展** — 新增 `interests?: ActivityInterest[]` 多选字段
 
 ## [0.3.3] - 2026-05-23
 

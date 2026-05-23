@@ -7,8 +7,9 @@ import { motion, AnimatePresence } from 'framer-motion'
 
 const NAV_ITEMS = [
   { label: '探索', href: '/explore' },
-  { label: '日历', href: '/calendar' },
+  { label: '所有活动', href: '/activities' },
   { label: '共建', href: '/host' },
+  { label: '活动日历', href: '/calendar' },
   { label: '广场', href: '/square' },
 ]
 

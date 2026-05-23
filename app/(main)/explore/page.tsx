@@ -7,7 +7,7 @@ import LoadingScreen from '@/components/explore/LoadingScreen'
 import CardStack from '@/components/explore/CardStack'
 import ResultList from '@/components/explore/ResultList'
 import { filterActivities, ALL_ACTIVITIES } from '@/lib/data/mock-activities'
-import type { Filters } from '@/lib/data/mock-activities'
+import type { Filters, ActivityInterest } from '@/lib/data/mock-activities'
 
 export default function ExplorePage() {
   const router = useRouter()
@@ -27,37 +27,59 @@ export default function ExplorePage() {
   }, [phase])
 
   const handleSelect = useCallback((key: keyof Filters, value: string) => {
-    setFilters((prev) => ({ ...prev, [key]: value }))
+    if (key === 'interests') {
+      setFilters((prev) => {
+        const current = prev.interests || []
+        const exists = current.includes(value as ActivityInterest)
+        if (exists) {
+          return { ...prev, interests: current.filter((i) => i !== value) }
+        }
+        return { ...prev, interests: [...current, value as ActivityInterest] }
+      })
+    } else {
+      setFilters((prev) => ({ ...prev, [key]: value }))
+    }
   }, [])
 
-  const handleNext = useCallback(() => {
+  const handleNext = useCallback((key?: keyof Filters, value?: string) => {
+    let latestFilters = filters
+    if (key && value) {
+      latestFilters = { ...filters, [key]: value }
+      setFilters(latestFilters)
+    }
+
     if (guideStep === 1) {
       setGuideStep(2)
     } else if (guideStep === 2) {
-      const f = { ...filters, travelMode: filters.travelMode }
-      if (f.travelMode === 'solo') {
-        const filtered = filterActivities(f)
-        setCards(filtered)
-        setPhase('loading')
+      if (latestFilters.travelMode === 'solo') {
+        setGuideStep(4)
       } else {
         setGuideStep(3)
       }
     } else if (guideStep === 3) {
-      const filtered = filterActivities(filters)
+      setGuideStep(4)
+    } else if (guideStep === 4) {
+      const filtered = filterActivities(latestFilters)
       setCards(filtered)
       setPhase('loading')
     }
   }, [guideStep, filters])
 
+  const handlePrev = useCallback(() => {
+    if (guideStep === 4 && filters.travelMode === 'solo') {
+      setGuideStep(2)
+    } else if (guideStep > 1) {
+      setGuideStep(guideStep - 1)
+    }
+  }, [guideStep, filters])
+
   const handleSkip = useCallback(() => {
-    setCards(ALL_ACTIVITIES)
-    setPhase('list')
-  }, [])
+    router.push('/activities')
+  }, [router])
 
   const handleShowAll = useCallback(() => {
-    setCards(ALL_ACTIVITIES)
-    setPhase('list')
-  }, [])
+    router.push('/activities')
+  }, [router])
 
   const handleShowSaved = useCallback((savedIds: string[]) => {
     const savedCards = ALL_ACTIVITIES.filter((c) => savedIds.includes(c.id))
@@ -77,6 +99,7 @@ export default function ExplorePage() {
           filters={filters}
           onSelect={handleSelect}
           onNext={handleNext}
+          onPrev={handlePrev}
           onSkip={handleSkip}
           onAuth={() => router.push('/login')}
         />
