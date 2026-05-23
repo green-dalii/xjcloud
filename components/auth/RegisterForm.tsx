@@ -21,7 +21,7 @@ export function RegisterForm() {
 
     try {
       await register({ name, email, password, role })
-      router.push('/explore')
+      router.push('/match')
     } catch (err) {
       setError(err instanceof Error ? err.message : '网络错误')
     } finally {

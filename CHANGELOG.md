@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.6] - 2026-05-23
+
+### Added
+- **精确匹配页面 (`/match`)** — 登录用户专属的个性化匹配页
+  - 基于用户 Profile 的 `interests` 和 `location` 做精确匹配
+  - 利用 `INTEREST_TAG_MAP` 将兴趣方向映射为活动标签，计算匹配分数
+  - 未登录用户引导注册/登录
+  - 未填写 Profile 时提示完善个人资料
+- **Navbar "探索" 动态路由** — 已登录指向 `/match`，未登录指向 `/explore`
+
+### Changed
+- **Explore 页面** — 登录用户访问 `/explore` 自动重定向到 `/match`
+- **注册成功后跳转** — 从 `/explore` 改为 `/match`
+- **Session 机制全面统一** — `useSession`/`SessionProvider`/`signIn`/`signOut` 已从所有 `.tsx` 组件中完全移除
+
 ## [0.3.5] - 2026-05-23
 
 ### Added

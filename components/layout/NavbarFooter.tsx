@@ -6,7 +6,7 @@ import { useAuth } from '@/lib/auth-context'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const NAV_ITEMS = [
-  { label: '探索', href: '/explore' },
+  { label: '探索', href: '/explore', authHref: '/match' },
   { label: '所有活动', href: '/activities' },
   { label: '共建', href: '/host' },
   { label: '活动日历', href: '/calendar' },
@@ -22,6 +22,9 @@ export function Navbar() {
 
   const isHome = pathname === '/'
   const isAuthPage = pathname === '/login' || pathname === '/register'
+
+  const resolveHref = (item: typeof NAV_ITEMS[number]) =>
+    user ? (item.authHref || item.href) : item.href
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 60)
@@ -113,7 +116,7 @@ export function Navbar() {
                 key={item.label}
                 className="font-ui text-xs tracking-widest uppercase cursor-pointer transition-colors duration-500"
                 style={{ color: mutedColor, background: 'none', border: 'none' }}
-                onClick={() => router.push(item.href)}
+                onClick={() => router.push(resolveHref(item))}
               >
                 {item.label}
               </button>
@@ -247,14 +250,14 @@ export function Navbar() {
                     key={item.label}
                     className="font-ui text-sm tracking-wider py-3 text-left transition-colors duration-200"
                     style={{
-                      color: pathname === item.href ? 'var(--color-moss)' : 'var(--bg-ink)',
-                      fontWeight: pathname === item.href ? 600 : 400,
+                      color: pathname === resolveHref(item) ? 'var(--color-moss)' : 'var(--bg-ink)',
+                      fontWeight: pathname === resolveHref(item) ? 600 : 400,
                       background: 'none',
                       border: 'none',
                       borderBottom: '1px solid rgba(0,0,0,0.06)',
                       cursor: 'pointer',
                     }}
-                    onClick={() => { router.push(item.href); setMobileOpen(false) }}
+                    onClick={() => { router.push(resolveHref(item)); setMobileOpen(false) }}
                   >
                     {item.label}
                   </button>

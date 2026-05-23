@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { useAuth } from '@/lib/auth-context'
 import GuideScreen from '@/components/explore/GuideScreen'
 import LoadingScreen from '@/components/explore/LoadingScreen'
 import CardStack from '@/components/explore/CardStack'
@@ -11,10 +12,18 @@ import type { Filters, ActivityInterest } from '@/lib/data/mock-activities'
 
 export default function ExplorePage() {
   const router = useRouter()
+  const { user } = useAuth()
   const [phase, setPhase] = useState<'guide' | 'loading' | 'cards' | 'list'>('guide')
   const [guideStep, setGuideStep] = useState(1)
   const [filters, setFilters] = useState<Filters>({})
   const [cards, setCards] = useState(ALL_ACTIVITIES)
+
+  // Redirect logged-in users to /match
+  useEffect(() => {
+    if (user) {
+      router.replace('/match')
+    }
+  }, [user, router])
 
   // Auto-transition from loading to cards after delay
   useEffect(() => {
