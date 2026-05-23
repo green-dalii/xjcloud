@@ -496,7 +496,7 @@ export default function HostPage() {
   const hasMinimalProfile = !!(user.bio && user.phone && user.location && user.skills && user.skills.length > 0)
 
   if (!hasMinimalProfile) {
-    return <ProfilePrompt onGoProfile={() => router.push('/profile')} />
+    return <ProfilePrompt onGoProfile={() => router.push('/profile?section=edit')} />
   }
 
   if (phase === 'confirmed') {

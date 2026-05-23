@@ -817,39 +817,6 @@ export default function ProfilePage() {
   return (
     <div className="page-bg" style={{ minHeight: '100vh', paddingTop: 80 }}>
       <div className="max-w-[960px] mx-auto px-6 py-8">
-        {/* Profile completion prompt */}
-        {!hasDetails && activeSection !== 'edit' && (
-          <div
-            className="flex items-center gap-3 p-4 rounded-xl mb-6"
-            style={{
-              background: 'rgba(201,169,110,0.08)',
-              border: '1px solid rgba(201,169,110,0.2)',
-            }}
-          >
-            <span className="text-xl">✨</span>
-            <div className="flex-1">
-              <p className="font-ui text-sm" style={{ color: 'var(--text-heading)' }}>
-                完善个人资料，开启精彩体验
-              </p>
-              <p className="font-ui text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
-                填写兴趣方向、所在地、技能等信息，我们将为你提供更优质的服务
-              </p>
-            </div>
-            <button
-              onClick={() => setActiveSection('edit')}
-              className="font-ui text-xs font-medium px-4 py-2 rounded-lg flex-shrink-0 transition-all duration-300 hover:brightness-110"
-              style={{
-                background: 'var(--color-wheat)',
-                color: 'var(--bg-ink)',
-                border: 'none',
-                cursor: 'pointer',
-              }}
-            >
-              去完善
-            </button>
-          </div>
-        )}
-
         {/* Mobile: horizontal tab bar */}
         <div className="md:hidden flex gap-1 mb-4 overflow-x-auto pb-1">
           {NAV_ITEMS.map((item) => (
@@ -916,6 +883,40 @@ export default function ProfilePage() {
 
           {/* Main content area */}
           <div className="flex-1 min-w-0">
+            {/* Profile completion prompt */}
+            {!hasDetails && (
+              <div
+                className="flex items-center gap-3 p-4 rounded-xl mb-4"
+                style={{
+                  background: 'rgba(201,169,110,0.08)',
+                  border: '1px solid rgba(201,169,110,0.2)',
+                }}
+              >
+                <span className="text-xl">✨</span>
+                <div className="flex-1">
+                  <p className="font-ui text-sm" style={{ color: 'var(--text-heading)' }}>
+                    完善个人资料，开启精彩体验
+                  </p>
+                  <p className="font-ui text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                    填写兴趣方向、所在地、技能等信息，我们将为你提供更优质的服务
+                  </p>
+                </div>
+                {activeSection !== 'edit' && (
+                <button
+                  onClick={() => setActiveSection('edit')}
+                  className="font-ui text-xs font-medium px-4 py-2 rounded-lg flex-shrink-0 transition-all duration-300 hover:brightness-110"
+                  style={{
+                    background: 'var(--color-wheat)',
+                    color: 'var(--bg-ink)',
+                    border: 'none',
+                    cursor: 'pointer',
+                  }}
+                >
+                  去完善
+                </button>
+                )}
+              </div>
+            )}
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeSection}
