@@ -26,7 +26,20 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
+.env
 .env*.local
+
+# SQLite database
+*.db
+xjcloud.db
+
+# Cloudflare / wrangler
+wrangler.toml
+.wrangler/
+
+# Secrets
+*.key
+*.secret
 
 # vercel
 .vercel

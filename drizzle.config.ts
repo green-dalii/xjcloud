@@ -5,6 +5,6 @@ export default defineConfig({
   schema: './lib/db/schema.ts',
   out: './lib/db/migrations',
   dbCredentials: {
-    url: './xjcloud.db',
+    url: process.env.DATABASE_URL || './xjcloud.db',
   },
 })

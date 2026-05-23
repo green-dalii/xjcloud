@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **环境变量配置体系**
+  - `.env.example` — 环境变量模板，包含 NextAuth、数据库、LLM、Cloudflare 配置项及注释说明
+  - `.env.local` — 本地开发环境变量（已配置 `AUTH_SECRET`，被 `.gitignore` 保护不提交）
+  - `AUTH_SECRET` 集成 — `lib/auth.ts` 从环境变量读取，解决 `MissingSecret` 错误
+  - `DATABASE_URL` 集成 — `lib/db/client.ts` 和 `drizzle.config.ts` 从环境变量读取数据库路径，默认回退 `./xjcloud.db`
+
+### Security
+- **`.gitignore` 强化隐私保护**
+  - 忽略 `.env`（无后缀）、`*.db`、`xjcloud.db`、`wrangler.toml`、`.wrangler/`、`*.key`、`*.secret`
+  - 将已追踪的 `xjcloud.db` 从 Git 历史移除（`git rm --cached`）
+
 ## [0.3.3] - 2026-05-23
 
 ### Added
