@@ -3,10 +3,10 @@
 import { motion } from 'framer-motion'
 
 const TEAM = [
-  { name: '田野老师', role: '乡土连接 · 田野调研' },
-  { name: 'Greener', role: '产品设计 · 全栈工程' },
-  { name: '丸丸', role: '内容运营 · 社区共建' },
-  { name: '晓玫', role: '用户体验 · 视觉设计' },
+  { name: '田野老师', role: '经验丰富 · 富有情怀的老乡建工作者' },
+  { name: 'Greener', role: '全栈架构师（AI PUAer）' },
+  { name: '丸丸', role: '用户体验交互（UI/UX）· 内容运营' },
+  { name: '晓玫', role: '用户体验交互（UI/UX）· 内容运营' },
 ]
 
 export default function AboutPage() {
@@ -39,6 +39,7 @@ export default function AboutPage() {
             }}
           >
             爱故乡<span style={{ color: 'var(--color-wheat)' }}>驿站</span>
+            ——由乡建雨（XJRain）平台驱动
           </h1>
         </motion.div>
 
@@ -65,16 +66,18 @@ export default function AboutPage() {
           <p
             className="font-ui mb-4"
             style={{
-              fontSize: 15,
+              fontSize: 17,
               color: 'var(--text-secondary)',
-              lineHeight: 1.85,
+              lineHeight: 1.9,
               textAlign: 'center',
             }}
           >
-            <strong style={{ color: 'var(--text-heading)', fontWeight: 600 }}>xjrain</strong>{' '}
-            是一个「雨平台」——把 AI、数据和代码化作雨水，
+            <strong style={{ color: 'var(--text-heading)', fontWeight: 600 }}>XJRain</strong>{' '}
+            是一个「雨平台」——而不是传统意义的「云」（Cloud）平台。
             <br />
-            从天而降，浇灌真实的大地。
+            我们致力于将 AI、数据和代码化作雨水（Rain），
+            <br />
+            轻轻飘落，浇灌真实的大地。
           </p>
 
           <p
