@@ -49,6 +49,7 @@ pnpm lint
 - `/calendar` → `app/(main)/calendar/page.tsx` — 活动日历（server component + metadata）
 - `/calendar/day/[date]` → `app/(main)/calendar/day/[date]/page.tsx` — 日视图（带 `generateStaticParams()`）
 - `/square` → `app/(main)/square/page.tsx` — UGC 广场
+- `/about` → `app/(main)/about/page.tsx` — 关于我们（品牌理念 xjrain + 团队 + 二维码）
 - `/profile` → `app/(main)/profile/page.tsx` — 个人中心
 - `/login`, `/register` → `app/(auth)/` — 认证页
 - `/api/*` → `app/_api-backup/` — API 路由（当前禁用，静态导出不支持；未来 Cloudflare Workers 替代）

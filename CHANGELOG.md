@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.10] - 2026-05-24
+
+### Added
+- **关于页面** — `/about` 展示品牌理念（xjrain 雨平台哲学）、团队介绍、二维码（qr-xjrain.png）
+
+### Changed
+- **品牌升级** — 产品品牌从 xjcloud 升级为 xjrain（GitHub 仓库名保留 xjcloud）
+- **README 重写** — 新增 xjrain 品牌哲学说明、团队成员表
+- **Navbar** — 新增「关于」导航项
+
 ## [0.3.9] - 2026-05-24
 
 ### Added

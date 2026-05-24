@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { label: '所有活动', href: '/activities' },
   { label: '活动日历', href: '/calendar' },
   { label: '分享广场', href: '/square' },
+  { label: '关于', href: '/about' },
 ]
 
 export function Navbar() {

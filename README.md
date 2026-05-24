@@ -1,6 +1,25 @@
-# 乡建协作平台 (xjcloud)
+# 爱故乡驿站 (xjcloud → xjrain)
 
-> 让乡建人协作起来 —— AI 驱动的乡建活动协作 SaaS + UGC 平台
+> GitHub 仓库名保留 `xjcloud`，但产品品牌已升级为 **xjrain**。
+
+## 为什么是 xjrain？
+
+**xjcloud** 诞生之初，我们想用云计算（Cloud）来连接乡村。但「云」终究飘在天上——AI、token、代码，若只停留在虚拟世界，就无法真正改变土地。
+
+于是我们选择让它落下来。
+
+**xjrain** 是 rain（雨）——云中的 AI、数据和代码像雨一样，从天而降，浇灌真实的大地。它不再是一个「云平台」，而是一个「雨平台」：把遥远的技术能力化作滋养乡村的雨水，让每一行代码都落进泥土，长出庄稼、手艺和人情。
+
+> *From cloud to rain. Virtual to earthly. Making technology nourish real land.*
+
+## 团队
+
+| 成员 | 角色 |
+|------|------|
+| 田野老师 | 乡土连接 · 田野调研 |
+| Greener | 产品设计 · 全栈工程 |
+| 丸丸 | 内容运营 · 社区共建 |
+| 晓玫 | 用户体验 · 视觉设计 |
 
 ## 快速开始
 
@@ -67,6 +86,8 @@ app/
       page.tsx          # 探索页（4步引导问卷 → Loading → 堆叠卡片）
     activities/
       page.tsx          # 全部活动全览页（独立筛选：城市tab+搜索+排序+筛选面板）
+    match/
+      page.tsx          # 匹配页（登录用户搜索优先 → Dock 卡片堆叠）
     host/
       page.tsx          # 共建者页
     square/
@@ -75,6 +96,8 @@ app/
       page.tsx          # 活动日历（月视图，server component）
       day/[date]/
         page.tsx        # 日视图（单日活动详情列表）
+    about/
+      page.tsx          # 关于我们（品牌理念 + 团队 + 二维码）
     layout.tsx          # 主布局（Navbar + 内容 + Footer）
   api/                  # API 路由
 components/
@@ -112,10 +135,12 @@ public/
 | `/` | 首页 — Hero 全屏沉浸首屏 + 双面板视频第二屏 | ✅ |
 | `/explore` | 探索 — 4步引导问卷 + Bento多选 + 卡片堆叠 | ✅ |
 | `/activities` | 全部活动 — 独立全览页 + 筛选工具栏 | ✅ |
+| `/match` | 匹配 — 登录用户 AI 方案搜索 + Dock 卡片堆叠 | ✅ |
 | `/host` | 共建者 — 视频 Hero + 案例展示 | ✅ |
 | `/calendar` | 活动日历 — 月视图 + 地点筛选 | ✅ |
 | `/calendar/day/[date]` | 日视图 — 单日活动详情 | ✅ |
 | `/square` | 广场 — UGC 帖子流 + 打赏稻米 | ✅ |
+| `/about` | 关于 — 品牌理念 + 团队 + 二维码 | ✅ |
 | `/login` | 登录 — 深色主题认证 | ✅ |
 | `/register` | 注册 — 深色主题认证 | ✅ |
 | `/profile` | 个人中心 | ✅ |
