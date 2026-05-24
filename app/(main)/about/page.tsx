@@ -15,7 +15,7 @@ export default function AboutPage() {
       className="page-bg"
       style={{ minHeight: '100vh', paddingTop: 100, paddingBottom: 80 }}
     >
-      <div className="max-w-[640px] mx-auto px-6 flex flex-col items-center text-center">
+      <div className="max-w-[720px] mx-auto px-6 flex flex-col items-center text-center">
         {/* Title */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -75,7 +75,7 @@ export default function AboutPage() {
             <strong style={{ color: 'var(--text-heading)', fontWeight: 600 }}>XJRain</strong>{' '}
             是一个「雨平台」——而不是传统意义的「云」（Cloud）平台。
             <br />
-            我们致力于将 AI、数据和代码化作雨水（Rain），
+            我们致力于将 AI、数据和代码化作雨水，
             <br />
             轻轻飘落，浇灌真实的大地。
           </p>
@@ -153,35 +153,42 @@ export default function AboutPage() {
           >
             团队
           </p>
-          <div className="flex flex-col items-center gap-3">
-            {TEAM.map((member) => (
-              <div
-                key={member.name}
-                className="py-3 px-6 rounded-xl w-full max-w-[320px]"
-                style={{
-                  background: 'rgba(45,42,38,0.4)',
-                  border: '1px solid rgba(245,241,234,0.06)',
-                }}
-              >
-                <p
-                  className="font-ui"
+          {/* 田野老师 — 独立一行 */}
+            <div
+              className="py-3 px-6 rounded-xl w-full max-w-[360px] mx-auto mb-3"
+              style={{
+                background: 'rgba(45,42,38,0.4)',
+                border: '1px solid rgba(245,241,234,0.06)',
+              }}
+            >
+              <p className="font-ui" style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-heading)' }}>
+                {TEAM[0].name}
+              </p>
+              <p className="font-ui text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
+                {TEAM[0].role}
+              </p>
+            </div>
+
+            {/* Greener、丸丸、晓玫 — 桌面横向并排，移动端纵向 */}
+            <div className="flex flex-col md:flex-row gap-3 justify-center">
+              {TEAM.slice(1).map((member) => (
+                <div
+                  key={member.name}
+                  className="flex-1 py-3 px-4 rounded-xl md:max-w-[220px]"
                   style={{
-                    fontSize: 15,
-                    fontWeight: 600,
-                    color: 'var(--text-heading)',
+                    background: 'rgba(45,42,38,0.4)',
+                    border: '1px solid rgba(245,241,234,0.06)',
                   }}
                 >
-                  {member.name}
-                </p>
-                <p
-                  className="font-ui text-xs mt-1"
-                  style={{ color: 'var(--text-muted)' }}
-                >
-                  {member.role}
-                </p>
-              </div>
-            ))}
-          </div>
+                  <p className="font-ui" style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-heading)' }}>
+                    {member.name}
+                  </p>
+                  <p className="font-ui text-[11px] mt-1" style={{ color: 'var(--text-muted)' }}>
+                    {member.role}
+                  </p>
+                </div>
+              ))}
+            </div>
         </motion.div>
 
         {/* Footer note */}

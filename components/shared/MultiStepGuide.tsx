@@ -210,7 +210,7 @@ export default function MultiStepGuide({
           {/* Multi choice — Bento grid */}
           {isMulti && currentQ.options.length <= 8 && (
             <div className="w-full">
-              <div className="grid grid-cols-12 gap-3 w-full">
+              <div className="flex flex-col md:grid md:grid-cols-12 gap-3 w-full">
                 {currentQ.options.map((opt, idx) => {
                   const selected = isSelected(opt.value)
                   const spanClass = BENTO_SPANS[idx] || 'col-span-6'
