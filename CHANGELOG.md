@@ -8,12 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.3.10] - 2026-05-24
 
 ### Added
-- **关于页面** — `/about` 展示品牌理念（xjrain 雨平台哲学）、团队介绍、二维码（qr-xjrain.png）
+- **关于页面** — `/about` 展示品牌理念（XJRain 雨平台哲学）、团队介绍、二维码（qr-xjrain.png）
+- **团队介绍** — 田野老师、Greener、丸丸、晓玫，分两行布局
 
 ### Changed
-- **品牌升级** — 产品品牌从 xjcloud 升级为 xjrain（GitHub 仓库名保留 xjcloud）
-- **README 重写** — 新增 xjrain 品牌哲学说明、团队成员表
+- **品牌升级** — 产品品牌从 xjcloud 升级为 XJRain（GitHub 仓库名保留 xjcloud）
+- **README 重写** — 新增 XJRain 品牌哲学说明、团队成员表
 - **Navbar** — 新增「关于」导航项
+- **关于页面优化** — 文案去 Rain 括号、容器加宽至 720px、团队双行布局
+- **Explore 移动端** — 兴趣多选第三步 Bento 网格改为垂直 Flex（桌面端不变）
+
+### Fixed
+- **MultiStepGuide** — 修复 `md:${spanClass}` 动态拼接导致 Tailwind JIT 无法识别的问题
 
 ## [0.3.9] - 2026-05-24
 
