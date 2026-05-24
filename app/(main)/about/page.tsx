@@ -73,7 +73,7 @@ export default function AboutPage() {
             }}
           >
             <strong style={{ color: 'var(--text-heading)', fontWeight: 600 }}>XJRain</strong>{' '}
-            是一个「雨平台」——而不是传统意义的「云」（Cloud）平台。
+            是一个「雨」（Rain）平台——而不是传统意义的「云」（Cloud）平台。
             <br />
             我们致力于将 AI、数据和代码化作雨水，
             <br />

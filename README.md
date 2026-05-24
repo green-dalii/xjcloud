@@ -8,7 +8,7 @@
 
 于是我们选择让它落下来。
 
-**XJRain** 是一个「雨平台」——而不是传统意义的「云」（Cloud）平台。我们致力于将 AI、数据和代码化作雨水（Rain），轻轻飘落，浇灌真实的大地。它让每一行代码都落进泥土，长出庄稼、手艺和人情。
+**XJRain** 是一个「雨」（Rain）平台——而不是传统意义的「云」（Cloud）平台。我们致力于将 AI、数据和代码化作雨水（Rain），轻轻飘落，浇灌真实的大地。它让每一行代码都落进泥土，长出庄稼、手艺和人情。
 
 > *From cloud to rain. Virtual to earthly. Making technology nourish real land.*
 
