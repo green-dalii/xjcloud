@@ -39,6 +39,7 @@ export default function AboutPage() {
             }}
           >
             爱故乡<span style={{ color: 'var(--color-wheat)' }}>驿站</span>
+            <br />
             ——由乡建雨（XJRain）平台驱动
           </h1>
         </motion.div>
