@@ -394,8 +394,12 @@ export default function MatchPage() {
     [relevantTags, userLocation]
   )
 
+  const isDemo = process.env.NEXT_PUBLIC_DEMO_MODE === 'true'
+
   // Check if profile is basically empty (only has registration defaults)
+  // In demo mode, always treat as complete to skip the profile prompt
   const hasMinimalProfile = useMemo(() => {
+    if (isDemo) return true
     if (!user) return false
     return (
       (user.interests && user.interests.length > 0) ||
